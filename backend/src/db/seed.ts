@@ -4768,9 +4768,1692 @@ Active participation in real estate:
 Remember: Advanced tax strategies require professional guidance and should align with your overall business and financial goals. The potential tax savings must be weighed against complexity, compliance costs, and business objectives.`
     ])
 
-    // Create additional weeks (9-12) with basic structure for now
+    // Week 9: Risk Management and Insurance
+    const week9Result = await pool.query(`
+      INSERT INTO weeks (course_id, week_number, title, overview, learning_objectives, estimated_hours)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id
+    `, [
+      courseId,
+      9,
+      'Risk Management and Insurance',
+      'Protect your business and personal assets through comprehensive risk management strategies, insurance planning, and business continuity preparation.',
+      JSON.stringify([
+        'Identify and assess business risks across all operations',
+        'Design comprehensive insurance coverage strategies',
+        'Implement business continuity and disaster recovery plans',
+        'Understand liability protection and asset protection structures',
+        'Create emergency funds and financial safety nets'
+      ]),
+      9
+    ])
+
+    const week9Id = week9Result.rows[0].id
+
+    // Week 9 Lessons
+    await pool.query(`
+      INSERT INTO lessons (week_id, title, slug, content, order_index, lesson_type, duration_minutes)
+      VALUES 
+      ($1, 'Business Risk Assessment and Management', 'business-risk-assessment', $2, 1, 'lecture', 75),
+      ($1, 'Essential Business Insurance Coverage', 'essential-business-insurance', $3, 2, 'lecture', 85),
+      ($1, 'Personal Insurance for Business Owners', 'personal-insurance-business-owners', $4, 3, 'lecture', 70),
+      ($1, 'Business Continuity and Disaster Recovery', 'business-continuity-disaster-recovery', $5, 4, 'lecture', 80),
+      ($1, 'Asset Protection and Liability Strategies', 'asset-protection-liability', $6, 5, 'lecture', 75)
+    `, [
+      week9Id,
+      `# Business Risk Assessment and Management
+
+## The Risk Management Framework for Entrepreneurs
+
+Risk management isn't about eliminating all risks—it's about understanding, evaluating, and strategically managing risks to protect your business while enabling growth.
+
+### Understanding Business Risk Categories
+
+**1. Operational Risks**
+Day-to-day risks that can disrupt business operations:
+- **Technology Failures:** Server outages, data breaches, software bugs
+- **Key Person Risk:** Dependence on specific individuals
+- **Supply Chain Disruption:** Vendor failures, service interruptions
+- **Quality Issues:** Defective products, service failures
+- **Regulatory Compliance:** Changing laws, licensing requirements
+
+**2. Financial Risks**
+Risks that directly impact cash flow and profitability:
+- **Market Risk:** Demand fluctuations, competitive pressure
+- **Credit Risk:** Customer payment defaults, bad debt
+- **Liquidity Risk:** Cash flow shortages, working capital issues
+- **Currency Risk:** Exchange rate fluctuations for international business
+- **Interest Rate Risk:** Borrowing cost changes
+
+**3. Strategic Risks**
+Long-term threats to business viability:
+- **Technology Obsolescence:** Industry disruption, platform changes
+- **Competitive Threats:** New entrants, market consolidation  
+- **Market Shifts:** Customer preference changes, economic downturns
+- **Reputation Risk:** Brand damage, public relations crises
+- **Partnership Risk:** Joint venture failures, vendor dependencies
+
+**4. Legal and Compliance Risks**
+Regulatory and legal exposure:
+- **Liability Claims:** Professional errors, product defects
+- **Intellectual Property:** Patent infringement, IP theft
+- **Employment Law:** Wrongful termination, discrimination claims
+- **Data Privacy:** GDPR, CCPA compliance failures
+- **Tax and Regulatory:** Audit penalties, compliance violations
+
+### Risk Assessment Methodology
+
+**Step 1: Risk Identification**
+Systematic catalog of potential risks:
+- Brainstorming sessions with team members
+- Industry research and benchmarking
+- Historical incident analysis
+- Stakeholder interviews (customers, vendors, partners)
+- External expert consultations
+
+**Step 2: Risk Analysis**
+Evaluate each risk on two dimensions:
+
+**Probability Assessment:**
+- **Very Low (1):** Less than 5% chance in next year
+- **Low (2):** 5-15% chance in next year  
+- **Medium (3):** 15-40% chance in next year
+- **High (4):** 40-70% chance in next year
+- **Very High (5):** More than 70% chance in next year
+
+**Impact Assessment:**
+- **Very Low (1):** Less than $1,000 impact
+- **Low (2):** $1,000-$10,000 impact
+- **Medium (3):** $10,000-$100,000 impact
+- **High (4):** $100,000-$1,000,000 impact
+- **Very High (5):** More than $1,000,000 impact
+
+**Risk Score = Probability × Impact**
+
+**Step 3: Risk Prioritization**
+Focus on highest-impact risks first:
+- **Critical Risks (Score 20-25):** Immediate action required
+- **High Risks (Score 15-19):** Address within 30 days
+- **Medium Risks (Score 10-14):** Address within 90 days
+- **Low Risks (Score 5-9):** Monitor and review quarterly
+- **Minimal Risks (Score 1-4):** Annual review sufficient
+
+### Risk Response Strategies
+
+**1. Risk Avoidance**
+Eliminate the risk entirely by changing business processes:
+- Not entering certain markets
+- Avoiding specific technologies or partnerships
+- Choosing not to offer certain services
+- Implementing strict security protocols
+
+**Example:** A development agency avoids cryptocurrency projects due to regulatory uncertainty.
+
+**2. Risk Mitigation**
+Reduce probability or impact through preventive measures:
+- **Technical Safeguards:** Backup systems, monitoring tools
+- **Process Improvements:** Quality control, testing procedures
+- **Training Programs:** Staff education, certification requirements
+- **Vendor Management:** Diversification, performance monitoring
+
+**Example:** Implementing automated testing and code review processes to reduce software defect risks.
+
+**3. Risk Transfer**
+Shift risk to third parties through contracts or insurance:
+- **Insurance Coverage:** Professional liability, cyber liability
+- **Contractual Terms:** Limitation of liability, indemnification
+- **Outsourcing:** Transfer operational risks to specialists
+- **Warranties and Guarantees:** Vendor risk sharing
+
+**Example:** Requiring clients to maintain their own data backups and including data loss limitations in contracts.
+
+**4. Risk Acceptance**
+Consciously accept certain risks when mitigation costs exceed benefits:
+- Self-insurance for low-impact risks
+- Strategic acceptance of competitive risks
+- Calculated risks for growth opportunities
+- Budget allocation for expected losses
+
+**Example:** Accepting the risk of client payment delays by building payment terms into pricing.
+
+### Technology Risk Management for Developers
+
+**Data Protection and Cybersecurity:**
+- **Access Controls:** Multi-factor authentication, role-based permissions
+- **Data Encryption:** At rest and in transit
+- **Regular Backups:** Automated, tested, geographically distributed
+- **Security Audits:** Penetration testing, vulnerability assessments
+- **Incident Response Plan:** Documented procedures, contact lists
+
+**Business Continuity for Tech Businesses:**
+- **Redundant Infrastructure:** Multiple cloud providers, failover systems  
+- **Remote Work Capabilities:** Distributed teams, cloud-based tools
+- **Documentation Systems:** Knowledge bases, process documentation
+- **Version Control:** Code repositories, configuration management
+- **Monitoring and Alerting:** System health, performance metrics
+
+**Client and Project Risk Management:**
+- **Contract Protection:** Clear scope, payment terms, IP ownership
+- **Project Management:** Milestone-based payments, change orders
+- **Quality Assurance:** Testing protocols, user acceptance criteria
+- **Communication Systems:** Regular updates, documented requirements
+- **Resource Planning:** Team availability, skill requirements
+
+### Financial Risk Management
+
+**Cash Flow Risk Mitigation:**
+- **Diversified Revenue Streams:** Multiple clients, recurring revenue
+- **Payment Terms Optimization:** Deposits, milestone payments
+- **Credit Policies:** Customer credit checks, payment history analysis
+- **Factoring/Invoice Financing:** Convert receivables to immediate cash
+- **Line of Credit:** Available funds for seasonal fluctuations
+
+**Market Risk Management:**
+- **Market Research:** Continuous monitoring of industry trends
+- **Diversification:** Geographic, industry, service line diversity
+- **Flexible Pricing:** Value-based, dynamic pricing models
+- **Customer Retention:** Loyalty programs, long-term contracts
+- **Innovation Pipeline:** Continuous product/service development
+
+### Legal Risk Management
+
+**Intellectual Property Protection:**
+- **Patents and Trademarks:** Protect core innovations
+- **Copyright Registration:** Protect creative works
+- **Trade Secrets:** Confidentiality agreements, access controls
+- **License Agreements:** Clear usage rights and restrictions
+- **IP Monitoring:** Watch for infringement, competitive intelligence
+
+**Contract Risk Management:**
+- **Standard Agreements:** Well-drafted templates for common situations
+- **Legal Review:** Professional review of significant contracts
+- **Terms and Conditions:** Clear, enforceable, regularly updated
+- **Dispute Resolution:** Mediation/arbitration clauses, jurisdiction selection
+- **Documentation:** Comprehensive records of all agreements
+
+### Risk Monitoring and Review
+
+**Key Risk Indicators (KRIs):**
+Metrics that provide early warning of increasing risk:
+- **Financial:** Cash flow ratios, customer concentration
+- **Operational:** System uptime, error rates, response times
+- **Market:** Customer satisfaction, competitive position
+- **Legal:** Compliance audit results, claim frequencies
+
+**Regular Review Process:**
+- **Monthly:** Operational risk dashboard review
+- **Quarterly:** Comprehensive risk assessment update
+- **Annually:** Strategic risk review and plan updates
+- **Ad-hoc:** Risk assessment for new initiatives or market changes
+
+**Risk Reporting:**
+- **Executive Dashboard:** Key risks and mitigation status
+- **Board Reports:** Strategic risk oversight and governance
+- **Operational Reports:** Department-specific risk management
+- **Stakeholder Communication:** Customer, investor, partner updates
+
+### Building a Risk-Aware Culture
+
+**Leadership Commitment:**
+- Model risk-aware decision making
+- Allocate resources for risk management
+- Communicate risk tolerance clearly
+- Reward proactive risk identification
+
+**Team Training:**
+- Risk awareness training for all employees
+- Role-specific risk management skills
+- Regular updates on new risks and procedures
+- Encourage reporting of potential risks
+
+**Continuous Improvement:**
+- Learn from incidents and near-misses
+- Update procedures based on experience
+- Benchmark against industry best practices
+- Invest in emerging risk management tools
+
+### Action Steps for Risk Management Implementation
+1. Conduct comprehensive risk assessment using the framework above
+2. Prioritize top 10 risks based on probability and impact
+3. Develop specific mitigation plans for critical and high risks
+4. Implement monitoring systems for key risk indicators
+5. Create regular review and reporting processes for ongoing risk management
+
+Remember: Effective risk management is an ongoing process, not a one-time activity. Regular assessment and adaptation ensure your business remains protected while positioned for growth.`,
+
+      `# Essential Business Insurance Coverage
+
+## Building Comprehensive Protection for Your Business
+
+Insurance is your financial safety net against catastrophic losses. For developers and business owners, the right insurance coverage can mean the difference between surviving a crisis and losing everything you've built.
+
+### General Liability Insurance
+
+**What It Covers:**
+- Bodily injury to third parties on your premises
+- Property damage caused by your business operations
+- Personal and advertising injury (libel, slander, copyright infringement)
+- Product liability for tangible products you sell
+- Completed operations coverage for service work
+
+**Why Developers Need It:**
+Even digital businesses face liability risks:
+- Client visits to your office or co-working space
+- Attending conferences, networking events, client meetings
+- Defamation claims from online content or social media
+- Accidental disclosure of confidential client information
+- Equipment damage at client locations
+
+**Coverage Limits:**
+- **Per Occurrence:** $1-2 million typical for most businesses
+- **Aggregate:** $2-4 million annual total
+- **Products/Completed Ops:** Separate limit for service work
+
+**Cost:** $400-1,200 annually for most consulting/development businesses
+
+**Real-World Example:**
+A web developer accidentally damages client's server equipment during an on-site installation, causing $50,000 in replacement costs and business interruption. General liability insurance covers the equipment replacement and lost revenue claims.
+
+### Professional Liability (Errors & Omissions) Insurance
+
+**What It Covers:**
+- Professional mistakes, errors, or oversights
+- Failure to deliver promised services
+- Breach of professional duty or standard of care
+- Negligent acts in providing professional services
+- Defense costs for covered claims
+
+**Critical for Developers Because:**
+- Software bugs causing client financial losses
+- Missing project deadlines resulting in client damages
+- Inadequate security leading to data breaches
+- Failure to meet performance specifications
+- Copyright infringement in delivered code
+
+**Key Coverage Features:**
+- **Prior Acts Coverage:** Protects against claims from past work
+- **Defense Costs:** Legal fees covered in addition to policy limits
+- **Regulatory Proceedings:** Coverage for professional board actions
+- **Business Risk Exclusions:** Understand what's not covered
+
+**Coverage Amounts:**
+- **Per Claim:** $1-5 million depending on project size
+- **Aggregate:** $2-10 million annual total
+- **Deductibles:** $2,500-25,000 self-insured retention
+
+**Cost:** $1,500-5,000 annually depending on revenue and risk
+
+**Industry-Specific Considerations:**
+- **Web Development:** Focus on functionality failures, security breaches
+- **Software Development:** Emphasize performance, compatibility issues
+- **Consulting:** Professional advice, strategic recommendations
+- **Data Services:** Privacy breaches, data corruption
+
+### Cyber Liability Insurance
+
+**First-Party Coverage (Your Business):**
+- **Data Recovery:** Costs to restore corrupted or stolen data
+- **System Restoration:** Rebuilding compromised networks/systems
+- **Business Interruption:** Lost revenue during cyber incidents
+- **Extortion Payments:** Ransomware and cyber extortion costs
+- **Notification Costs:** Required breach notifications to customers
+- **Credit Monitoring:** Services for affected individuals
+- **Public Relations:** Crisis management and reputation repair
+
+**Third-Party Coverage (Claims Against You):**
+- **Privacy Liability:** Claims for improper data handling
+- **Network Security Liability:** Damages from security failures
+- **Regulatory Fines:** GDPR, CCPA, and other privacy law penalties
+- **Payment Card Industry (PCI) Fines:** Credit card data violations
+- **Media Liability:** Claims from electronic communications
+
+**Coverage Considerations for Tech Businesses:**
+- **Social Engineering:** Protection against fraudulent instruction attacks
+- **Funds Transfer Fraud:** Unauthorized electronic fund transfers
+- **Cloud Services:** Coverage for third-party cloud provider failures
+- **Internet of Things (IoT):** Connected device vulnerabilities
+- **Artificial Intelligence:** AI-related liability exposures
+
+**Coverage Limits:**
+- **Small Businesses:** $1-5 million adequate for most
+- **Medium Businesses:** $5-25 million for higher exposures
+- **Enterprise:** $25+ million for major technology companies
+
+**Cost:** $1,000-15,000+ annually depending on data sensitivity and volume
+
+### Commercial Property Insurance
+
+**Standard Coverage:**
+- **Building:** If you own your business premises
+- **Business Personal Property:** Equipment, furniture, inventory
+- **Loss of Use:** Additional expenses during property restoration
+- **Ordinance and Law:** Upgrades required by building codes
+
+**Special Considerations for Tech Businesses:**
+- **Equipment Coverage:** High-value computers, servers, testing devices
+- **Data and Media:** Physical data storage, specialized software
+- **Tenant Improvements:** Co-working space customizations
+- **Home Office Coverage:** Extension for home-based businesses
+
+**Valuation Methods:**
+- **Replacement Cost:** Full cost to replace with new equipment
+- **Actual Cash Value:** Depreciated value of damaged property
+- **Agreed Value:** Pre-negotiated equipment values
+
+**Additional Coverage Options:**
+- **Equipment Breakdown:** Mechanical failure of technology equipment
+- **Spoilage Coverage:** Perishable inventory from power failures
+- **Sign Coverage:** Business signage replacement
+- **Outdoor Property:** Exterior equipment and fixtures
+
+### Business Interruption Insurance
+
+**Income Loss Coverage:**
+- **Gross Earnings:** Lost revenue during interruption period
+- **Continuing Expenses:** Ongoing costs like rent, loan payments
+- **Extra Expenses:** Additional costs to maintain operations
+- **Extended Period:** Continued losses after physical restoration
+
+**Calculating Coverage Needs:**
+\`\`\`
+Annual Gross Revenue: $500,000
+Monthly Gross Profit: $35,000 
+Fixed Expenses: $15,000/month
+Coverage Needed: $50,000/month
+Recommended Period: 12 months
+Total Coverage: $600,000
+\`\`\`
+
+**Technology Business Applications:**
+- Server failures preventing client service delivery
+- Cyber attacks disrupting business operations
+- Key supplier failures affecting service delivery
+- Natural disasters affecting home office operations
+
+### Directors and Officers (D&O) Insurance
+
+**When You Need D&O:**
+- Corporation with board of directors
+- LLC with manager-managed structure
+- Seeking investment capital or have investors
+- Employees with management responsibilities
+- Planning to go public or be acquired
+
+**Coverage Components:**
+- **Side A:** Personal protection for individual directors/officers
+- **Side B:** Reimbursement for company-paid defense costs
+- **Side C:** Entity coverage for the company itself
+
+**Common Claims:**
+- Employment practices violations (wrongful termination, discrimination)
+- Shareholder/investor disputes
+- Regulatory investigations and penalties
+- Breach of fiduciary duty allegations
+- Securities law violations
+
+### Employment Practices Liability Insurance (EPLI)
+
+**What It Covers:**
+- Wrongful termination claims
+- Discrimination and harassment allegations
+- Wage and hour disputes
+- Failure to promote claims
+- Retaliation allegations
+
+**Defense Features:**
+- Legal defense costs covered
+- Settlement and judgment payments
+- HR helpline services
+- Employment practices training resources
+
+**Particularly Important When:**
+- You have employees (even one)
+- Growing team with new hires
+- Remote workers in multiple states
+- Dealing with performance issues
+- Making organizational changes
+
+### Commercial Auto Insurance
+
+**When Required:**
+- Company-owned vehicles
+- Employee use of personal vehicles for business
+- Rental cars for business travel
+- Delivery or service vehicles
+
+**Coverage Types:**
+- **Liability:** Bodily injury and property damage to others
+- **Physical Damage:** Comprehensive and collision for company vehicles
+- **Medical Payments:** Occupant medical expenses
+- **Uninsured Motorist:** Protection against uninsured drivers
+
+**Non-Owned Auto Coverage:**
+Essential for businesses where employees use personal vehicles:
+- Covers gaps in personal auto coverage
+- Protects business from liability claims
+- Minimal cost addition to general liability policy
+
+### Key Person Life Insurance
+
+**Business Applications:**
+- **Buy-Sell Agreements:** Fund ownership transfers upon death
+- **Debt Protection:** Pay off business loans and obligations
+- **Salary Continuation:** Support family during transition period
+- **Recruitment Costs:** Fund replacement and training expenses
+
+**Coverage Amount Calculation:**
+\`\`\`
+Key Person Value Analysis:
+- Annual salary: $150,000
+- Business profit impact: $300,000
+- Replacement/training costs: $100,000
+- Recommended coverage: $500,000-750,000
+\`\`\`
+
+**Tax Considerations:**
+- Premiums generally not tax-deductible
+- Death benefits received tax-free by business
+- Proper beneficiary designation essential
+- Consider split-dollar arrangements for tax efficiency
+
+### Insurance Program Design and Management
+
+**Layered Coverage Strategy:**
+- **Primary Insurance:** First $1-2 million of coverage
+- **Umbrella/Excess:** Additional $5-25 million capacity
+- **Specialty Coverages:** Targeted protection for specific risks
+
+**Working with Insurance Professionals:**
+- **Independent Agents:** Access to multiple carriers
+- **Brokers:** Specialized expertise for complex risks
+- **Risk Managers:** Comprehensive program design
+- **Captive Insurance:** Self-insurance for large operations
+
+**Annual Review Process:**
+1. **Coverage Assessment:** Compare current coverage to exposures
+2. **Claims Review:** Analyze past claims and trends
+3. **Market Analysis:** Compare pricing and coverage options
+4. **Policy Updates:** Adjust limits and coverage based on growth
+5. **Documentation:** Update beneficiaries and contact information
+
+### Cost Management Strategies
+
+**Premium Reduction Techniques:**
+- **Higher Deductibles:** Self-insure smaller claims
+- **Risk Management:** Implement loss control measures
+- **Claims Management:** Proactive claims handling
+- **Coverage Optimization:** Eliminate unnecessary coverages
+- **Multi-Policy Discounts:** Bundle related coverages
+
+**Self-Insurance Considerations:**
+- **Captive Insurance Companies:** For large, predictable risks
+- **Self-Insured Retentions:** Higher deductibles for cost savings
+- **Risk Pools:** Group self-insurance with similar businesses
+- **Reserve Funds:** Set aside money for retained risks
+
+### Insurance Checklist for Growing Businesses
+
+**Startup Phase ($0-100k revenue):**
+- General liability
+- Professional liability
+- Cyber liability (basic)
+- Commercial auto (if applicable)
+
+**Growth Phase ($100k-1M revenue):**
+- Increase liability limits
+- Add business interruption
+- Consider EPLI
+- Key person life insurance
+
+**Established Business ($1M+ revenue):**
+- Comprehensive program review
+- D&O insurance consideration
+- Enhanced cyber coverage
+- Umbrella/excess liability
+
+**Enterprise Level ($10M+ revenue):**
+- Captive insurance evaluation
+- International coverage
+- Specialized industry coverages
+- Risk management services
+
+### Action Steps for Insurance Planning
+1. Conduct insurance needs assessment using business risk analysis
+2. Obtain quotes from multiple carriers for comparison
+3. Work with qualified insurance professionals
+4. Implement layered coverage strategy appropriate for business size
+5. Establish annual review process for coverage adequacy
+
+Remember: Insurance is not just about compliance—it's about protecting your business's financial future and enabling confident growth. Proper coverage allows you to take calculated risks while protecting your downside.`,
+
+      `# Personal Insurance for Business Owners
+
+## Protecting Your Personal Assets and Financial Future
+
+As a business owner, your personal and business financial lives are more intertwined than traditional employees. Comprehensive personal insurance protection is essential for preserving your wealth and ensuring your family's financial security.
+
+### Life Insurance for Business Owners
+
+**Term Life Insurance:**
+- **Purpose:** Replace income during peak earning and debt years
+- **Duration:** 10, 20, or 30-year level premium periods
+- **Cost:** Lowest premium per dollar of coverage
+- **Best For:** Income replacement, mortgage protection, young families
+
+**Coverage Amount Calculation:**
+\`\`\`
+Income Replacement Method:
+Annual income needed: $200,000
+Years to provide income: 20
+Present value at 4% discount: $2,720,000
+Add: Mortgage balance: $500,000
+Add: Children's education: $300,000
+Total coverage needed: $3,520,000
+Round to: $3,500,000
+\`\`\`
+
+**Permanent Life Insurance Options:**
+
+**Whole Life Insurance:**
+- Guaranteed death benefit and cash value growth
+- Level premiums throughout life
+- Dividend potential with mutual companies
+- Conservative investment returns (3-4% typical)
+- High premium cost compared to term
+
+**Universal Life Insurance:**
+- Flexible premiums and death benefits
+- Cash value linked to current interest rates
+- More investment control than whole life
+- Risk of policy lapse if performance poor
+- Lower cost than whole life
+
+**Variable Life Insurance:**
+- Cash value invested in mutual fund-like subaccounts
+- Potential for higher returns with market risk
+- Death benefit fluctuates with investment performance
+- Requires active management of investments
+- Higher fees than other permanent options
+
+**Business Applications of Life Insurance:**
+
+**Buy-Sell Agreement Funding:**
+\`\`\`
+Business Scenario:
+Two equal partners own $2M business
+Each needs $1M coverage on the other
+Cross-purchase arrangement:
+- Partner A owns policy on Partner B
+- Partner B owns policy on Partner A
+- Upon death, survivor buys deceased's interest
+\`\`\`
+
+**Estate Planning Benefits:**
+- Provide liquidity for estate taxes
+- Equalize inheritances among heirs
+- Create tax-free wealth transfer
+- Fund charitable giving strategies
+
+### Disability Income Insurance
+
+**The Hidden Risk:**
+- 1 in 4 workers will become disabled before age 67
+- Average disability lasts 2.9 years
+- Most disabilities are due to illness, not accidents
+- Social Security disability pays minimal benefits
+
+**Types of Disability Coverage:**
+
+**Short-Term Disability:**
+- Benefit period: 3-24 months
+- Coverage: 50-70% of income
+- Elimination period: 0-14 days
+- Cost: 0.5-3% of income
+- Often provided by employers
+
+**Long-Term Disability:**
+- Benefit period: To age 65 or lifetime
+- Coverage: 60-80% of income
+- Elimination period: 90-720 days
+- Cost: 1-4% of income
+- Critical for business owners
+
+**Key Features for Business Owners:**
+
+**Own Occupation Definition:**
+- Pays benefits if you can't perform your specific job
+- Superior to "any occupation" policies
+- Essential for specialized professionals
+- More expensive but worthwhile protection
+
+**Residual/Partial Benefits:**
+- Pays proportional benefits for partial disability
+- Helps during gradual return to work
+- Covers reduced earning capacity
+- Critical for business owners with variable income
+
+**Business Overhead Expense Coverage:**
+- Pays ongoing business expenses during disability
+- Typically 12-24 month benefit period
+- Covers rent, utilities, employee salaries, loan payments
+- Separate from personal disability income
+
+**Coverage Amount Calculation:**
+\`\`\`
+Personal Coverage Needed:
+Gross monthly income: $25,000
+Target replacement: 70% = $17,500
+Less: Other disability benefits = $2,000
+Personal DI coverage needed: $15,500
+
+Business Overhead Coverage:
+Monthly fixed expenses: $12,000
+Recommended coverage: $12,000/month
+Benefit period: 24 months
+\`\`\`
+
+### Health Insurance Strategies
+
+**Individual vs. Group Coverage:**
+
+**Individual/Family Plans (ACA Marketplace):**
+- Portable coverage not tied to business
+- Guaranteed issue regardless of health
+- Essential health benefits required
+- Premium tax credits based on income
+- Out-of-pocket limits provide catastrophic protection
+
+**Small Group Plans (2-50 employees):**
+- Potentially lower costs than individual
+- Employer tax deductions available
+- Employee retention/recruitment benefit
+- Administrative complexity increases
+- State-specific regulations apply
+
+**Health Savings Accounts (HSAs):**
+**Triple Tax Advantage:**
+- Tax-deductible contributions
+- Tax-free growth on investments
+- Tax-free withdrawals for qualified medical expenses
+
+**2024 HSA Limits:**
+- Individual coverage: $4,150 contribution limit
+- Family coverage: $8,300 contribution limit  
+- Age 55+ catch-up: Additional $1,000
+- High-deductible health plan required
+
+**HSA Investment Strategy:**
+- Use for current medical expenses vs. long-term investment
+- After age 65, withdrawals for any purpose (20% penalty eliminated)
+- Invest funds not needed for current medical expenses
+- HSA becomes retirement account with medical expense priority
+
+**Alternative Health Coverage:**
+
+**Health Sharing Ministries:**
+- Faith-based healthcare cost sharing
+- Not technically insurance
+- Lower monthly costs than traditional plans
+- Limited provider networks and coverage
+- No guarantee of payment for medical bills
+
+**Direct Primary Care:**
+- Monthly membership fee for unlimited primary care
+- No insurance involvement for routine care
+- Pair with catastrophic coverage for major medical
+- Transparent, predictable pricing
+- Growing availability in most markets
+
+### Property and Casualty Insurance
+
+**Homeowners/Renters Insurance Enhancement:**
+
+**Increased Personal Property Limits:**
+- Standard policies often inadequate for business owners
+- Consider 75-100% of dwelling limit for personal property
+- Scheduled coverage for high-value items
+- Business property endorsement for home office
+
+**Umbrella Liability Insurance:**
+- Provides excess liability over auto and homeowners
+- $1-5 million typical coverage amounts
+- Broad coverage including personal injury protection
+- Very cost-effective protection ($200-600 annually)
+- Essential for business owners with higher net worth
+
+**Auto Insurance Optimization:**
+
+**Adequate Liability Limits:**
+- Consider $500,000+ per accident minimum
+- Uninsured/underinsured motorist coverage
+- Medical payments coverage
+- Rental car and roadside assistance
+
+**Business Use Coverage:**
+- Personal auto policies often exclude business use
+- Commercial auto or business use endorsement needed
+- Covers business-related driving activities
+
+### Long-Term Care Insurance
+
+**The Long-Term Care Risk:**
+- 70% of people over 65 will need long-term care
+- Average cost: $5,000+ per month for nursing home care
+- Medicare provides very limited coverage
+- Medicaid requires asset spend-down to poverty levels
+
+**Traditional Long-Term Care Insurance:**
+- Dedicated coverage for long-term care services
+- Level premiums with potential for increases
+- Comprehensive coverage including home care
+- Use-it-or-lose-it nature of coverage
+
+**Hybrid Life/LTC Insurance:**
+- Combines life insurance with long-term care benefits
+- Guaranteed premiums with no increases
+- Death benefit if long-term care not needed
+- Higher initial cost than traditional LTC insurance
+
+**Coverage Design Considerations:**
+- **Daily Benefit:** $150-300+ per day typical
+- **Benefit Period:** 3-6 years most common
+- **Elimination Period:** 90-days typical wait
+- **Inflation Protection:** Essential for younger buyers
+
+### Estate Planning Insurance Applications
+
+**Estate Tax Liquidity:**
+- Federal estate tax exemption: $13.61 million (2024)
+- State estate taxes may apply at lower levels
+- Life insurance provides tax-free liquidity
+- Irrevocable Life Insurance Trusts (ILITs) remove proceeds from estate
+
+**Generation-Skipping Transfer (GST) Tax Planning:**
+- Additional tax on transfers to grandchildren
+- $13.61 million GST exemption (2024)
+- Dynasty trusts with life insurance funding
+- Perpetual wealth transfer strategies
+
+**Charitable Planning:**
+- Charitable Remainder Trusts funded with life insurance
+- Wealth replacement through life insurance
+- Private foundation funding
+- Donor advised fund strategies
+
+### Insurance Program Coordination
+
+**Business and Personal Integration:**
+- Ensure no gaps between business and personal coverage
+- Coordinate deductibles and coverage limits
+- Understand which entity pays premiums for tax optimization
+- Regular review as business structure changes
+
+**Tax Optimization:**
+- Business-paid premiums vs. personal payments
+- S-Corp shareholder-employee rules for health insurance
+- Disability insurance premium payment strategies
+- Life insurance taxation under different ownership structures
+
+**Professional Team Coordination:**
+- Insurance agents/brokers
+- Financial advisors
+- Tax professionals
+- Estate planning attorneys
+- Risk management consultants
+
+### Annual Personal Insurance Review
+
+**Life Changes Requiring Review:**
+- Marriage, divorce, children
+- Home purchase, relocation
+- Business growth or structure changes
+- Significant income changes
+- Health changes
+
+**Coverage Adequacy Assessment:**
+- Income replacement calculations
+- Asset protection needs
+- Estate planning objectives
+- Tax planning opportunities
+- Cost optimization strategies
+
+### Insurance Mistakes to Avoid
+
+**Common Errors:**
+- Inadequate coverage amounts
+- Wrong type of coverage for needs
+- Gaps between business and personal coverage
+- Failure to update beneficiaries
+- Not understanding policy exclusions
+- Mixing insurance with inappropriate investments
+- Ignoring inflation impact on coverage needs
+
+**Due Diligence Process:**
+- Compare multiple carriers and policies
+- Understand all fees and charges
+- Review financial strength ratings
+- Read policy contracts carefully
+- Work with qualified professionals
+- Document all coverage decisions
+
+### Cost Management Strategies
+
+**Premium Reduction Techniques:**
+- Annual vs. monthly premium payments
+- Multi-policy discounts
+- Higher deductibles where appropriate
+- Healthy lifestyle discounts
+- Professional association group coverage
+
+**Self-Insurance Considerations:**
+- Higher deductibles for property coverage
+- Self-fund smaller disability periods
+- Emergency fund for retained risks
+- Captive insurance for larger risks
+
+### Action Steps for Personal Insurance Planning
+1. Calculate insurance needs using multiple methodologies
+2. Inventory existing coverage and identify gaps
+3. Obtain competitive quotes from multiple carriers
+4. Coordinate business and personal insurance programs
+5. Establish annual review process with professional advisors
+6. Create comprehensive documentation of all coverage
+
+Remember: Personal insurance for business owners requires more sophisticated planning than traditional employee coverage. The goal is creating a comprehensive safety net that protects both your business success and your family's financial future.`,
+
+      `# Business Continuity and Disaster Recovery
+
+## Ensuring Your Business Survives and Thrives Through Any Crisis
+
+Business continuity planning isn't just about surviving disasters—it's about maintaining competitive advantage during disruptions and positioning for rapid recovery. For developers and digital businesses, robust continuity planning is essential for client retention and business survival.
+
+### Understanding Business Continuity vs. Disaster Recovery
+
+**Business Continuity Planning (BCP):**
+- Comprehensive strategy for maintaining business operations during disruptions
+- Focuses on people, processes, and technologies needed to continue operations
+- Addresses all types of disruptions, not just natural disasters
+- Proactive approach to minimize business impact
+
+**Disaster Recovery (DR):**
+- Specific procedures for recovering IT systems and data after major incidents
+- Technical focus on restoring technology infrastructure
+- Reactive approach to restore normal operations
+- Subset of overall business continuity planning
+
+**Integrated Approach:**
+Effective programs combine both BCP and DR into comprehensive resilience strategy addressing all business functions and potential disruptions.
+
+### Business Impact Analysis (BIA)
+
+**Step 1: Critical Business Function Identification**
+Catalog all business activities and rank by importance:
+
+**For Development/Consulting Businesses:**
+- **Critical (0-4 hours downtime tolerable):**
+  - Client communication systems
+  - Source code repositories
+  - Development environments
+  - Payment processing systems
+
+- **Important (4-24 hours acceptable):**
+  - Project management tools
+  - Time tracking systems
+  - Marketing websites
+  - Non-critical internal applications
+
+- **Supportive (24-72 hours acceptable):**
+  - Internal file servers
+  - Archive systems
+  - Training platforms
+  - Administrative applications
+
+**Step 2: Financial Impact Assessment**
+Calculate costs of business interruption by time period:
+
+\`\`\`
+Revenue Impact Analysis:
+Daily revenue: $5,000
+1 day outage: $5,000 direct loss
++ Rush completion costs: $2,000
++ Client satisfaction impact: $1,000
+Total 1-day impact: $8,000
+
+Weekly impact: $35,000 direct loss
++ Client contract penalties: $10,000
++ Emergency recovery costs: $5,000
++ Reputation damage: $15,000
+Total weekly impact: $65,000
+\`\`\`
+
+**Step 3: Operational Dependencies**
+Map critical dependencies for each business function:
+
+**Technology Dependencies:**
+- Internet connectivity (primary/backup providers)
+- Cloud services (AWS, Azure, Google Cloud)
+- Software licenses and subscriptions
+- Hardware (development machines, servers)
+- Mobile devices and communications
+
+**Human Resources Dependencies:**
+- Key personnel and their critical knowledge
+- Specialized skills that cannot be easily replaced
+- Client relationship ownership
+- Administrative and support functions
+
+**Vendor and Partner Dependencies:**
+- Critical suppliers and service providers
+- Payment processors and financial institutions
+- Legal and accounting services
+- Marketing and sales platforms
+
+### Risk Assessment and Threat Identification
+
+**Natural Disasters:**
+- Regional risks (earthquakes, hurricanes, floods)
+- Weather-related outages (ice storms, heat waves)
+- Wildfire and smoke impact on air quality
+- Power grid failures and rolling blackouts
+
+**Technology Failures:**
+- Internet service provider outages
+- Cloud service disruptions (AWS, Azure, GCP)
+- Cyber attacks and data breaches
+- Hardware failures and aging equipment
+- Software licensing and subscription issues
+
+**Human-Related Disruptions:**
+- Key employee illness or departure
+- Workplace violence or security incidents
+- Labor strikes or work stoppages
+- Pandemic and health emergencies
+- Transportation and commuting disruptions
+
+**Business and Economic Risks:**
+- Major client loss or payment defaults
+- Supply chain disruptions
+- Regulatory changes and compliance issues
+- Competitive threats and market disruption
+- Economic recession and reduced demand
+
+**Facility and Location Risks:**
+- Building damage or inaccessibility
+- Utility service interruptions
+- Neighborhood safety and security issues
+- Lease termination or property sale
+- Construction and infrastructure projects
+
+### Continuity Planning Framework
+
+**Recovery Time Objective (RTO):**
+Maximum acceptable downtime for each business function:
+- **Critical systems:** 1-4 hours
+- **Important systems:** 4-24 hours  
+- **Supportive systems:** 1-7 days
+
+**Recovery Point Objective (RPO):**
+Maximum acceptable data loss measured in time:
+- **Financial data:** 0-1 hour (minimal loss acceptable)
+- **Client work:** 1-4 hours (daily backups minimum)
+- **Internal documents:** 4-24 hours (acceptable loss window)
+
+**Minimum Business Continuity Objective (MBCO):**
+Minimum level of service/operations that must be maintained:
+- 80% of normal revenue generation capacity
+- Ability to serve existing clients with minimal disruption
+- Maintain critical client communication channels
+- Preserve data integrity and security standards
+
+### Technology Disaster Recovery Planning
+
+**Data Backup Strategy:**
+
+**3-2-1 Backup Rule:**
+- **3** copies of important data
+- **2** different storage media types
+- **1** offsite backup location
+
+**Implementation for Developers:**
+\`\`\`
+Primary Data: Local development machines and servers
+Secondary Backup: Network-attached storage (NAS) or local backup drives  
+Offsite Backup: Cloud storage (AWS S3, Google Drive, Dropbox Business)
+
+Automated Backup Schedule:
+- Continuous: Source code repositories (Git)
+- Hourly: Active project files
+- Daily: Complete system backups
+- Weekly: Archive and historical data
+\`\`\`
+
+**Cloud Infrastructure Resilience:**
+
+**Multi-Region Deployment:**
+- Primary region for normal operations
+- Secondary region for disaster recovery
+- Automatic failover capabilities
+- Data synchronization between regions
+
+**Infrastructure as Code:**
+- Document entire infrastructure in version control
+- Enable rapid reconstruction of environments
+- Automated deployment pipelines
+- Configuration management systems
+
+**Database Backup and Recovery:**
+- Automated daily backups with point-in-time recovery
+- Cross-region backup replication
+- Regular backup restoration testing
+- Database clustering for high availability
+
+**Application Recovery Procedures:**
+
+**Version Control and Code Recovery:**
+- Distributed version control (Git) with multiple remotes
+- Code repository hosting (GitHub, GitLab, Bitbucket)
+- Regular commits and comprehensive documentation
+- Branching strategies for rapid hotfixes
+
+**Development Environment Recreation:**
+- Containerization (Docker) for consistent environments
+- Infrastructure orchestration (Kubernetes, Docker Compose)
+- Configuration management (Ansible, Terraform)
+- Dependency management and lock files
+
+**Client Data and Project Recovery:**
+- Separate backup procedures for each client project
+- Client data isolation and security measures
+- Recovery procedures that maintain data privacy
+- Client communication protocols during recovery
+
+### Communication and Crisis Management
+
+**Crisis Communication Plan:**
+
+**Internal Communication:**
+- Employee notification systems (Slack, Microsoft Teams)
+- Emergency contact lists with multiple contact methods
+- Chain of command and decision-making authority
+- Regular status updates and progress reporting
+
+**Client Communication:**
+- Immediate incident notification procedures
+- Status page and communication channels
+- Expected recovery timelines and alternatives
+- Proactive updates throughout recovery process
+
+**Vendor and Partner Communication:**
+- Supplier notification and alternative sourcing
+- Service provider coordination
+- Insurance company and legal counsel notification
+- Media and public relations management
+
+**Communication Templates:**
+
+**Initial Incident Notification:**
+\`\`\`
+Subject: [URGENT] Service Disruption Notification
+
+Dear [Client/Team],
+
+We are currently experiencing a service disruption affecting [specific systems/services]. 
+
+Initial Assessment:
+- Incident identified at: [timestamp]
+- Estimated impact: [description]
+- Expected resolution: [timeline or "investigating"]
+
+Immediate Actions:
+- [Alternative communication methods]
+- [Temporary workarounds available]
+- [Next update scheduled]
+
+We apologize for the inconvenience and will provide updates every [frequency] until resolution.
+
+Contact: [emergency contact information]
+\`\`\`
+
+**Regular Status Updates:**
+\`\`\`
+Subject: Service Disruption Update #[number] - [timestamp]
+
+Current Status: [brief description]
+Progress Made: [specific actions completed]
+Remaining Work: [outstanding tasks]
+Revised Timeline: [updated estimates]
+Alternative Options: [temporary solutions]
+
+Next Update: [specific time]
+\`\`\`
+
+### Alternative Work Arrangements
+
+**Remote Work Capabilities:**
+- Cloud-based development environments
+- Virtual private network (VPN) access
+- Collaboration tools and communication platforms
+- Home office equipment and internet backup
+- Security protocols for remote access
+
+**Flexible Workspace Options:**
+- Co-working space memberships
+- Partner office arrangements
+- Temporary office rental agreements
+- Hotel and conference room backup plans
+- Mobile office setups
+
+**Staffing Contingencies:**
+- Cross-training for critical functions
+- Backup personnel identification and training
+- Contractor and freelancer relationships
+- Flexible work schedules and arrangements
+- Emergency staffing agency relationships
+
+### Financial Preparedness
+
+**Emergency Fund Management:**
+- 3-6 months operating expenses in liquid savings
+- Separate account for emergency funds only
+- Regular contribution schedule to build reserves
+- High-yield savings for emergency funds
+- Clear criteria for emergency fund use
+
+**Business Interruption Insurance:**
+- Coverage for lost revenue during disruptions
+- Additional expense coverage for temporary arrangements
+- Extended business interruption for prolonged recovery
+- Contingent business interruption for supplier failures
+
+**Cash Flow Management During Crisis:**
+- Accelerated payment collection procedures
+- Payment terms negotiation with vendors
+- Line of credit establishment before needed
+- Invoice factoring and receivables financing
+- Expense reduction and cost management plans
+
+### Vendor and Supply Chain Management
+
+**Critical Vendor Assessment:**
+- Single points of failure identification
+- Alternative vendor sourcing and relationships
+- Service level agreements with backup plans
+- Geographic diversification of suppliers
+- Financial stability assessment of key vendors
+
+**Service Level Agreements (SLAs):**
+- Guaranteed uptime and response times
+- Escalation procedures for service issues
+- Penalties for service level failures
+- Disaster recovery support from vendors
+- Communication requirements during outages
+
+### Testing and Maintenance
+
+**Regular Testing Schedule:**
+
+**Monthly:**
+- Backup system verification
+- Communication system testing
+- Contact list updates
+- Recovery procedure walkthrough
+
+**Quarterly:**
+- Tabletop exercises simulating different scenarios
+- Full backup restoration testing
+- Vendor communication and support verification
+- Plan documentation updates
+
+**Annually:**
+- Comprehensive business impact analysis update
+- Full-scale disaster recovery simulation
+- Third-party risk assessment
+- Business continuity plan revision
+- Employee training and awareness programs
+
+**Testing Scenarios:**
+- Complete internet outage for 24+ hours
+- Primary office building inaccessible
+- Key employee unavailable for extended period
+- Major client system breach requiring immediate response
+- Multi-day power outage affecting entire region
+
+### Legal and Regulatory Considerations
+
+**Contractual Obligations:**
+- Service level agreements with clients
+- Force majeure clauses in contracts
+- Business interruption notification requirements
+- Data protection and privacy obligations during recovery
+
+**Regulatory Compliance:**
+- Industry-specific disaster recovery requirements
+- Data retention and recovery obligations
+- Insurance claim documentation requirements
+- Tax implications of business interruption losses
+
+**Documentation and Records Management:**
+- Legal document backup and recovery
+- Contract and agreement accessibility
+- Financial record preservation
+- Intellectual property protection during crisis
+
+### Post-Incident Review and Improvement
+
+**After-Action Review Process:**
+- Timeline reconstruction and analysis
+- Response effectiveness evaluation
+- Cost analysis and financial impact assessment
+- Stakeholder feedback collection
+- Lessons learned documentation
+
+**Plan Updates and Improvements:**
+- Procedure refinements based on actual experience
+- Technology upgrades and improvements
+- Training program enhancements
+- Vendor relationship adjustments
+- Communication process improvements
+
+### Business Continuity Checklist
+
+**Preparation Phase:**
+- [ ] Completed comprehensive business impact analysis
+- [ ] Identified all critical business functions and dependencies
+- [ ] Established recovery time and recovery point objectives
+- [ ] Created detailed emergency contact lists
+- [ ] Implemented robust backup and data recovery systems
+- [ ] Negotiated alternative workspace arrangements
+- [ ] Established emergency funding and financial arrangements
+- [ ] Created crisis communication templates and procedures
+
+**Response Phase:**
+- [ ] Incident identification and initial assessment
+- [ ] Emergency response team activation  
+- [ ] Client and stakeholder notification
+- [ ] Alternative operations implementation
+- [ ] Regular status communication and updates
+- [ ] Resource coordination and management
+
+**Recovery Phase:**
+- [ ] System and service restoration
+- [ ] Normal operations resumption
+- [ ] Backlog management and catch-up
+- [ ] Client relationship repair and retention
+- [ ] Financial impact assessment and insurance claims
+
+**Review Phase:**
+- [ ] After-action review and analysis
+- [ ] Plan updates and improvements
+- [ ] Team debriefing and learning capture
+- [ ] Stakeholder feedback integration
+- [ ] Continuous improvement implementation
+
+### Action Steps for Business Continuity Planning
+1. Conduct comprehensive business impact analysis for your specific business
+2. Develop prioritized recovery objectives and procedures
+3. Implement robust backup and disaster recovery systems
+4. Create detailed communication plans and templates
+5. Establish regular testing and maintenance schedules
+6. Train all team members on their roles in business continuity
+
+Remember: Business continuity planning is not a one-time activity—it's an ongoing process that must evolve with your business, technology, and risk environment. The goal is building resilience that enables not just survival, but competitive advantage during disruptions.`,
+
+      `# Asset Protection and Liability Strategies
+
+## Safeguarding Your Wealth from Business and Personal Risks
+
+Asset protection is about creating legal barriers between your wealth and potential creditors while maintaining control and access to your assets. For business owners, comprehensive asset protection strategies are essential for preserving wealth built through entrepreneurial success.
+
+### Understanding Asset Protection Fundamentals
+
+**Asset Protection vs. Tax Avoidance:**
+- **Asset Protection:** Legal strategies to protect assets from creditors and lawsuits
+- **Tax Planning:** Strategies to minimize tax obligations legally
+- **Integration:** Best strategies often serve both purposes simultaneously
+- **Compliance:** All strategies must comply with applicable laws and regulations
+
+**The Asset Protection Timeline:**
+- **Prevention:** Implement strategies before any threats emerge
+- **Early Warning:** Enhance protection when risks become apparent
+- **Crisis Management:** Limited options once litigation begins
+- **Post-Crisis:** Rebuild protection after resolution
+
+**Key Legal Principles:**
+
+**Fraudulent Transfer Laws:**
+- Cannot transfer assets to avoid known or reasonably anticipated creditors
+- Look-back periods vary by jurisdiction (typically 2-6 years)
+- Intent to defraud creditors can void asset protection strategies
+- Timing is critical - implement strategies before problems arise
+
+**Due Process Requirements:**
+- Creditors must follow legal procedures to reach protected assets
+- Multiple legal hurdles create barriers to asset seizure
+- Each barrier increases cost and complexity for potential creditors
+- Some jurisdictions provide stronger protections than others
+
+### Business Structure Asset Protection
+
+**Limited Liability Companies (LLCs):**
+
+**Charging Order Protection:**
+- Creditor cannot take LLC ownership or force distributions
+- Creditor only entitled to receive distributions if/when made
+- LLC can choose not to make distributions, leaving creditor with no remedy
+- Creates powerful disincentive for creditors to pursue LLC assets
+
+**Multi-Member LLCs vs. Single-Member LLCs:**
+- Multi-member LLCs generally provide stronger protection
+- Some states offer charging order protection for single-member LLCs
+- Consider bringing in family members or partners for stronger protection
+- Operating agreements can enhance protection features
+
+**LLC Asset Protection Strategies:**
+
+**Series LLCs:**
+Available in select states (Delaware, Nevada, Texas, etc.):
+- Master LLC with multiple protected series
+- Each series has separate assets and liabilities
+- Liability of one series doesn't affect others
+- Cost-effective way to segregate different business activities
+
+**Manager-Managed Structure:**
+- Operating agreement grants manager broad discretion
+- Limits creditor ability to force distributions
+- Manager can be separate entity for additional protection
+- Protects against creditor control of LLC operations
+
+**Corporate Structures:**
+
+**S Corporations:**
+- Personal liability protection for business debts
+- Stock ownership can be harder for creditors to reach than LLC interests
+- Distributions must be pro-rata to all shareholders
+- Less flexible than LLCs for asset protection purposes
+
+**C Corporations:**
+- Strongest liability protection from business operations
+- Corporate formalities must be maintained
+- Double taxation unless integrated tax planning
+- Stock can be held in protected structures
+
+**Professional Entities:**
+- Professional LLCs and corporations for licensed professionals
+- Limited protection from professional malpractice claims
+- Must maintain professional liability insurance
+- Consider separate entities for different practice areas
+
+### Domestic Asset Protection Trusts (DAPTs)
+
+**Self-Settled Spendthrift Trusts:**
+Available in select US jurisdictions:
+- **Alaska, Delaware, Nevada, South Dakota** (most popular)
+- **Tennessee, New Hampshire, Utah, Wyoming** (also available)
+- Settlor can be a discretionary beneficiary
+- Strong spendthrift protections against creditors
+
+**DAPT Structure and Benefits:**
+
+**Trust Creation Requirements:**
+- Must use qualified trustee in DAPT jurisdiction
+- Transfer assets to irrevocable trust
+- Retain limited interests as discretionary beneficiary
+- Cannot retain too much control over trust assets
+
+**Protection Features:**
+- **Statute of Limitations:** Short time periods to challenge transfers (1-2 years typical)
+- **Burden of Proof:** Higher standards for creditors to pierce trust
+- **Spendthrift Protection:** Creditors cannot reach trust assets
+- **Self-Settlement:** Unlike traditional trusts, settlor can benefit
+
+**DAPT Funding Strategies:**
+\`\`\`
+Conservative Approach:
+- Fund trust with 10-30% of net worth
+- Retain majority of assets in personal name
+- Use trust for legacy and protection planning
+
+Aggressive Approach:
+- Fund trust with 50-80% of net worth
+- Retain minimal assets personally
+- Maximizes protection but reduces control
+\`\`\`
+
+### International Asset Protection
+
+**Offshore Trust Jurisdictions:**
+
+**Popular Jurisdictions:**
+- **Cook Islands:** Strong asset protection laws, short limitations period
+- **Nevis:** Comprehensive protection statutes, high burden of proof for creditors
+- **Belize:** English common law, strong confidentiality provisions
+- **Cayman Islands:** Political stability, sophisticated legal system
+
+**Offshore Trust Benefits:**
+- **Creditor Deterrent:** High cost and complexity of offshore litigation
+- **Legal System Differences:** Different laws may not recognize US judgments
+- **Confidentiality:** Banking and trust confidentiality provisions
+- **Asset Diversification:** Currency and jurisdiction diversification
+
+**Compliance Requirements:**
+- **FBAR Reporting:** Foreign bank accounts over $10,000 aggregate
+- **Form 3520:** Annual trust reporting requirements
+- **Form 8938:** FATCA reporting for foreign assets
+- **Tax Planning:** Proper structure to avoid current taxation
+
+**Offshore LLC Strategies:**
+- **Nevis LLC:** Strong charging order protection
+- **Cook Islands LLC:** Comprehensive asset protection features
+- **Multi-Jurisdictional Structure:** Combine with domestic entities
+- **Due Diligence:** Professional management and compliance essential
+
+### Homestead Protection
+
+**State Homestead Exemptions:**
+
+**Unlimited Homestead States:**
+- **Florida and Texas:** Unlimited homestead protection
+- **Iowa, Kansas, Oklahoma, South Dakota:** Acreage-based unlimited protection
+- **Nevada:** $550,000+ exemption amounts
+- **California:** $600,000+ in certain areas
+
+**Homestead Planning Strategies:**
+- **Primary Residence Selection:** Choose high-protection jurisdiction
+- **Home Equity Maximization:** Pay down mortgage to increase protected equity
+- **Homestead Declaration:** File required paperwork to claim exemption
+- **Residency Requirements:** Establish and maintain proper domicile
+
+**Homestead Limitations:**
+- **Fraudulent Transfer Rules:** Cannot transfer to homestead to avoid creditors
+- **Look-Back Periods:** Federal bankruptcy law imposes 40-month look-back
+- **Tax Liens:** IRS and state tax liens may override homestead protection
+- **Mortgage Obligations:** Homestead doesn't protect against mortgage foreclosure
+
+### Retirement Plan Protection
+
+**ERISA Plan Protection:**
+- **401(k), Pension Plans:** Unlimited federal protection from creditors
+- **Employer-Sponsored Plans:** Strong protection regardless of balance
+- **Rollover Protection:** Maintain protection when rolling to IRAs
+- **Bankruptcy Protection:** Federal exemption protects ERISA plans
+
+**IRA Protection:**
+- **Federal Protection:** Up to $1,362,800 (2023, indexed for inflation)
+- **State Variations:** Some states provide unlimited IRA protection
+- **Inherited IRAs:** Supreme Court ruling limits protection for inherited IRAs
+- **Asset Protection IRAs:** Offshore structures for enhanced protection
+
+**Retirement Plan Strategies:**
+- **Maximize Contributions:** Higher balances receive same protection
+- **Plan Selection:** Prefer ERISA plans over IRAs when possible
+- **Spousal IRAs:** Double protection limits for married couples
+- **Roth Conversions:** Convert traditional IRAs to Roth while maintaining protection
+
+### Insurance as Asset Protection
+
+**Umbrella Liability Insurance:**
+- **High Coverage Limits:** $1-10 million+ protection
+- **Broad Coverage:** Personal and business liability protection
+- **Cost Effective:** Relatively inexpensive for coverage provided
+- **Professional Liability:** Additional layer for business errors
+
+**Captive Insurance Companies:**
+- **Self-Insurance:** Fund your own insurance company
+- **Tax Benefits:** Deductible premiums, tax-deferred investment growth
+- **Asset Protection:** Insurance company assets protected from operating company creditors
+- **Minimum Premium:** Typically $200,000+ annual premiums required
+
+**Life Insurance as Asset Protection:**
+- **Cash Value Protection:** Many states protect life insurance cash values
+- **ILIT Structures:** Irrevocable life insurance trusts remove proceeds from estate
+- **Premium Financing:** Use loans to fund large policies for wealthy individuals
+- **International Insurance:** Offshore policies for additional protection
+
+### Family Limited Partnerships (FLPs)
+
+**Structure and Benefits:**
+- **General Partner:** Maintains control (1-2% ownership)
+- **Limited Partners:** Family members receive gifted interests
+- **Valuation Discounts:** Minority and marketability discounts reduce gift/estate values
+- **Centralized Management:** General partner controls all partnership decisions
+
+**Asset Protection Features:**
+- **Charging Order Remedy:** Limited partner creditors face charging order limitations
+- **Distribution Control:** General partner controls timing and amount of distributions
+- **Forced Sale Protection:** Partnership agreement restricts forced sales
+- **Family Wealth Management:** Centralized investment management and education
+
+**FLP Best Practices:**
+- **Business Purpose:** Establish legitimate business reasons for partnership
+- **Avoid Personal Assets:** Don't transfer personal residence or personal-use assets
+- **Maintain Formalities:** Follow partnership agreement, hold meetings, keep records
+- **Independent General Partner:** Consider corporate general partner for additional protection
+
+### Wage and Income Protection
+
+**Wage Garnishment Protection:**
+- **Federal Limits:** Maximum 25% of disposable earnings for most debts
+- **State Variations:** Some states provide greater protection
+- **Certain Income Types:** Social Security, unemployment, workers' compensation generally protected
+- **Head of Household:** Additional protection in some states
+
+**Income Structure Planning:**
+- **Asset vs. Income:** Protect asset ownership rather than income flow
+- **Business Structure:** Use entities to receive income before personal receipt
+- **Retirement Distributions:** Structure distributions to minimize exposed income
+- **Spousal Income:** Consider income attribution to lower-risk spouse
+
+### Marital Asset Protection
+
+**Spousal Asset Titling:**
+- **Tenancy by Entirety:** Protection against individual spouse creditors
+- **Community Property:** Understand community vs. separate property rules
+- **Separate Property Maintenance:** Keep inherited and pre-marital assets separate
+- **Spousal Consent:** Some strategies require both spouses' agreement
+
+**Domestic Asset Protection Trusts for Married Couples:**
+- **Self-Settled Trusts:** Both spouses can be beneficiaries
+- **Spousal Access:** Maintain family access to trust assets
+- **Creditor Protection:** Protection from both spouses' creditors
+- **Estate Planning Integration:** Combine with estate tax planning
+
+### Advanced Strategies for High Net Worth
+
+**Private Placement Life Insurance (PPLI):**
+- **Insurance Wrapper:** Life insurance around investment portfolio
+- **Asset Protection:** Strong creditor protection for cash values
+- **Tax Benefits:** Tax-deferred growth, tax-free access to cash values
+- **International Options:** Offshore PPLI for additional benefits
+
+**Family Bank Strategies:**
+- **Intra-Family Loans:** Loan rather than gift to family members
+- **Installment Sales:** Sell assets to family members over time
+- **Self-Canceling Installment Notes (SCINs):** Loans that cancel at death
+- **Asset Protection Features:** Loan structures can provide creditor protection
+
+**Charitable Planning Integration:**
+- **Charitable Remainder Trusts:** Income for term, remainder to charity
+- **Charitable Lead Trusts:** Payments to charity, remainder to family
+- **Private Foundations:** Perpetual charitable vehicle with family control
+- **Donor Advised Funds:** Flexible charitable giving with family involvement
+
+### Implementation and Compliance
+
+**Professional Team Assembly:**
+- **Asset Protection Attorney:** Specialized expertise in protection planning
+- **Tax Attorney/CPA:** Tax compliance and optimization
+- **Financial Advisor:** Investment management and coordination
+- **Trustee Services:** Professional trustee for complex structures
+- **Insurance Professionals:** Life insurance and liability coverage
+
+**Compliance Requirements:**
+- **Annual Filings:** Trust and entity tax returns
+- **Information Reporting:** International structure reporting
+- **Maintenance:** Keep structures current and properly maintained
+- **Documentation:** Maintain proper records and documentation
+
+**Cost-Benefit Analysis:**
+- **Setup Costs:** Legal, accounting, and administrative costs
+- **Ongoing Costs:** Annual maintenance, trustee fees, tax compliance
+- **Complexity:** Administrative burden and decision-making complexity
+- **Benefits:** Protection value vs. costs and complexity
+
+### Common Mistakes to Avoid
+
+**Timing Errors:**
+- Implementing strategies after problems arise
+- Fraudulent transfer violations
+- Insufficient seasoning periods
+- Crisis-driven decision making
+
+**Structure Errors:**
+- Inadequate documentation and formalities
+- Retaining too much control over protected assets
+- Commingling protected and unprotected assets
+- Ignoring state law variations
+
+**Compliance Failures:**
+- Inadequate tax and information reporting
+- Failure to maintain entity formalities
+- Poor recordkeeping and documentation
+- Ignoring ongoing compliance requirements
+
+### Asset Protection Checklist
+
+**Basic Protection (Net Worth Under $1M):**
+- [ ] Adequate liability insurance (auto, homeowners, umbrella)
+- [ ] Business entity formation (LLC or corporation)
+- [ ] Homestead exemption optimization
+- [ ] Retirement plan maximization
+- [ ] Basic estate planning documents
+
+**Intermediate Protection ($1M-$5M Net Worth):**
+- [ ] Multi-entity business structures
+- [ ] Domestic asset protection trust consideration
+- [ ] Family limited partnership evaluation
+- [ ] Enhanced insurance coverage
+- [ ] Professional liability protection
+
+**Advanced Protection ($5M+ Net Worth):**
+- [ ] Comprehensive domestic and international structures
+- [ ] Private placement life insurance
+- [ ] Captive insurance company evaluation
+- [ ] Sophisticated trust and entity planning
+- [ ] Professional asset protection counsel
+
+### Action Steps for Asset Protection Implementation
+1. Complete comprehensive risk assessment and asset inventory
+2. Evaluate current protection gaps and vulnerabilities
+3. Develop integrated asset protection and tax plan
+4. Implement appropriate structures with qualified professionals
+5. Establish ongoing maintenance and compliance procedures
+6. Regularly review and update protection strategies
+
+Remember: Asset protection is most effective when implemented as part of comprehensive wealth management strategy. The best time to implement protection is before you need it, and the most effective strategies integrate seamlessly with your business operations, tax planning, and estate planning objectives.`
+    ])
+
+    // Create additional weeks (10-12) with basic structure for now  
     const remainingWeeks = [
-      { number: 9, title: 'Risk Management and Insurance', hours: 8 },
       { number: 10, title: 'Scaling and Growth Finance', hours: 7 },
       { number: 11, title: 'Business Valuation and Exit Planning', hours: 10 },
       { number: 12, title: 'Advanced Topics and Case Studies', hours: 8 }
