@@ -3563,13 +3563,1214 @@ Penalizes large errors more heavily.
 5. Plan integration with business processes for acting on predictions`
     ])
 
-    // Create additional weeks (3-5 and 8-12) with basic structure for now
+    // Week 8: Tax Optimization and Planning
+    const week8Result = await pool.query(`
+      INSERT INTO weeks (course_id, week_number, title, overview, learning_objectives, estimated_hours)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id
+    `, [
+      courseId,
+      8,
+      'Tax Optimization and Planning',
+      'Master tax strategies for developers and business owners, including entity selection, deductions, international considerations, and long-term tax planning.',
+      JSON.stringify([
+        'Choose optimal business structure for tax efficiency',
+        'Maximize legitimate business deductions and credits',
+        'Understand international tax implications for digital businesses',
+        'Plan for quarterly taxes and estimated payments',
+        'Implement long-term tax optimization strategies'
+      ]),
+      12
+    ])
+
+    const week8Id = week8Result.rows[0].id
+
+    // Week 8 Lessons
+    await pool.query(`
+      INSERT INTO lessons (week_id, title, slug, content, order_index, lesson_type, duration_minutes)
+      VALUES 
+      ($1, 'Business Entity Tax Implications', 'business-entity-tax', $2, 1, 'lecture', 90),
+      ($1, 'Developer-Specific Tax Deductions', 'developer-tax-deductions', $3, 2, 'lecture', 85),
+      ($1, 'International Tax for Digital Businesses', 'international-tax-digital', $4, 3, 'lecture', 80),
+      ($1, 'Quarterly Tax Planning and Payments', 'quarterly-tax-planning', $5, 4, 'lecture', 75),
+      ($1, 'Advanced Tax Strategies and Retirement Planning', 'advanced-tax-strategies', $6, 5, 'lecture', 90)
+    `, [
+      week8Id,
+      `# Business Entity Tax Implications
+
+## Understanding Business Entity Tax Structures
+
+Choosing the right business structure is one of the most important tax decisions you'll make as a developer-entrepreneur. Each structure has distinct tax implications that can significantly impact your bottom line.
+
+### Sole Proprietorship
+**Tax Treatment:** Pass-through taxation on Schedule C
+
+**Advantages:**
+- Simplest tax filing
+- Direct business loss deductions against personal income
+- No separate business tax return
+- Full control over business decisions
+
+**Tax Considerations:**
+- Subject to self-employment tax (15.3% on net earnings)
+- No separation between personal and business taxes
+- Limited deduction opportunities compared to corporations
+- Personal liability for business debts and obligations
+
+**Best For:** Freelancers, consultants, very small operations
+
+### Partnership (General and Limited)
+**Tax Treatment:** Pass-through taxation with Form 1065
+
+**Key Features:**
+- Income/losses pass through to partners' personal returns
+- Partners receive Schedule K-1 forms
+- Flexible profit/loss allocation agreements
+- No entity-level taxes (except some states)
+
+**Tax Planning Opportunities:**
+- Allocate different types of income to different partners
+- Special allocations for tax optimization
+- Guaranteed payments to active partners
+
+**Considerations:**
+- Partners pay self-employment tax on guaranteed payments
+- Complexity increases with multiple partners
+- Requires clear partnership agreement for tax allocations
+
+### LLC (Limited Liability Company)
+**Tax Treatment:** Flexible - can elect sole proprietorship, partnership, S-Corp, or C-Corp taxation
+
+**Default Taxation:**
+- Single-member: Disregarded entity (like sole proprietorship)
+- Multi-member: Partnership taxation
+
+**Tax Benefits:**
+- Pass-through taxation avoids double taxation
+- Flexible profit/loss distributions
+- Can elect S-Corp taxation to save on self-employment taxes
+- State tax benefits in some jurisdictions
+
+**S-Corp Election for LLCs:**
+```
+Example: $100,000 profit
+- Without S-Corp election: ~$15,300 self-employment tax
+- With S-Corp election: ~$7,650 payroll taxes (on $50k salary)
+- Potential savings: ~$7,650 annually
+```
+
+### S Corporation
+**Tax Treatment:** Pass-through entity with payroll requirements
+
+**Advantages:**
+- No double taxation on profits
+- Self-employment tax only on salary (not distributions)
+- Easy conversion to C-Corp if needed
+- Built-in credibility for business relationships
+
+**Requirements:**
+- Must pay owner-employees reasonable salaries
+- Limited to 100 shareholders
+- One class of stock
+- All shareholders must be US citizens/residents
+
+**Tax Strategy:**
+- Optimize salary vs. distribution mix
+- Minimize self-employment taxes legally
+- Use fringe benefit deductions
+
+### C Corporation
+**Tax Treatment:** Double taxation - corporate level + shareholder level
+
+**When It Makes Sense:**
+- High-growth companies seeking investment
+- Need to retain earnings in the business
+- International expansion plans
+- Employee stock option programs
+
+**Tax Benefits:**
+- Lower corporate tax rates on retained earnings
+- More extensive fringe benefit deductions
+- Greater flexibility in tax planning
+- Qualified Small Business Stock (QSBS) potential
+
+**Section 1202 QSBS Benefits:**
+- Up to $10 million tax-free gain on sale
+- Must be held for 5+ years
+- Significant tax savings for successful exits
+
+### Conversion Strategies
+
+**LLC to S-Corp Election:**
+Most common conversion for growing businesses
+- File Form 2553 by March 15th
+- Implement payroll system
+- Balance salary vs. distributions
+
+**S-Corp to C-Corp:**
+Common for high-growth companies
+- Automatic conversion if S-Corp requirements violated
+- Consider timing for tax optimization
+- Evaluate QSBS qualification
+
+## State Tax Considerations
+
+### Business-Friendly States
+**No Income Tax:** Texas, Florida, Nevada, Washington, Wyoming
+**Low Tax Rates:** North Carolina, Utah, Colorado
+**Business Incentives:** Delaware, Nevada (privacy), Wyoming (low fees)
+
+### Multi-State Operations
+- Understand nexus rules for tax obligations
+- Consider where to incorporate vs. where to operate
+- Sales tax obligations for e-commerce
+- Remote employee tax implications
+
+## Industry-Specific Considerations
+
+### Software Development
+- Intellectual property ownership structures
+- Research and development credits
+- Software capitalization vs. expensing
+- International licensing arrangements
+
+### Consulting Services
+- Professional service corporation options
+- Estimated tax planning for irregular income
+- Travel and equipment deductions
+- Home office optimization
+
+### E-commerce
+- Sales tax nexus management
+- Inventory accounting methods
+- International VAT considerations
+- Drop-shipping tax implications
+
+## Tax Planning Integration
+
+### Business Structure Decision Matrix
+```
+Revenue < $50k: Sole Proprietorship or Single-Member LLC
+Revenue $50k-$100k: LLC with possible S-Corp election
+Revenue $100k-$500k: LLC with S-Corp election or S-Corp
+Revenue > $500k: S-Corp or C-Corp depending on growth plans
+```
+
+### Exit Planning Considerations
+- QSBS qualification requires C-Corp structure
+- Installment sale opportunities
+- Tax-deferred exchanges (1031 for real estate)
+- Charitable planning strategies
+
+### Action Items
+1. Evaluate current structure against business goals
+2. Calculate potential tax savings from entity changes
+3. Consider state tax implications for operations
+4. Plan conversion timeline if structure change needed
+5. Consult with tax professional for complex situations`,
+
+      `# Developer-Specific Tax Deductions
+
+## The Complete Deduction Framework for Developers
+
+Understanding and maximizing legitimate business deductions is crucial for reducing your taxable income and building wealth as a developer-entrepreneur.
+
+### Home Office Deduction
+**The Most Valuable Deduction for Remote Developers**
+
+**Requirements:**
+- Exclusive use of space for business
+- Regular use for business activities
+- Principal place of business OR used regularly for client meetings
+
+**Two Calculation Methods:**
+
+**Simplified Method:**
+- $5 per square foot up to 300 sq ft
+- Maximum deduction: $1,500
+- No depreciation recapture on home sale
+
+**Actual Expense Method:**
+- Calculate business percentage of home
+- Deduct that percentage of mortgage interest, property taxes, utilities, repairs
+- Higher deductions but more complex tracking
+
+**Example Calculation:**
+```
+Home office: 200 sq ft
+Total home: 2,000 sq ft
+Business use: 10%
+
+Annual home expenses: $20,000
+Home office deduction: $2,000
+```
+
+**Additional Home Office Benefits:**
+- Business phone line
+- Internet service (business portion)
+- Office furniture and equipment
+- Security systems
+- Cleaning services for office area
+
+### Equipment and Technology Deductions
+
+**Computer Hardware:**
+- Development machines, servers, networking equipment
+- Monitors, keyboards, mice, webcams
+- Testing devices (phones, tablets, IoT devices)
+- 3D printers for prototyping
+
+**Software and Subscriptions:**
+- Development tools (IDEs, design software)
+- Cloud services (AWS, Azure, Google Cloud)
+- SaaS subscriptions for business operations
+- Code repositories and version control
+- Testing and monitoring tools
+
+**Section 179 Deduction:**
+- Immediate deduction up to $1,160,000 (2023)
+- Avoid depreciation schedules
+- Applied to equipment purchases
+- Phase-out begins at $2.89 million in purchases
+
+**Bonus Depreciation:**
+- 80% immediate deduction in 2023 (decreasing annually)
+- Applies to new and used equipment
+- Stacks with Section 179
+
+### Professional Development Deductions
+
+**Education and Training:**
+- Online courses (Udemy, Pluralsight, Coursera)
+- Bootcamps and intensive programs
+- Professional certifications
+- Conference fees and workshops
+
+**Books and Resources:**
+- Technical books and e-books
+- Professional magazine subscriptions
+- Research materials and documentation
+- Online learning platforms
+
+**Conference and Travel:**
+- Registration fees
+- Travel expenses (flights, hotels, meals)
+- Local transportation
+- Networking events
+
+**Professional Memberships:**
+- Developer associations
+- Professional organizations
+- Co-working space memberships
+- Mastermind groups
+
+### Business Travel and Transportation
+
+**Vehicle Expenses (Two Methods):**
+
+**Standard Mileage Rate (2023): 65.5¢ per mile**
+- Track business miles driven
+- Simpler record keeping
+- Includes gas, maintenance, depreciation
+
+**Actual Expense Method:**
+- Track all vehicle expenses
+- Deduct business percentage
+- Higher deduction potential for expensive vehicles
+
+**Business Travel:**
+- Flights, hotels, rental cars
+- 100% deductible (unlike meals at 50%)
+- Client meetings, conferences, business development
+- Combine business with pleasure trips (allocate properly)
+
+### Meals and Entertainment
+
+**Business Meals (50% Deductible):**
+- Client meetings and meals
+- Team building activities
+- Conference meals not included in registration
+- Networking events
+
+**Special 100% Deduction (2022-2023):**
+- Restaurant meals only
+- Temporary pandemic relief provision
+
+**Entertainment (Generally NOT Deductible):**
+- Sporting events, concerts, shows
+- Exception: directly related business activities
+- Clear business purpose required
+
+### Marketing and Business Development
+
+**Website and Online Presence:**
+- Domain registration and hosting
+- Website development and maintenance
+- SEO and marketing tools
+- Social media management tools
+
+**Advertising and Promotion:**
+- Google Ads, social media advertising
+- Content creation tools
+- Email marketing services
+- Trade show displays and materials
+
+**Professional Services:**
+- Legal fees for business matters
+- Accounting and bookkeeping
+- Business consulting
+- Marketing and PR services
+
+### Office Supplies and Materials
+
+**General Office Expenses:**
+- Stationery, printer supplies
+- Software licenses
+- Phone and internet services
+- Postal and shipping costs
+
+**Prototyping and Testing:**
+- Hardware components
+- Testing materials
+- 3D printing filaments
+- Laboratory supplies
+
+### Insurance Deductions
+
+**Business Insurance:**
+- Professional liability insurance
+- Errors and omissions coverage
+- General liability insurance
+- Business property insurance
+
+**Health Insurance (Self-Employed):**
+- 100% deductible for self-employed
+- Covers spouse and dependents
+- Cannot exceed business income
+- Available if not eligible for spouse's plan
+
+### Retirement Plan Contributions
+
+**SEP-IRA:**
+- Contribute up to 25% of income
+- Maximum $66,000 (2023)
+- Easy setup and administration
+- Covers employees if any
+
+**Solo 401(k):**
+- Employee contribution: $22,500 (2023)
+- Employer contribution: up to 25% of income
+- Total maximum: $66,000 ($73,500 if 50+)
+- Loan options available
+
+**Defined Benefit Plans:**
+- Highest contribution limits
+- Complex administration
+- Best for high income, few employees
+- Potential $265,000+ annual contributions
+
+### Record Keeping Best Practices
+
+**Essential Documentation:**
+- Receipts for all expenses
+- Bank and credit card statements
+- Mileage logs for vehicle use
+- Calendar entries showing business purpose
+
+**Digital Tools:**
+- QuickBooks, FreshBooks for accounting
+- Receipt tracking apps (Expensify, Receipt Bank)
+- Mileage tracking (MileIQ, TripLog)
+- Cloud storage for document backup
+
+**Audit Protection:**
+- Keep records for 3-7 years
+- Separate business and personal expenses
+- Document business purpose for all deductions
+- Regular reconciliation of accounts
+
+### Common Mistakes to Avoid
+
+**Personal vs. Business Expenses:**
+- Don't deduct personal use portions
+- Maintain clear separation
+- Document business purpose
+
+**Hobby Loss Rules:**
+- Must have profit motive
+- Need business-like operations
+- Profit in 3 of 5 years presumption
+
+**Lavish or Extravagant Expenses:**
+- Must be reasonable and necessary
+- Document business purpose
+- Avoid personal benefit appearance
+
+### Strategic Tax Planning
+
+**Timing Strategies:**
+- Accelerate deductions in high-income years
+- Defer income when possible
+- Purchase equipment before year-end
+
+**Entity Structure Impact:**
+- S-Corp: Limited meal deduction for owner-employees
+- C-Corp: More liberal fringe benefit deductions
+- LLC: Full Schedule C deduction flexibility
+
+### Action Steps
+1. Set up business banking and credit cards
+2. Implement expense tracking system
+3. Create home office if working remotely
+4. Maximize equipment purchases before year-end
+5. Document all business activities and expenses`,
+
+      `# International Tax for Digital Businesses
+
+## Navigating Global Tax Obligations for Digital Entrepreneurs
+
+As a developer or digital business owner, you likely operate across borders through remote work, international clients, or global SaaS offerings. Understanding international tax obligations is crucial for compliance and optimization.
+
+### US Tax Obligations for Citizens and Residents
+
+**Global Income Reporting:**
+All US persons must report worldwide income, regardless of where they live or work.
+
+**What Must Be Reported:**
+- Income from foreign clients
+- Revenue from international sales
+- Foreign bank account interest
+- Cryptocurrency gains from foreign exchanges
+- Rental income from foreign properties
+- Foreign partnership or corporation interests
+
+**Key Forms:**
+- **Form 8938 (FATCA):** Foreign financial assets over $50k
+- **FinCEN Form 114 (FBAR):** Foreign bank accounts over $10k aggregate
+- **Form 5471:** Foreign corporation ownership (10%+ ownership)
+- **Form 8865:** Foreign partnership interests
+- **Form 3520:** Foreign trusts and large foreign gifts
+
+### Foreign Tax Credits and Exclusions
+
+**Foreign Earned Income Exclusion (Form 2555):**
+- Exclude up to $120,000 (2023) of foreign earned income
+- Must meet bona fide residence or physical presence test
+- Applies only to earned income, not passive income
+- Can elect housing cost exclusion for additional savings
+
+**Physical Presence Test:**
+- 330 days in foreign country during 12-month period
+- Days in transit don't count
+- Can be any 12-month period
+
+**Bona Fide Residence Test:**
+- Must be resident of foreign country for full tax year
+- Intent to remain indefinitely
+- More flexible for travel
+
+**Foreign Tax Credit (Form 1116):**
+- Credit for foreign taxes paid
+- Alternative to foreign earned income exclusion
+- Can apply to both earned and passive income
+- May carry forward unused credits
+
+**Choosing Between Exclusion and Credit:**
+```
+Example: $150k income, $30k foreign taxes paid
+Option 1 (Exclusion): Exclude $120k, pay US tax on $30k
+Option 2 (Credit): Report full $150k, credit $30k foreign taxes
+Choose option with lower overall tax burden
+```
+
+### Digital Nomad Tax Strategies
+
+**Establishing Tax Residency:**
+Popular low-tax jurisdictions for digital nomads:
+- **Portugal:** Non-habitual resident program (0% tax on foreign income)
+- **Malta:** Non-domiciled status (foreign income not remitted)
+- **Cyprus:** 60-day rule for tax residency
+- **Dubai:** 0% personal income tax
+- **Estonia:** Only pay tax when profits distributed
+
+**Key Considerations:**
+- Don't give up US tax residency accidentally
+- Maintain strong ties to home country if desired
+- Understand substance requirements for foreign residency
+- Consider double taxation treaties
+
+### International Business Structures
+
+**Foreign Corporations:**
+**Benefits:**
+- Potential deferral of US taxes
+- Lower foreign tax rates
+- International credibility
+- Asset protection
+
+**Drawbacks:**
+- Complex reporting requirements (Form 5471)
+- Controlled Foreign Corporation (CFC) rules
+- Global Intangible Low-Taxed Income (GILTI)
+- Subpart F income inclusions
+
+**Common Structures:**
+- **Singapore Pte Ltd:** 17% corporate rate, territorial system
+- **Hong Kong Ltd:** 16.5% rate, territorial system
+- **Estonian OÜ:** 0% tax until distribution
+- **UK Ltd:** 19% corporate rate, established legal system
+
+### Transfer Pricing for Digital Services
+
+**Arm's Length Principle:**
+Transactions between related entities must be priced as if between unrelated parties.
+
+**Common Issues:**
+- Licensing intellectual property internationally
+- Management fees between entities
+- Cost-sharing agreements for development
+- Service fees for shared functions
+
+**Documentation Requirements:**
+- Economic analysis of pricing
+- Comparable transaction data
+- Business rationale for structure
+- Regular updates and monitoring
+
+### VAT and Sales Tax Implications
+
+**EU VAT for Digital Services:**
+- Must register in EU if serving EU customers
+- OSS (One-Stop Shop) simplifies compliance
+- Different rates by country (19-27%)
+- Threshold exemptions may apply
+
+**UK VAT:**
+- 20% standard rate on digital services
+- Registration required over £85k threshold
+- Brexit complications for EU businesses
+
+**US State Sales Tax:**
+- Economic nexus rules vary by state
+- Generally $100k revenue or 200 transactions
+- Must track sales by state
+- Consider using tax automation services
+
+### Cryptocurrency and Digital Assets
+
+**US Tax Treatment:**
+- Cryptocurrency is property, not currency
+- Must track basis for each transaction
+- Capital gains/losses on disposal
+- Foreign exchange reporting may apply
+
+**International Considerations:**
+- Some countries treat crypto as currency
+- Mining may be considered business income
+- DeFi activities create complex reporting
+- NFTs subject to collectibles rates
+
+### Common International Tax Mistakes
+
+**Failure to Report Foreign Income:**
+- Penalties can exceed the tax owed
+- IRS has extensive information sharing agreements
+- Voluntary disclosure programs available
+
+**Inadequate Substance:**
+- Foreign entities need real business substance
+- Can't be mere tax avoidance schemes
+- Consider economic substance doctrine
+
+**Poor Record Keeping:**
+- Maintain detailed records of foreign activities
+- Document business purposes for all structures
+- Keep records in English or with translations
+
+### Compliance Tools and Resources
+
+**Software Solutions:**
+- **TaxAct International:** US expat tax preparation
+- **MyExpatTaxes:** Streamlined foreign earned income exclusion
+- **H&R Block Expat:** Full-service international tax prep
+- **TaxSlayer:** Budget-friendly expat option
+
+**Professional Help:**
+International tax is complex - consider hiring professionals for:
+- Foreign entity structures
+- Large international operations
+- Complex investment structures
+- Tax planning and optimization
+
+### Planning Strategies
+
+**Income Timing:**
+- Defer income recognition across jurisdictions
+- Accelerate deductions in high-tax years
+- Use different tax years strategically
+
+**Entity Selection:**
+- Consider check-the-box elections
+- Evaluate hybrid entities
+- Plan for exit strategies
+
+**Treaty Benefits:**
+- Understand bilateral tax treaties
+- Claim appropriate treaty benefits
+- Consider treaty shopping implications
+
+### Action Steps for International Operations
+1. Understand your tax residency status in all relevant countries
+2. Implement proper record keeping for international transactions
+3. Consider foreign entity structures for substantial international business
+4. Stay current on changing international tax laws
+5. Consult with international tax professionals for complex situations`,
+
+      `# Quarterly Tax Planning and Payments
+
+## Managing Estimated Taxes for Irregular Income
+
+As a developer or business owner, your income likely fluctuates throughout the year. Proper quarterly tax planning prevents penalties and cash flow problems while optimizing your tax strategy.
+
+### Understanding Estimated Tax Requirements
+
+**Who Must Pay Quarterly Taxes:**
+- Self-employed individuals
+- Business owners with pass-through entities
+- Anyone expecting to owe $1,000+ in taxes
+- Those with insufficient withholding from other sources
+
+**Safe Harbor Rules:**
+You won't be penalized if you pay:
+- 90% of current year's tax liability, OR
+- 100% of last year's tax (110% if prior year AGI > $150,000)
+
+**Payment Deadlines (2024):**
+- Q1: April 15, 2024 (for Jan-Mar income)
+- Q2: June 17, 2024 (for Apr-May income)
+- Q3: September 16, 2024 (for Jun-Aug income)
+- Q4: January 15, 2025 (for Sep-Dec income)
+
+### Calculating Estimated Tax Payments
+
+**Method 1: Annualized Income Method**
+Best for seasonal or irregular income patterns.
+
+```
+Example Calculation:
+Q1 Income: $20,000
+Q2 Income: $15,000
+Q3 Income: $80,000 (big client project)
+Q4 Income: $25,000
+
+Instead of paying equal quarters ($35,000 each), you pay:
+Q1: Based on $20,000 × 4 = $80,000 annual projection
+Q2: Based on $35,000 × 2 = $70,000 annual projection
+Q3: Based on $115,000 ÷ 3 × 4 = $153,333 annual projection
+Q4: True-up based on actual annual income
+```
+
+**Method 2: Equal Quarterly Payments**
+Simpler but may cause cash flow issues with irregular income.
+
+**Tools for Calculation:**
+- IRS Form 1040ES worksheets
+- Tax software with quarterly payment calculators
+- Professional tax planning software
+- Spreadsheet templates with tax rate tables
+
+### Business Entity Tax Planning Strategies
+
+**LLC/S-Corp Quarterly Considerations:**
+
+**Salary vs. Distribution Planning:**
+```
+Annual Profit: $200,000
+Strategy 1: $80k salary + $120k distribution
+- Payroll taxes: $6,120 (employer) + $6,120 (employee)
+- Quarterly estimates on distributions: ~$25,200
+
+Strategy 2: $120k salary + $80k distribution
+- Payroll taxes: $9,180 + $9,180
+- Lower quarterly estimates: ~$16,800
+```
+
+**Timing Income and Deductions:**
+- Accelerate deductions into high-income quarters
+- Defer income recognition when possible
+- Time equipment purchases for maximum tax benefit
+- Manage client payment timing strategically
+
+### Cash Flow Management for Quarterly Taxes
+
+**The Tax Savings Account Method:**
+Set aside percentage of each payment:
+- 25-30% for combined federal/state/local taxes
+- Separate high-yield savings account
+- Automatic transfers from business checking
+- Never touch except for tax payments
+
+**Monthly Tax Reserves:**
+Instead of scrambling quarterly:
+```
+Monthly Income: $15,000
+Tax Reserve (28%): $4,200
+Net Available: $10,800
+
+Quarterly Payment: $12,600
+Reserve Balance: $12,600 (ready to pay)
+```
+
+**Working Capital Planning:**
+- Maintain 3-6 months operating expenses
+- Factor tax payments into cash flow projections
+- Consider seasonal business patterns
+- Plan for growth-related tax increases
+
+### Advanced Quarterly Tax Strategies
+
+**Income Averaging for Consultants:**
+Spread lumpy project income across quarters:
+- Use installment method for long-term projects
+- Negotiate payment schedules aligned with tax planning
+- Consider accrual vs. cash accounting methods
+
+**Retirement Plan Contributions:**
+Maximize tax-deferred savings:
+- **SEP-IRA:** 25% of net self-employment income
+- **Solo 401(k):** $22,500 employee + 25% employer (2023)
+- **Defined Benefit:** Up to $265,000 annually
+
+**Equipment Purchase Timing:**
+Section 179 and bonus depreciation strategies:
+- Time purchases before quarter-end
+- Consider tax impact of financing vs. cash purchases
+- Plan multi-year equipment replacement schedules
+
+### State and Local Tax Considerations
+
+**Multi-State Income:**
+- Track income by state for proper allocation
+- Understand nexus rules for business activities
+- Consider state-specific estimated tax requirements
+- Plan for different state tax rates and deadlines
+
+**Local Taxes:**
+- City income taxes (e.g., New York City, Philadelphia)
+- Business license fees and local taxes
+- Property taxes on business equipment
+- Sales tax on business purchases
+
+### Technology and Automation
+
+**Software Solutions:**
+- **QuickBooks:** Automated tax tracking and estimates
+- **FreshBooks:** Project-based tax reserve calculations
+- **Wave:** Free accounting with tax estimate features
+- **TaxAct:** Professional estimated tax calculators
+
+**Banking Automation:**
+- Automatic percentage transfers to tax savings
+- Separate accounts for different tax obligations
+- Scheduled quarterly payment processing
+- Integration with accounting software
+
+**Receipt and Expense Tracking:**
+- Mobile apps for real-time expense capture
+- Automated bank transaction categorization
+- Mileage tracking for vehicle deductions
+- Time tracking for project-based deductions
+
+### Penalty Avoidance and Optimization
+
+**Understanding Penalty Calculations:**
+- 0.5% per month for failure to pay
+- Compound monthly until paid
+- Interest rates adjust quarterly
+- Penalties can exceed original tax owed
+
+**Penalty Relief Options:**
+- First-time penalty abatement
+- Reasonable cause exceptions
+- Installment agreement benefits
+- Professional representation for disputes
+
+**Strategic Underpayment:**
+Sometimes strategic to underpay if:
+- Significant year-end deductions expected
+- Major equipment purchases planned
+- Business loss carryforwards available
+- Penalty cost less than investment returns
+
+### Year-End Tax Planning Integration
+
+**Q4 Planning Opportunities:**
+- Accelerate deductions into current year
+- Defer income to next year if beneficial
+- Maximize retirement plan contributions
+- Evaluate Roth conversion opportunities
+
+**Equipment and Asset Purchases:**
+- Section 179 deduction planning
+- Bonus depreciation optimization
+- Cost segregation for real estate
+- Like-kind exchanges for business assets
+
+**Business Structure Optimization:**
+- S-Corp election timing
+- LLC to C-Corp conversion planning
+- Multi-entity structure implementation
+- International structure considerations
+
+### Record Keeping for Quarterly Taxes
+
+**Essential Documentation:**
+- Quarterly income and expense summaries
+- Bank statements showing tax payments
+- Form 1040ES payment vouchers
+- Electronic payment confirmations
+
+**Audit Preparation:**
+- Monthly profit and loss statements
+- Detailed expense categories
+- Supporting documentation for deductions
+- Professional consultation records
+
+### Common Quarterly Tax Mistakes
+
+**Underestimating Income Growth:**
+- Plan for business expansion
+- Account for new client acquisitions
+- Consider one-time project windfalls
+- Adjust estimates promptly when income increases
+
+**Forgetting State Obligations:**
+- Each state has different rules
+- Some require quarterly payments
+- Non-resident state tax obligations
+- City and local quarterly requirements
+
+**Poor Cash Flow Planning:**
+- Not setting aside tax reserves
+- Spending tax money on business expenses
+- Failing to plan for payment timing
+- Underestimating total tax liability
+
+### Professional Help and Resources
+
+**When to Hire a Professional:**
+- Complex business structures
+- Multi-state operations
+- International income
+- Significant tax liability ($25,000+)
+
+**Types of Professional Help:**
+- **CPA:** Full-service tax and accounting
+- **Enrolled Agent:** IRS representation specialist
+- **Tax Attorney:** Complex legal issues
+- **Bookkeeper:** Monthly financial management
+
+### Action Plan for Quarterly Tax Success
+1. Calculate estimated taxes using appropriate method
+2. Set up automatic tax reserve transfers
+3. Create quarterly tax calendar with all deadlines
+4. Implement expense tracking and documentation system
+5. Review and adjust estimates quarterly based on actual results`,
+
+      `# Advanced Tax Strategies and Retirement Planning
+
+## Building Long-Term Wealth Through Tax-Efficient Strategies
+
+Advanced tax planning goes beyond basic deductions and quarterly payments. For successful developers and business owners, sophisticated strategies can save thousands in taxes while building substantial wealth.
+
+### Advanced Business Entity Strategies
+
+**Multi-Entity Structures:**
+Separate different business functions for tax optimization:
+
+```
+Operating Company (LLC/S-Corp) → Management Company (LLC)
+↓                                    ↓
+Revenue-generating activities        IP licensing, management fees
+High ordinary income tax            Passive income treatment
+```
+
+**Benefits:**
+- Income shifting between entities
+- Different tax treatment for different income types
+- Asset protection and liability segregation
+- Simplified sale of specific business units
+
+**Intellectual Property Licensing:**
+Create separate entity to own IP:
+- Operating company pays licensing fees (deductible)
+- IP entity receives passive income (lower tax rates possible)
+- Facilitates partial business sales
+- International licensing opportunities
+
+### Advanced Retirement Planning
+
+**Solo 401(k) Advanced Strategies:**
+
+**Mega Backdoor Roth:**
+```
+2023 Limits Example:
+Employee contribution: $22,500
+Employer contribution: $43,500 (25% of $174k compensation)
+After-tax contributions: Up to $66,000 total limit
+Convert after-tax to Roth: Tax-free growth forever
+```
+
+**In-Service Withdrawals:**
+- Convert after-tax contributions to Roth
+- Continue making contributions while converting
+- Maximize tax-free wealth accumulation
+
+**Loan Features:**
+- Borrow up to $50,000 or 50% of balance
+- 5-year repayment (longer for home purchase)
+- Interest paid to yourself
+- Alternative to business loans
+
+**Defined Benefit Plans for High Earners:**
+
+When to Consider:
+- Consistent high income ($300k+)
+- Age 50+ (higher contribution limits)
+- Few or no employees
+- Desire to shelter large amounts
+
+**Contribution Limits:**
+- Up to $265,000 annually (2023)
+- Determined by actuarial calculations
+- Based on projected retirement benefit
+- Mandatory contributions required
+
+**Cash Balance Plans:**
+Hybrid between DB and DC plans:
+- Fixed contribution amounts
+- Investment risk on employer
+- Easier to understand than traditional DB
+- Better for younger high earners
+
+### Tax-Advantaged Investment Strategies
+
+**Qualified Small Business Stock (QSBS):**
+Section 1202 provides massive tax benefits:
+
+**Requirements:**
+- C-Corporation stock
+- Original issue stock (not purchased from others)
+- Active business (not passive investment)
+- Gross assets under $50M when stock issued
+- Held for minimum 5 years
+
+**Benefits:**
+- Up to $10 million or 10x basis tax-free gain
+- 0% federal tax rate on qualified gain
+- Available per shareholder (husband/wife each get $10M)
+- Stacks across different QSBS investments
+
+**Strategy Implementation:**
+```
+Example: Start C-Corp, bootstrap to $5M valuation
+Bring in investors at $5M (still qualifies)
+Grow to $100M over 5+ years
+$95M gain potentially tax-free under QSBS
+Tax savings: $23.8M (20% capital gains + 3.8% net investment income)
+```
+
+**Opportunity Zone Investments:**
+Defer and reduce capital gains through Opportunity Zone funds:
+
+**Benefits:**
+- Defer capital gains until 2026
+- Reduce deferred gains by 10% (if held 5+ years)
+- Eliminate all gains on OZ investment (if held 10+ years)
+
+**Implementation:**
+- Must invest within 180 days of gain realization
+- Investment must be in qualified Opportunity Zone property
+- Substantial improvement requirements for existing properties
+
+### Estate and Gift Tax Planning
+
+**Annual Gift Tax Exclusion (2023: $17,000):**
+- Give $17,000 per recipient tax-free annually
+- Married couples can give $34,000 jointly
+- Applies to each recipient (children, employees, etc.)
+- Reduces taxable estate
+
+**Grantor Trusts for Business Owners:**
+**Intentionally Defective Grantor Trusts (IDGTs):**
+- Grantor pays income taxes (additional gift to beneficiaries)
+- Assets appreciate outside of taxable estate
+- Sale to trust can leverage gift/estate exemptions
+
+**Charitable Remainder Trusts (CRTs):**
+- Donate appreciated assets, receive income stream
+- Immediate tax deduction for charitable portion
+- Defer capital gains over trust term
+- Remainder goes to charity
+
+### International Tax Optimization
+
+**Check-the-Box Elections:**
+Foreign entities can elect US tax treatment:
+- Foreign LLC can elect corporate taxation
+- Foreign corporation can elect partnership treatment
+- Enables flexible tax planning
+- Must consider foreign tax implications
+
+**Cost Sharing Agreements:**
+Share development costs and rights internationally:
+- Allocate future profits based on cost contributions
+- Can shift income to low-tax jurisdictions
+- Requires substantial economic substance
+- Subject to transfer pricing rules
+
+### Advanced Deduction Strategies
+
+**Augusta Rule (Section 280A):**
+Rent your home to your business for meetings:
+- Up to 14 days annually
+- Reasonable rental rate required
+- Income tax-free to homeowner
+- Deductible business expense
+- Must be legitimate business purpose
+
+**Conservation Easements:**
+Donate development rights for large deductions:
+- Can generate deductions 2-5x investment
+- Must be legitimate conservation purpose
+- Subject to IRS scrutiny and audits
+- Require professional management
+
+**Charitable Deduction Strategies:**
+**Donor Advised Funds:**
+- Immediate deduction, flexible giving timing
+- Investment growth within fund
+- Family philanthropy vehicle
+- Low administrative costs
+
+**Charitable Lead Trusts:**
+- Gift/estate tax reduction strategy
+- Income stream to charity for term
+- Remainder to family at reduced transfer tax
+- Effective with appreciating assets
+
+### Tax Loss Harvesting and Planning
+
+**Advanced Loss Harvesting:**
+- Direct indexing for individual stocks
+- Municipal bond loss harvesting
+- Alternative investment loss realization
+- Timing gains and losses across tax years
+
+**Wash Sale Rule Planning:**
+Avoid wash sale violations:
+- 30-day rule for substantially identical securities
+- Use of spouse accounts for doubling opportunities
+- ETF substitution strategies
+- Options strategies for tax loss acceleration
+
+### Succession Planning for Business Owners
+
+**Installment Sales to Family:**
+- Spread taxable gain over multiple years
+- Family members acquire business over time
+- Self-cancelling installment notes (SCINs)
+- Can forgive payments as annual gifts
+
+**Family Limited Partnerships:**
+- Centralize family business ownership
+- Valuation discounts for minority interests
+- Retain control while gifting ownership
+- Annual gifting of partnership interests
+
+**Employee Stock Ownership Plans (ESOPs):**
+- Sell to employees with tax benefits
+- Defer or eliminate capital gains tax
+- Maintain business legacy and culture
+- Provide employee ownership incentives
+
+### Technology and Alternative Investments
+
+**Cryptocurrency Tax Strategies:**
+- Like-kind exchanges (pre-2018 only)
+- Qualified Opportunity Zone crypto funds
+- Puerto Rico tax incentives for crypto traders
+- International structures for crypto businesses
+
+**Real Estate Professional Status:**
+Active participation in real estate:
+- Offset active income with real estate losses
+- Avoid passive activity loss limitations
+- Material participation requirements
+- Detailed time tracking essential
+
+### Risk Management and Compliance
+
+**Tax Audit Protection:**
+- Maintain detailed documentation
+- Use legitimate business purposes
+- Avoid aggressive positions without strong support
+- Consider audit insurance for complex strategies
+
+**Professional Team Assembly:**
+- **Tax Attorney:** Complex planning and disputes
+- **CPA:** Tax compliance and planning
+- **Financial Advisor:** Investment management
+- **Estate Planning Attorney:** Wealth transfer
+- **Insurance Specialist:** Risk management
+
+### Implementation Timeline
+
+**Year 1:**
+- Optimize current entity structure
+- Maximize retirement plan contributions
+- Implement basic tax planning strategies
+- Establish professional relationships
+
+**Years 2-3:**
+- Consider advanced entity structures
+- Implement estate planning strategies
+- Evaluate QSBS opportunities
+- Develop international strategies if applicable
+
+**Years 4-5:**
+- Execute sophisticated wealth transfer strategies
+- Consider business succession planning
+- Optimize investment structures
+- Plan for business exit strategies
+
+### Monitoring and Adjustment
+
+**Annual Review Process:**
+- Evaluate strategy effectiveness
+- Adjust for tax law changes
+- Update based on business changes
+- Coordinate with overall financial plan
+
+**Key Performance Indicators:**
+- Effective tax rate trends
+- After-tax wealth accumulation
+- Cash flow impact of strategies
+- Risk-adjusted returns on tax planning
+
+### Action Steps for Advanced Tax Planning
+1. Conduct comprehensive tax situation analysis
+2. Assemble professional advisory team
+3. Develop 5-10 year tax planning roadmap
+4. Implement strategies in order of priority and complexity
+5. Establish regular monitoring and adjustment process
+
+Remember: Advanced tax strategies require professional guidance and should align with your overall business and financial goals. The potential tax savings must be weighed against complexity, compliance costs, and business objectives.`
+    ])
+
+    // Create additional weeks (9-12) with basic structure for now
     const remainingWeeks = [
-      { number: 3, title: 'Financial Statements Deep Dive', hours: 10 },
-      { number: 4, title: 'Tax Planning and Compliance', hours: 12 },
-      { number: 5, title: 'Pricing Strategies and Cost Analysis', hours: 8 },
-      { number: 8, title: 'Financial Analysis and Risk Management', hours: 9 },
-      { number: 9, title: 'Legal Structures and Contracts', hours: 8 },
+      { number: 9, title: 'Risk Management and Insurance', hours: 8 },
       { number: 10, title: 'Scaling and Growth Finance', hours: 7 },
       { number: 11, title: 'Business Valuation and Exit Planning', hours: 10 },
       { number: 12, title: 'Advanced Topics and Case Studies', hours: 8 }
