@@ -1951,12 +1951,1623 @@ Entrepreneur: Stock allocation = 100 - Your Age (more conservative due to busine
 5. Review and rebalance portfolio quarterly`
     ])
 
-    // Create additional weeks (3-5 and 7-12) with basic structure for now
+    // Week 7: Performance Metrics and KPIs
+    const week7Result = await pool.query(`
+      INSERT INTO weeks (course_id, week_number, title, overview, learning_objectives, estimated_hours)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id
+    `, [
+      courseId,
+      7,
+      'Performance Metrics and KPIs',
+      'Master the art of measuring business performance through key metrics, analytics, and data-driven decision making for sustainable growth.',
+      JSON.stringify([
+        'Identify and track the most important metrics for your business type',
+        'Build dashboards and reporting systems for real-time insights',
+        'Use cohort analysis and advanced analytics to understand growth patterns',
+        'Set and achieve realistic KPI targets and benchmarks',
+        'Make data-driven decisions that drive profitable growth'
+      ]),
+      10
+    ])
+
+    const week7Id = week7Result.rows[0].id
+
+    // Week 7 Lessons
+    await pool.query(`
+      INSERT INTO lessons (week_id, title, slug, content, order_index, lesson_type, duration_minutes)
+      VALUES 
+      ($1, 'Essential Business Metrics Framework', 'business-metrics-framework', $2, 1, 'lecture', 80),
+      ($1, 'SaaS and Subscription Metrics', 'saas-subscription-metrics', $3, 2, 'lecture', 90),
+      ($1, 'E-commerce and Marketplace KPIs', 'ecommerce-marketplace-kpis', $4, 3, 'lecture', 85),
+      ($1, 'Building Dashboards and Analytics', 'dashboards-analytics', $5, 4, 'lecture', 75),
+      ($1, 'Advanced Analytics and Forecasting', 'advanced-analytics-forecasting', $6, 5, 'lecture', 90)
+    `, [
+      week7Id,
+      `# Essential Business Metrics Framework
+
+## The North Star Metric Philosophy
+
+Every successful business needs a clear understanding of what drives growth and profitability. The key is identifying metrics that truly matter and ignoring vanity metrics that look impressive but don't impact the bottom line.
+
+### The Metrics Hierarchy
+
+**1. North Star Metric**
+Your single most important metric that indicates business health and growth potential.
+
+**Examples by Business Type:**
+- **SaaS:** Monthly Recurring Revenue (MRR)
+- **E-commerce:** Monthly Active Buyers
+- **Marketplace:** Gross Merchandise Volume (GMV)
+- **Consulting:** Billable Hours Utilization Rate
+- **Media:** Daily Active Users (DAU)
+
+**2. Supporting Metrics**
+3-5 metrics that directly influence your North Star metric
+
+**3. Operational Metrics**
+Day-to-day metrics for running the business efficiently
+
+### The HEART Framework for Product Metrics
+
+**H - Happiness:** User satisfaction and sentiment
+**E - Engagement:** Level of user involvement
+**A - Adoption:** New users embracing product features
+**R - Retention:** Users continuing to use product
+**T - Task Success:** Users accomplishing their goals
+
+### Financial Performance Metrics
+
+**Revenue Metrics:**
+- **Revenue Growth Rate:** Month-over-month and year-over-year
+- **Revenue per Customer:** Total revenue ÷ number of customers
+- **Revenue per Employee:** Efficiency of human capital
+- **Recurring Revenue Percentage:** Predictable vs. one-time revenue
+
+**Profitability Metrics:**
+- **Gross Margin:** (Revenue - COGS) ÷ Revenue
+- **Net Profit Margin:** Net Income ÷ Revenue
+- **EBITDA Margin:** Earnings before Interest, Taxes, Depreciation, Amortization
+- **Operating Leverage:** How fixed costs scale with revenue
+
+**Cash Flow Metrics:**
+- **Operating Cash Flow:** Cash from core business operations
+- **Free Cash Flow:** Operating cash flow minus capital expenditures
+- **Cash Burn Rate:** Monthly cash consumption
+- **Runway:** Months of cash remaining at current burn rate
+
+### Customer Acquisition Metrics
+
+**Customer Acquisition Cost (CAC):**
+Total Sales & Marketing Costs ÷ New Customers Acquired
+
+**CAC by Channel:**
+- Organic (SEO, referrals): $0-$50
+- Content Marketing: $50-$200
+- Social Media Ads: $100-$500
+- Google Ads: $200-$1,000+
+- Enterprise Sales: $5,000-$50,000+
+
+**Customer Acquisition Efficiency:**
+- **CAC Payback Period:** Time to recover acquisition cost
+- **LTV:CAC Ratio:** Customer lifetime value vs. acquisition cost
+- **Sales Efficiency:** New ARR ÷ Sales & Marketing Spend
+
+### Customer Success and Retention Metrics
+
+**Customer Lifetime Value (LTV):**
+Average Revenue per Customer × Customer Lifetime
+
+**Retention Rates:**
+- **Logo Retention:** Percentage of customers that renew
+- **Revenue Retention:** Revenue retained from existing customers
+- **Net Revenue Retention:** Revenue retention including expansion
+
+**Customer Success Indicators:**
+- **Time to First Value:** How quickly users see benefit
+- **Feature Adoption Rate:** Usage of key product features
+- **Customer Health Score:** Composite metric predicting churn risk
+- **Net Promoter Score (NPS):** Likelihood to recommend (scale -100 to +100)
+
+### Growth Metrics
+
+**Growth Rate Calculations:**
+- Month-over-Month: (This Month - Last Month) ÷ Last Month × 100
+- Year-over-Year: (This Year - Last Year) ÷ Last Year × 100
+- Compound Annual Growth Rate (CAGR): (Ending Value ÷ Beginning Value)^(1/years) - 1
+
+**User Growth Metrics:**
+- **Monthly Active Users (MAU):** Unique users in 30-day period
+- **Daily Active Users (DAU):** Unique users in 24-hour period
+- **DAU/MAU Ratio:** Stickiness indicator (higher = more engagement)
+- **User Growth Rate:** Month-over-month new user acquisition
+
+### Operational Efficiency Metrics
+
+**Team Productivity:**
+- **Revenue per Employee:** Total revenue ÷ number of employees
+- **Profit per Employee:** Net profit ÷ number of employees
+- **Sales per Rep:** Revenue generated per salesperson
+- **Support Tickets per Customer:** Efficiency of customer support
+
+**Technology Metrics:**
+- **System Uptime:** Percentage of time service is available
+- **Page Load Speed:** Website/app performance
+- **API Response Time:** Technical performance indicators
+- **Bug Rate:** Quality of software development
+
+### Market and Competitive Metrics
+
+**Market Position:**
+- **Market Share:** Your revenue ÷ total market revenue
+- **Share of Voice:** Your marketing presence vs. competitors
+- **Brand Awareness:** Unaided and aided brand recognition
+- **Competitive Win Rate:** Deals won vs. lost to competitors
+
+### Vanity Metrics to Avoid
+
+**Misleading Metrics:**
+- **Total Users:** Without engagement context
+- **Social Media Followers:** Without conversion rates
+- **Page Views:** Without business outcome correlation
+- **App Downloads:** Without activation or retention
+- **Email Subscribers:** Without engagement or conversion
+
+### Setting Effective KPI Targets
+
+**SMART Goals Framework:**
+- **Specific:** Clear and well-defined
+- **Measurable:** Quantifiable with numbers
+- **Achievable:** Realistic given resources
+- **Relevant:** Aligned with business objectives
+- **Time-bound:** Have specific deadlines
+
+**Benchmarking Sources:**
+- Industry reports (e.g., KeyBanc SaaS Survey)
+- Public company metrics (annual reports)
+- Peer networks and communities
+- Analytics platforms (e.g., ChartMogul, Mixpanel benchmarks)
+
+### Metric Selection by Business Stage
+
+**Pre-Revenue/MVP Stage:**
+- User engagement metrics
+- Product-market fit indicators
+- Development velocity
+- User feedback scores
+
+**Early Revenue Stage:**
+- Revenue growth rate
+- Customer acquisition cost
+- Basic retention metrics
+- Cash runway
+
+**Growth Stage:**
+- Unit economics (LTV:CAC)
+- Cohort analysis
+- Market share growth
+- Operational efficiency
+
+**Scale Stage:**
+- Profitability metrics
+- Market expansion indicators
+- Competitive positioning
+- Long-term value creation
+
+### Common Measurement Mistakes
+
+**1. Measuring Everything**
+- Too many metrics create confusion
+- Focus on 3-5 key metrics that drive decisions
+
+**2. Short-Term Thinking**
+- Optimizing for monthly metrics vs. long-term health
+- Gaming metrics instead of improving fundamentals
+
+**3. Ignoring Context**
+- Comparing metrics without considering market conditions
+- Not segmenting metrics by customer type or channel
+
+**4. Analysis Paralysis**
+- Spending too much time measuring vs. acting
+- Perfect measurement vs. directionally correct insights
+
+### Building a Metrics-Driven Culture
+
+**Best Practices:**
+1. **Start Simple:** Begin with 3-5 core metrics
+2. **Make Metrics Visible:** Dashboards in common areas
+3. **Regular Reviews:** Weekly/monthly metric discussions
+4. **Connect to Decisions:** Show how metrics inform strategy
+5. **Celebrate Improvements:** Recognize metric-driven wins
+
+### Action Items
+1. Identify your North Star metric and 3 supporting metrics
+2. Calculate current values for all key business metrics
+3. Set realistic targets for next quarter
+4. Choose tools and processes for regular measurement
+5. Schedule weekly metric reviews with your team`,
+
+      `# SaaS and Subscription Metrics
+
+## The SaaS Metrics Stack
+
+SaaS businesses have unique characteristics that require specialized metrics. The subscription model creates predictable, recurring revenue but also demands careful attention to customer acquisition, retention, and expansion.
+
+### Core SaaS Metrics
+
+**Monthly Recurring Revenue (MRR)**
+The most important metric for any subscription business.
+
+**Calculation:**
+MRR = Sum of all monthly subscription fees
+
+**Components:**
+- **New MRR:** Revenue from new customers
+- **Expansion MRR:** Revenue increase from existing customers (upgrades, add-ons)
+- **Contraction MRR:** Revenue decrease from existing customers (downgrades)
+- **Churned MRR:** Revenue lost from cancelled customers
+
+**Net New MRR = New MRR + Expansion MRR - Contraction MRR - Churned MRR**
+
+**Annual Recurring Revenue (ARR)**
+For businesses with annual contracts or when reporting to investors.
+
+**Calculation:**
+ARR = MRR × 12
+
+**Use Cases:**
+- Companies with primarily annual contracts
+- Investor communications
+- Long-term planning and forecasting
+
+### Customer Acquisition Metrics
+
+**Customer Acquisition Cost (CAC)**
+Total cost to acquire a new paying customer.
+
+**Calculation:**
+CAC = (Sales + Marketing Costs) ÷ New Customers Acquired
+
+**CAC by Channel Example:**
+- Organic: $50
+- Content Marketing: $150
+- Paid Social: $300
+- Google Ads: $400
+- Outbound Sales: $800
+
+**Blended vs. Paid CAC:**
+- **Blended CAC:** Includes all channels (organic + paid)
+- **Paid CAC:** Only paid marketing channels
+- Use paid CAC for channel optimization decisions
+
+**CAC Payback Period**
+Time to recover customer acquisition cost.
+
+**Calculation:**
+CAC Payback = CAC ÷ (ARPU × Gross Margin %)
+
+**Benchmarks:**
+- Excellent: <6 months
+- Good: 6-12 months
+- Acceptable: 12-18 months
+- Poor: >18 months
+
+### Customer Lifetime Value (LTV)
+
+**LTV Calculation Methods:**
+
+**Method 1: Simple Average**
+LTV = ARPU ÷ Churn Rate
+
+Example: $100 ARPU, 5% monthly churn
+LTV = $100 ÷ 0.05 = $2,000
+
+**Method 2: Cohort-Based**
+Track actual revenue from customer cohorts over time
+More accurate but requires longer data history
+
+**Method 3: Predictive**
+Use machine learning to predict future customer behavior
+Most sophisticated but requires advanced analytics
+
+**LTV:CAC Ratio**
+The golden ratio of SaaS unit economics.
+
+**Benchmarks:**
+- 3:1 = Minimum viable
+- 4-5:1 = Good
+- 6+:1 = Excellent (but may indicate under-investment in growth)
+
+### Churn and Retention Metrics
+
+**Customer Churn Rate**
+Percentage of customers who cancel in a given period.
+
+**Calculation:**
+Monthly Churn Rate = Customers Lost ÷ Customers at Start of Month
+
+**Cohort Churn Analysis:**
+Track churn by customer acquisition month to identify trends.
+
+**Revenue Churn Rate**
+Often more important than customer churn.
+
+**Calculation:**
+Revenue Churn Rate = MRR Lost ÷ MRR at Start of Month
+
+**Net Revenue Retention (NRR)**
+Measures revenue retention including expansion.
+
+**Calculation:**
+NRR = (Starting MRR + Expansion - Contraction - Churn) ÷ Starting MRR
+
+**Benchmarks:**
+- >110% = Excellent (growth without new customers)
+- 100-110% = Good
+- 90-100% = Acceptable
+- <90% = Poor
+
+### Growth Metrics
+
+**MRR Growth Rate**
+Month-over-month growth in recurring revenue.
+
+**Calculation:**
+MRR Growth Rate = (This Month's MRR - Last Month's MRR) ÷ Last Month's MRR
+
+**Compound Monthly Growth Rate (CMGR)**
+Smooths out monthly variations.
+
+**Calculation:**
+CMGR = (Latest Month MRR ÷ First Month MRR)^(1/number of months) - 1
+
+**Quick Ratio**
+Measures growth efficiency by comparing growth to churn.
+
+**Calculation:**
+Quick Ratio = (New MRR + Expansion MRR) ÷ (Churned MRR + Contraction MRR)
+
+**Benchmarks:**
+- >4 = Excellent growth
+- 2-4 = Good growth
+- 1-2 = Slow growth
+- <1 = Declining
+
+### Advanced SaaS Metrics
+
+**Rule of 40**
+Measures the balance between growth and profitability.
+
+**Calculation:**
+Rule of 40 = Growth Rate % + Profit Margin %
+
+**Example:**
+30% growth + 15% profit margin = 45% (Above 40% = Good)
+
+**Magic Number**
+Sales efficiency metric for enterprise SaaS.
+
+**Calculation:**
+Magic Number = (Current Quarter ARR Growth × 4) ÷ Previous Quarter S&M Spend
+
+**Interpretation:**
+- >1.0 = Efficient growth, invest more in sales
+- 0.5-1.0 = Decent efficiency
+- <0.5 = Inefficient, optimize before scaling
+
+**Logo Retention vs. Dollar Retention**
+- **Logo Retention:** Percentage of customers that renew
+- **Dollar Retention:** Percentage of revenue retained from renewals
+
+Enterprise SaaS might have 90% logo retention but 110% dollar retention due to expansion.
+
+### Cohort Analysis for SaaS
+
+**Revenue Cohorts**
+Track MRR from each acquisition month over time.
+
+**Example Monthly Cohort:**
+- Month 0: $10,000 MRR from 100 new customers
+- Month 1: $9,500 MRR (5% churn)
+- Month 2: $9,200 MRR (3% churn from remaining)
+- Month 6: $8,500 MRR
+- Month 12: $9,000 MRR (expansion revenue overcame churn)
+
+**Key Insights from Cohorts:**
+- When does churn stabilize?
+- Which acquisition channels have best retention?
+- How long until expansion revenue kicks in?
+- What's the true customer lifetime value?
+
+### Subscription Business Model Variations
+
+**Usage-Based SaaS**
+Metrics focus on usage patterns and unit economics.
+
+**Key Metrics:**
+- Revenue per unit consumed
+- Units consumed per customer
+- Usage growth rate
+- Conversion from free to paid tiers
+
+**Freemium Model**
+Focus on conversion funnel metrics.
+
+**Key Metrics:**
+- Free-to-paid conversion rate (typically 2-5%)
+- Time to conversion
+- Feature usage before conversion
+- Paid user retention vs. free user retention
+
+**Enterprise SaaS**
+Longer sales cycles require different metrics.
+
+**Key Metrics:**
+- Sales cycle length
+- Deal size trends
+- Win rate by deal size
+- Customer success metrics (adoption, expansion)
+
+### SaaS Benchmarks by Stage
+
+**Early Stage (0-$1M ARR):**
+- MRR Growth: 15-20% monthly
+- Churn: <10% monthly
+- LTV:CAC: >3:1
+
+**Growth Stage ($1M-$10M ARR):**
+- MRR Growth: 8-15% monthly
+- Churn: <5% monthly
+- Net Revenue Retention: >100%
+
+**Scale Stage ($10M+ ARR):**
+- MRR Growth: 3-8% monthly
+- Rule of 40: >40%
+- Magic Number: >0.75
+
+### Building SaaS Analytics Stack
+
+**Essential Tools:**
+- **Analytics:** ChartMogul, ProfitWell, Baremetrics
+- **CRM:** HubSpot, Salesforce
+- **Product Analytics:** Mixpanel, Amplitude
+- **Customer Success:** ChurnZero, Gainsight
+
+**Custom Dashboards:**
+Build real-time dashboards showing:
+- Current MRR and growth rate
+- Customer acquisition and churn
+- Unit economics (LTV:CAC, payback period)
+- Cohort performance
+
+### Common SaaS Metric Mistakes
+
+**1. Ignoring Cohorts**
+- Looking at blended metrics instead of cohort analysis
+- Missing trends that only show up in cohort data
+
+**2. Optimizing for Vanity Metrics**
+- Focusing on total users instead of paying customers
+- Chasing low-value customers that hurt unit economics
+
+**3. Short-Term Thinking**
+- Sacrificing long-term retention for short-term growth
+- Not investing in customer success and expansion
+
+**4. Incomplete Picture**
+- Only measuring acquisition without retention
+- Ignoring customer health and expansion opportunities
+
+### Actionable SaaS Optimization
+
+**Improve Customer Acquisition:**
+1. Optimize highest-performing channels first
+2. Test pricing and packaging variations
+3. Improve trial-to-paid conversion rates
+4. Reduce sales cycle length
+
+**Reduce Churn:**
+1. Identify early warning signals
+2. Improve customer onboarding
+3. Proactive customer success outreach
+4. Product improvements based on churn reasons
+
+**Increase Expansion Revenue:**
+1. Track feature usage and identify expansion opportunities
+2. Build upgrade prompts into product
+3. Regular account reviews for enterprise customers
+4. Create clear upgrade paths and value propositions
+
+### Action Items
+1. Calculate your current MRR, churn rate, and LTV:CAC ratio
+2. Set up cohort analysis for your customer base
+3. Identify your biggest levers for growth (acquisition vs. retention vs. expansion)
+4. Build a SaaS metrics dashboard with real-time updates
+5. Set targets for improving your worst-performing metric`,
+
+      `# E-commerce and Marketplace KPIs
+
+## E-commerce Metrics Foundation
+
+E-commerce and marketplace businesses require different metrics than SaaS companies due to their transaction-based nature, inventory considerations, and different customer behavior patterns.
+
+### Core E-commerce Metrics
+
+**Revenue Metrics:**
+
+**Gross Merchandise Volume (GMV)**
+Total value of transactions processed (for marketplaces)
+
+**Calculation:**
+GMV = Sum of all order values (before fees, taxes, returns)
+
+**Net Revenue**
+Actual revenue after returns, cancellations, and fees
+
+**Calculation:**
+Net Revenue = Gross Revenue - Returns - Cancellations - Payment Processing Fees
+
+**Average Order Value (AOV)**
+Average amount spent per transaction
+
+**Calculation:**
+AOV = Total Revenue ÷ Number of Orders
+
+**Improvement Strategies:**
+- Product bundling
+- Upselling and cross-selling
+- Free shipping thresholds
+- Volume discounts
+
+### Customer Acquisition and Traffic Metrics
+
+**Traffic Sources:**
+- **Direct:** Users typing URL directly
+- **Organic Search:** Google, Bing search results
+- **Paid Search:** Google Ads, Bing Ads
+- **Social Media:** Facebook, Instagram, TikTok
+- **Email Marketing:** Newsletter campaigns
+- **Affiliate/Referral:** Partner programs
+
+**Conversion Funnel:**
+1. **Visitors:** Total website visitors
+2. **Product Views:** Users viewing product pages
+3. **Add to Cart:** Users adding items to cart
+4. **Checkout Initiated:** Users starting checkout process
+5. **Orders Completed:** Successful purchases
+
+**Conversion Rate**
+Percentage of visitors who make a purchase
+
+**Calculation:**
+Conversion Rate = Orders ÷ Unique Visitors × 100
+
+**Benchmarks by Industry:**
+- Fashion: 1-2%
+- Electronics: 2-3%
+- Beauty: 2-3%
+- Food & Beverage: 3-4%
+- Books: 2-3%
+
+**Customer Acquisition Cost (CAC)**
+Cost to acquire a new customer
+
+**Calculation:**
+CAC = Total Marketing Spend ÷ New Customers Acquired
+
+**CAC by Channel (typical ranges):**
+- Organic Search: $5-$20
+- Email Marketing: $10-$30
+- Social Media Ads: $20-$50
+- Google Ads: $30-$80
+- Influencer Marketing: $25-$100
+
+### Customer Lifetime Value and Retention
+
+**Customer Lifetime Value (CLV)**
+Total revenue expected from a customer
+
+**Calculation Methods:**
+
+**Historic CLV:**
+CLV = Average Order Value × Purchase Frequency × Customer Lifespan
+
+**Predictive CLV:**
+Uses machine learning to predict future purchase behavior
+
+**Cohort-Based CLV:**
+Tracks actual customer behavior over time by acquisition cohort
+
+**Customer Retention Rate**
+Percentage of customers who make repeat purchases
+
+**Calculation:**
+Retention Rate = Returning Customers ÷ Total Customers × 100
+
+**Repeat Purchase Rate**
+Percentage of customers who buy again within a specific timeframe
+
+**Time-Based Analysis:**
+- 30-day repeat rate
+- 90-day repeat rate
+- 12-month repeat rate
+
+### Product and Inventory Metrics
+
+**Inventory Turnover**
+How quickly inventory sells
+
+**Calculation:**
+Inventory Turnover = Cost of Goods Sold ÷ Average Inventory Value
+
+**Days Sales Outstanding (DSO)**
+Average days to collect payment
+
+**Calculation:**
+DSO = (Accounts Receivable ÷ Daily Sales)
+
+**Sell-Through Rate**
+Percentage of inventory sold in a period
+
+**Calculation:**
+Sell-Through Rate = Units Sold ÷ Units Available × 100
+
+**Product Performance Metrics:**
+- **Best Sellers:** Top revenue-generating products
+- **Slow Movers:** Products with low sell-through rates
+- **Cross-Sell Success:** Products frequently bought together
+- **Return Rate by Product:** Quality and fit issues
+
+### Marketplace-Specific Metrics
+
+**Take Rate**
+Percentage of GMV kept as revenue (marketplace commission)
+
+**Calculation:**
+Take Rate = Net Revenue ÷ GMV × 100
+
+**Typical Take Rates:**
+- Amazon: 8-15%
+- Etsy: 6.5%
+- eBay: 10-12%
+- Uber: 25-30%
+- Airbnb: 14-20%
+
+**Supply and Demand Balance:**
+- **Liquidity:** Buyers finding what they want quickly
+- **Market Density:** Sufficient buyers and sellers in each category
+- **Two-Sided Growth:** Balanced growth of both sides
+
+**Marketplace Health Metrics:**
+- **Active Sellers:** Sellers with at least one transaction
+- **Active Buyers:** Buyers with at least one purchase
+- **Repeat Transaction Rate:** Percentage of users who transact again
+- **Cross-Side Network Effects:** How growth on one side drives growth on the other
+
+### Advanced E-commerce Analytics
+
+**Cohort Analysis**
+Track customer behavior by acquisition period
+
+**Monthly Revenue Cohorts:**
+- Month 0: Initial purchase value
+- Month 1-12: Additional purchases from same cohort
+- Identify seasonal patterns and lifetime value trends
+
+**RFM Analysis**
+Customer segmentation based on:
+- **Recency:** When did they last purchase?
+- **Frequency:** How often do they purchase?
+- **Monetary:** How much do they spend?
+
+**Customer Segments:**
+- **Champions:** High recency, frequency, monetary
+- **Loyal Customers:** High frequency, good monetary
+- **Potential Loyalists:** Recent customers with good spending
+- **At Risk:** Previously good customers becoming inactive
+- **Lost Customers:** Haven't purchased recently
+
+**Attribution Modeling**
+Understanding the customer journey across touchpoints
+
+**Attribution Models:**
+- **First-Touch:** Credit to first interaction
+- **Last-Touch:** Credit to final interaction
+- **Linear:** Equal credit across all touchpoints
+- **Time-Decay:** More credit to recent touchpoints
+- **Position-Based:** More credit to first and last touches
+
+### Operational Efficiency Metrics
+
+**Fulfillment Metrics:**
+- **Order Processing Time:** Time from order to shipment
+- **Shipping Time:** Time from shipment to delivery
+- **Order Accuracy Rate:** Percentage of orders fulfilled correctly
+- **Return Rate:** Percentage of orders returned
+
+**Customer Service Metrics:**
+- **First Response Time:** Time to first customer service response
+- **Resolution Time:** Time to resolve customer issues
+- **Customer Satisfaction Score (CSAT):** Post-interaction satisfaction
+- **Net Promoter Score (NPS):** Likelihood to recommend
+
+**Financial Efficiency:**
+- **Gross Margin:** (Revenue - COGS) ÷ Revenue
+- **Contribution Margin:** Revenue - Variable Costs
+- **Customer Service Cost per Order**
+- **Fulfillment Cost per Order**
+
+### Mobile Commerce Metrics
+
+**Mobile-Specific KPIs:**
+- **Mobile Conversion Rate:** Often 1/3 of desktop rates
+- **Mobile Traffic Percentage:** Typically 50-70% of total traffic
+- **App Downloads:** For businesses with mobile apps
+- **App Engagement:** Daily/Monthly Active Users
+- **Push Notification Performance:** Open rates and conversions
+
+**Mobile Optimization Metrics:**
+- **Page Load Speed:** Critical for mobile conversion
+- **Mobile Checkout Abandonment:** Often higher than desktop
+- **Touch-to-Click Ratio:** Mobile gesture interactions
+
+### Seasonal and Trend Analysis
+
+**Seasonal Metrics:**
+- **Holiday Performance:** Black Friday, Cyber Monday, Christmas
+- **Monthly/Quarterly Patterns:** Back-to-school, summer seasons
+- **Day-of-Week Patterns:** Weekend vs. weekday performance
+- **Time-of-Day Patterns:** Peak shopping hours
+
+**Trend Analysis:**
+- **Year-over-Year Growth:** Accounting for seasonal variations
+- **Category Performance:** Which product categories are growing
+- **Geographic Performance:** Regional sales patterns
+- **Device Trends:** Desktop vs. mobile vs. tablet
+
+### E-commerce Benchmarks
+
+**Conversion Rates by Device:**
+- Desktop: 3-4%
+- Mobile: 1-2%
+- Tablet: 2-3%
+
+**Shopping Cart Abandonment:**
+- Average: 70%
+- Mobile: 75-80%
+- Desktop: 65-70%
+
+**Email Marketing:**
+- Open Rate: 15-25%
+- Click Rate: 2-5%
+- Revenue per Email: $0.10-$0.50
+
+### Building E-commerce Analytics
+
+**Essential Tools:**
+- **Analytics:** Google Analytics 4, Adobe Analytics
+- **E-commerce Platforms:** Shopify Analytics, BigCommerce
+- **Heat Maps:** Hotjar, Crazy Egg
+- **A/B Testing:** Optimizely, VWO
+- **Email Marketing:** Klaviyo, Mailchimp
+- **Customer Support:** Zendesk, Intercom
+
+**Custom Dashboards:**
+- Real-time sales and conversion rates
+- Top products and categories
+- Customer acquisition by channel
+- Inventory levels and reorder alerts
+- Customer lifetime value trends
+
+### Optimization Strategies
+
+**Conversion Rate Optimization:**
+1. **A/B Testing:** Test product pages, checkout flow, pricing
+2. **Site Speed:** Optimize for fast loading times
+3. **Trust Signals:** Reviews, security badges, return policies
+4. **Personalization:** Recommended products, targeted offers
+
+**Customer Acquisition:**
+1. **SEO:** Optimize for product and category searches
+2. **PPC:** Target high-intent keywords
+3. **Social Commerce:** Instagram Shopping, Facebook Marketplace
+4. **Influencer Partnerships:** Product reviews and endorsements
+
+**Retention and LTV:**
+1. **Email Marketing:** Welcome series, abandoned cart, re-engagement
+2. **Loyalty Programs:** Points, tiers, exclusive access
+3. **Subscription Models:** Regular delivery for consumables
+4. **Customer Service Excellence:** Quick response, easy returns
+
+### Action Items
+1. Set up comprehensive e-commerce tracking in Google Analytics
+2. Calculate your current AOV, conversion rate, and CLV
+3. Perform RFM analysis to segment your customer base
+4. Identify your top 3 conversion optimization opportunities
+5. Set up automated reports for key metrics and trends`,
+
+      `# Building Dashboards and Analytics
+
+## The Art of Data Visualization for Business
+
+Effective dashboards transform raw data into actionable insights. For developers turned entrepreneurs, building the right analytics infrastructure is crucial for making informed decisions and scaling your business.
+
+### Dashboard Design Principles
+
+**Hierarchy of Information**
+Structure your dashboard to guide attention to what matters most.
+
+**1. Primary Metrics (Top Level)**
+- North Star metric prominently displayed
+- Current period vs. previous period
+- Trend indicators (up/down arrows, color coding)
+
+**2. Supporting Metrics (Second Level)**
+- Metrics that drive the North Star
+- Key performance indicators by business area
+- Cohort or segment breakdowns
+
+**3. Diagnostic Metrics (Third Level)**
+- Detailed breakdowns for investigation
+- Operational metrics for day-to-day management
+- Comparative analysis tools
+
+**Visual Design Best Practices:**
+
+**Color Psychology:**
+- Green: Positive performance, growth
+- Red: Negative performance, warnings
+- Blue: Neutral information, data points
+- Yellow/Orange: Caution, needs attention
+
+**Chart Selection:**
+- **Line Charts:** Trends over time
+- **Bar Charts:** Comparing categories
+- **Pie Charts:** Part-to-whole relationships (use sparingly)
+- **Scatter Plots:** Correlation analysis
+- **Heat Maps:** Pattern identification
+- **Gauge Charts:** Progress toward goals
+
+### Real-Time vs. Batch Processing
+
+**Real-Time Dashboards**
+Best for operational metrics requiring immediate attention.
+
+**Use Cases:**
+- System uptime and performance
+- Sales performance during campaigns
+- Customer support queue length
+- Website traffic during product launches
+
+**Technologies:**
+- WebSocket connections for live updates
+- Stream processing (Apache Kafka, AWS Kinesis)
+- In-memory databases (Redis)
+
+**Batch Processing Dashboards**
+Better for analytical metrics requiring data aggregation.
+
+**Use Cases:**
+- Daily/weekly/monthly reports
+- Complex calculations (cohort analysis, LTV)
+- Historical trend analysis
+- Data warehouse queries
+
+**Technologies:**
+- ETL pipelines (Airflow, dbt)
+- Data warehouses (Snowflake, BigQuery, Redshift)
+- Scheduled report generation
+
+### Analytics Architecture Stack
+
+**Data Collection Layer:**
+
+**Web Analytics:**
+- Google Analytics 4
+- Adobe Analytics
+- Mixpanel for product analytics
+- Amplitude for user behavior
+
+**Custom Event Tracking:**
+```javascript
+// Example: Custom event tracking
+analytics.track('Purchase Completed', {
+  orderId: 'order_123',
+  revenue: 99.99,
+  currency: 'USD',
+  category: 'Electronics',
+  userId: 'user_456'
+});
+```
+
+**Server-Side Tracking:**
+- API endpoint analytics
+- Database transaction logs
+- System performance metrics
+- Error and exception tracking
+
+**Data Storage Layer:**
+
+**Transactional Databases:**
+- PostgreSQL for OLTP workloads
+- MySQL for web applications
+- MongoDB for document storage
+
+**Analytical Databases:**
+- BigQuery for large-scale analytics
+- Redshift for data warehousing
+- ClickHouse for real-time analytics
+- Snowflake for cloud data platforms
+
+**Data Processing Layer:**
+
+**ETL/ELT Tools:**
+- dbt for data transformation
+- Airflow for orchestration
+- Fivetran/Stitch for data ingestion
+- Census for reverse ETL
+
+**Visualization Layer:**
+
+**Self-Service BI Tools:**
+- Tableau for advanced analytics
+- Looker for business intelligence
+- Power BI for Microsoft ecosystem
+- Metabase (open-source option)
+
+**Custom Dashboards:**
+- React/Vue.js for web dashboards
+- D3.js for custom visualizations
+- Chart.js for simple charts
+- Grafana for monitoring dashboards
+
+### Key Dashboard Templates
+
+**Executive Dashboard**
+High-level metrics for leadership team.
+
+**Metrics to Include:**
+- Revenue (current vs. target)
+- Customer acquisition and churn
+- Key operational metrics
+- Cash flow and runway
+- Team productivity indicators
+
+**Update Frequency:** Daily or weekly
+
+**Sales Dashboard**
+Performance tracking for sales teams.
+
+**Metrics to Include:**
+- Pipeline value by stage
+- Conversion rates by stage
+- Sales rep performance
+- Lead quality scores
+- Revenue forecasting
+
+**Update Frequency:** Real-time or daily
+
+**Product Dashboard**
+User engagement and product performance.
+
+**Metrics to Include:**
+- Daily/Monthly Active Users
+- Feature adoption rates
+- User journey analysis
+- Product performance metrics
+- Customer satisfaction scores
+
+**Update Frequency:** Daily
+
+**Customer Success Dashboard**
+Health and retention metrics.
+
+**Metrics to Include:**
+- Customer health scores
+- Churn risk indicators
+- Expansion opportunities
+- Support ticket trends
+- Net Promoter Score
+
+**Update Frequency:** Daily or weekly
+
+### Advanced Analytics Techniques
+
+**Cohort Analysis Implementation**
+Track user behavior over time by acquisition period.
+
+**SQL Example:**
+```sql
+WITH cohort_data AS (
+  SELECT 
+    user_id,
+    DATE_TRUNC('month', first_purchase_date) as cohort_month,
+    DATE_TRUNC('month', purchase_date) as purchase_month,
+    revenue
+  FROM user_purchases
+)
+SELECT 
+  cohort_month,
+  purchase_month,
+  COUNT(DISTINCT user_id) as active_users,
+  SUM(revenue) as total_revenue,
+  AVG(revenue) as avg_revenue_per_user
+FROM cohort_data
+GROUP BY cohort_month, purchase_month
+ORDER BY cohort_month, purchase_month;
+```
+
+**A/B Testing Analytics**
+Measure statistical significance of experiments.
+
+**Key Components:**
+- Sample size calculation
+- Statistical power analysis
+- Confidence intervals
+- Multiple testing corrections
+
+**Funnel Analysis**
+Understand conversion at each step of user journey.
+
+**Implementation Steps:**
+1. Define funnel steps
+2. Track events at each step
+3. Calculate conversion rates
+4. Identify drop-off points
+5. Optimize worst-performing steps
+
+### Dashboard Performance Optimization
+
+**Query Optimization:**
+- Use appropriate indexes
+- Implement query caching
+- Pre-aggregate common calculations
+- Use materialized views for complex queries
+
+**Data Freshness vs. Performance Trade-offs:**
+- Real-time: High resource usage, immediate insights
+- Near real-time (5-15 minutes): Balanced approach
+- Batch processing: Resource efficient, delayed insights
+
+**Caching Strategies:**
+- Application-level caching (Redis, Memcached)
+- Database query result caching
+- CDN for static dashboard assets
+- Browser caching for client-side performance
+
+### Mobile Dashboard Considerations
+
+**Responsive Design:**
+- Stack charts vertically on mobile
+- Use touch-friendly interface elements
+- Optimize for thumb navigation
+- Implement swipe gestures
+
+**Performance on Mobile:**
+- Minimize data transfer
+- Use progressive loading
+- Optimize images and charts
+- Consider offline functionality
+
+### Data Quality and Governance
+
+**Data Validation:**
+- Implement data quality checks
+- Monitor for anomalies
+- Set up automated alerts
+- Regular data audits
+
+**Common Data Issues:**
+- Duplicate records
+- Missing data points
+- Inconsistent formatting
+- Timezone problems
+- Currency conversion errors
+
+**Data Documentation:**
+- Metric definitions
+- Calculation methods
+- Data source mapping
+- Update schedules
+- Known limitations
+
+### Security and Access Control
+
+**Role-Based Access:**
+- Executive dashboards: C-level only
+- Departmental dashboards: Department members
+- Operational dashboards: All employees
+- Customer data: Restricted access
+
+**Data Privacy:**
+- Anonymize personal information
+- Implement GDPR compliance
+- Secure data transmission
+- Regular security audits
+
+### Building Your First Dashboard
+
+**Step-by-Step Process:**
+
+**1. Define Objectives**
+- What decisions will this dashboard support?
+- Who is the primary audience?
+- How frequently will it be used?
+
+**2. Select Metrics**
+- Start with 3-5 key metrics
+- Ensure metrics are actionable
+- Include both lagging and leading indicators
+
+**3. Choose Tools**
+- Consider technical complexity
+- Evaluate cost vs. benefit
+- Plan for future scalability
+
+**4. Design Layout**
+- Sketch wireframes first
+- Use the F-pattern for information hierarchy
+- Include filters and drill-down capabilities
+
+**5. Implement and Test**
+- Start with basic version
+- Test with actual users
+- Iterate based on feedback
+
+**6. Establish Maintenance**
+- Regular data quality checks
+- Performance monitoring
+- User feedback collection
+- Continuous improvement process
+
+### Common Dashboard Mistakes
+
+**1. Information Overload**
+- Too many metrics on one screen
+- Complex visualizations without clear purpose
+- No clear hierarchy of information
+
+**2. Vanity Metrics Focus**
+- Emphasizing impressive-looking but non-actionable metrics
+- Not connecting metrics to business outcomes
+
+**3. Poor Data Quality**
+- Inconsistent calculations
+- Delayed or missing data
+- No data validation processes
+
+**4. Lack of Context**
+- Metrics without benchmarks or targets
+- No historical comparison
+- Missing external factors explanation
+
+### Advanced Dashboard Features
+
+**Interactive Elements:**
+- Drill-down capabilities
+- Date range selectors
+- Filter controls
+- Comparison tools
+
+**Alerting Systems:**
+- Threshold-based alerts
+- Anomaly detection
+- Email/Slack notifications
+- Escalation procedures
+
+**Export and Sharing:**
+- PDF report generation
+- Email scheduling
+- Public dashboard links
+- Embedded dashboards
+
+### Action Items
+1. Identify the 5 most important metrics for your business
+2. Choose and set up an analytics tool (start simple with Google Analytics + a BI tool)
+3. Create your first dashboard with these metrics
+4. Implement automated data quality checks
+5. Schedule regular dashboard review sessions with your team`,
+
+      `# Advanced Analytics and Forecasting
+
+## Predictive Analytics for Business Growth
+
+Moving beyond descriptive analytics (what happened) to predictive (what will happen) and prescriptive (what should we do) analytics gives you a significant competitive advantage in decision-making.
+
+### Statistical Forecasting Methods
+
+**Time Series Analysis**
+Analyzing data points collected over time to identify patterns and predict future values.
+
+**Components of Time Series:**
+- **Trend:** Long-term increase or decrease
+- **Seasonality:** Regular patterns that repeat over time
+- **Cyclical:** Irregular patterns related to business cycles
+- **Random:** Unpredictable fluctuations
+
+**Simple Moving Average:**
+Smooths short-term fluctuations to identify trends.
+
+**Calculation:**
+MA = (X₁ + X₂ + ... + Xₙ) ÷ n
+
+**Example (5-period moving average):**
+If last 5 months' revenue: $10k, $12k, $11k, $13k, $14k
+MA = ($10k + $12k + $11k + $13k + $14k) ÷ 5 = $12k
+
+**Exponential Smoothing:**
+Gives more weight to recent observations.
+
+**Formula:**
+Sₜ = αXₜ + (1-α)Sₜ₋₁
+
+Where α (alpha) is the smoothing factor (0-1)
+
+**Linear Regression:**
+Identifies the relationship between variables.
+
+**Simple Linear Regression:**
+Y = a + bX + ε
+
+Where:
+- Y = dependent variable (e.g., revenue)
+- X = independent variable (e.g., marketing spend)
+- a = intercept
+- b = slope
+- ε = error term
+
+**R-squared Interpretation:**
+- 0.7+ = Strong relationship
+- 0.5-0.7 = Moderate relationship
+- <0.5 = Weak relationship
+
+### Customer Behavior Prediction
+
+**Churn Prediction Models**
+Identify customers likely to cancel or stop purchasing.
+
+**Key Predictive Features:**
+- Recency of last purchase/login
+- Frequency of usage/purchases
+- Support ticket history
+- Feature adoption rates
+- Billing issues or complaints
+
+**Model Types:**
+- **Logistic Regression:** Simple, interpretable
+- **Random Forest:** Good for mixed data types
+- **Gradient Boosting:** High accuracy for structured data
+- **Neural Networks:** Best for complex patterns
+
+**Implementation Steps:**
+1. **Feature Engineering:** Create relevant predictive variables
+2. **Data Splitting:** Training (60%), validation (20%), test (20%)
+3. **Model Training:** Use historical churn data
+4. **Model Evaluation:** Precision, recall, F1-score
+5. **Deployment:** Score customers regularly
+6. **Action:** Proactive retention campaigns
+
+**Customer Lifetime Value Prediction**
+Predict future revenue from customers.
+
+**Probabilistic CLV Model:**
+CLV = Σ(Revenue × Retention Rate × Discount Factor)
+
+**Machine Learning Approach:**
+Use features like:
+- Purchase history
+- Engagement metrics
+- Demographics
+- Product preferences
+- Seasonality patterns
+
+**Purchase Prediction**
+Forecast when customers will buy again.
+
+**Survival Analysis:**
+Models time until an event (next purchase) occurs.
+- Kaplan-Meier estimation
+- Cox proportional hazards model
+
+### Revenue Forecasting
+
+**Bottom-Up Forecasting**
+Build forecast from individual components.
+
+**SaaS Example:**
+1. **New Customer Acquisition:** Historical trends + marketing plans
+2. **Existing Customer Retention:** Churn rate analysis
+3. **Expansion Revenue:** Upsell/cross-sell rates
+4. **Price Changes:** Impact analysis
+
+**Formula:**
+Future MRR = (Current MRR × Retention Rate) + New MRR + Expansion MRR - Churn MRR
+
+**Top-Down Forecasting**
+Start with market size and work down to your share.
+
+**Components:**
+- Total Addressable Market (TAM)
+- Serviceable Addressable Market (SAM)
+- Market growth rate
+- Your market share and growth
+
+**Scenario Analysis**
+Model multiple possible outcomes.
+
+**Three-Scenario Approach:**
+- **Optimistic (25% probability):** Everything goes right
+- **Base Case (50% probability):** Most likely outcome
+- **Pessimistic (25% probability):** Major challenges occur
+
+**Monte Carlo Simulation**
+Uses random sampling to model uncertainty.
+
+**Process:**
+1. Define variables with probability distributions
+2. Run thousands of simulations
+3. Analyze distribution of outcomes
+4. Calculate confidence intervals
+
+### Advanced Segmentation
+
+**RFM Analysis Enhancement**
+Traditional Recency, Frequency, Monetary analysis with statistical clustering.
+
+**K-Means Clustering:**
+Automatically groups customers based on behavior patterns.
+
+**Implementation Steps:**
+1. Scale/normalize RFM variables
+2. Determine optimal number of clusters (elbow method)
+3. Run clustering algorithm
+4. Interpret and name segments
+5. Create targeted strategies for each segment
+
+**Behavioral Segmentation**
+Group users based on product usage patterns.
+
+**Examples:**
+- Feature usage clustering
+- Journey stage segmentation
+- Engagement level grouping
+- Value realization segments
+
+**Dynamic Segmentation**
+Segments that update automatically as behavior changes.
+
+**Implementation:**
+- Real-time feature scoring
+- Automated segment transitions
+- Personalized experiences based on current segment
+
+### Anomaly Detection
+
+**Statistical Methods:**
+
+**Z-Score Detection:**
+Identifies outliers using standard deviations.
+
+**Threshold:** Values beyond ±2 or ±3 standard deviations
+
+**Seasonal Decomposition:**
+Separates trend, seasonal, and residual components.
+Anomalies are unusual residual values.
+
+**Machine Learning Methods:**
+
+**Isolation Forest:**
+Isolates anomalies by random feature selection.
+Good for high-dimensional data.
+
+**One-Class SVM:**
+Learns normal behavior patterns.
+Flags deviations as anomalies.
+
+**Autoencoders:**
+Neural networks that compress and reconstruct data.
+Poor reconstruction indicates anomalies.
+
+**Business Applications:**
+- Fraud detection
+- System performance monitoring
+- Unusual user behavior
+- Data quality issues
+- Market opportunity identification
+
+### Cohort Analysis Advanced Techniques
+
+**Revenue Cohort Modeling**
+Track revenue progression over customer lifetime.
+
+**Key Insights:**
+- Payback period by acquisition channel
+- Long-term value by customer segment
+- Impact of product changes on retention
+- Seasonal effects on customer behavior
+
+**Cohort Comparison**
+Compare performance across different time periods.
+
+**Analysis Questions:**
+- Are newer cohorts performing better?
+- What changes improved cohort performance?
+- Which acquisition channels produce best cohorts?
+- How do cohorts respond to product updates?
+
+**Predictive Cohort Analysis**
+Forecast future cohort performance based on early indicators.
+
+**Early Indicators:**
+- Day 1, 7, 30 engagement metrics
+- Initial purchase behavior
+- Onboarding completion rates
+- Early support interactions
+
+### A/B Testing Statistics
+
+**Statistical Power Analysis**
+Ensure experiments can detect meaningful differences.
+
+**Sample Size Calculation:**
+n = 16 × (σ² / δ²)
+
+Where:
+- σ = standard deviation
+- δ = minimum detectable effect
+- Result assumes 80% power and 95% confidence
+
+**Sequential Testing**
+Monitor experiments continuously for early stopping.
+
+**Benefits:**
+- Reduce experiment duration
+- Minimize exposure to poor variations
+- Increase testing velocity
+
+**Multi-Armed Bandit**
+Automatically allocate traffic to best-performing variations.
+
+**Algorithms:**
+- Epsilon-greedy
+- Thompson sampling
+- Upper confidence bound (UCB)
+
+**Bayesian A/B Testing**
+Use prior beliefs to update probability estimates.
+
+**Advantages:**
+- Incorporates business knowledge
+- Provides probability estimates
+- Better handles small sample sizes
+- More intuitive interpretation
+
+### Forecasting Model Evaluation
+
+**Accuracy Metrics:**
+
+**Mean Absolute Error (MAE):**
+Average absolute difference between predicted and actual values.
+
+**Mean Absolute Percentage Error (MAPE):**
+Average percentage difference between predicted and actual values.
+
+**Root Mean Square Error (RMSE):**
+Square root of average squared differences.
+Penalizes large errors more heavily.
+
+**Model Selection:**
+- Compare multiple models using cross-validation
+- Consider model complexity vs. accuracy trade-off
+- Evaluate performance on different time periods
+- Test model stability over time
+
+### Building Forecasting Systems
+
+**Data Pipeline Architecture:**
+
+**Components:**
+1. **Data Collection:** APIs, databases, external sources
+2. **Data Processing:** Cleaning, transformation, feature engineering
+3. **Model Training:** Automated retraining on schedule
+4. **Prediction Generation:** Batch or real-time scoring
+5. **Results Storage:** Predictions and confidence intervals
+6. **Monitoring:** Model performance and data drift
+
+**Model Deployment:**
+- Containerization (Docker, Kubernetes)
+- API endpoints for predictions
+- Version control for models
+- A/B testing for model updates
+- Rollback capabilities
+
+**Monitoring and Maintenance:**
+- Prediction accuracy tracking
+- Data drift detection
+- Model performance degradation alerts
+- Regular retraining schedules
+- Business metric impact measurement
+
+### Tools and Technologies
+
+**Statistical Software:**
+- **R:** Comprehensive statistical analysis
+- **Python:** Machine learning libraries (scikit-learn, pandas)
+- **SQL:** Data manipulation and basic statistics
+
+**Business Intelligence:**
+- **Tableau:** Advanced analytics and visualization
+- **Looker:** Modeling and forecasting capabilities
+- **Power BI:** Microsoft ecosystem integration
+
+**Machine Learning Platforms:**
+- **AWS SageMaker:** End-to-end ML workflow
+- **Google Cloud ML:** Scalable model training and deployment
+- **Azure ML:** Microsoft's ML platform
+
+**Specialized Analytics:**
+- **Mixpanel:** Product analytics and retention
+- **Amplitude:** User behavior analysis
+- **ChartMogul:** SaaS analytics and forecasting
+
+### Practical Implementation Guide
+
+**Week 1: Foundation**
+- Set up data collection and storage
+- Implement basic descriptive analytics
+- Create initial dashboards
+
+**Week 2-3: Predictive Models**
+- Build churn prediction model
+- Implement customer segmentation
+- Create revenue forecasting models
+
+**Week 4: Advanced Analytics**
+- Set up A/B testing framework
+- Implement anomaly detection
+- Build cohort analysis system
+
+**Ongoing: Optimization**
+- Monitor model performance
+- Iterate based on business feedback
+- Expand to new use cases
+
+### Common Pitfalls and Solutions
+
+**1. Data Quality Issues**
+- Implement automated data validation
+- Set up data quality monitoring
+- Create data documentation
+
+**2. Overfitting Models**
+- Use cross-validation
+- Implement regularization
+- Monitor out-of-sample performance
+
+**3. Analysis Paralysis**
+- Start with simple models
+- Focus on actionable insights
+- Set decision deadlines
+
+**4. Ignoring Business Context**
+- Involve domain experts
+- Validate predictions against business knowledge
+- Consider external factors
+
+### Action Items
+1. Choose one area for predictive analytics (churn, LTV, or demand forecasting)
+2. Set up data pipeline for your chosen use case
+3. Build and validate a simple predictive model
+4. Create monitoring system for model performance
+5. Plan integration with business processes for acting on predictions`
+    ])
+
+    // Create additional weeks (3-5 and 8-12) with basic structure for now
     const remainingWeeks = [
       { number: 3, title: 'Financial Statements Deep Dive', hours: 10 },
       { number: 4, title: 'Tax Planning and Compliance', hours: 12 },
       { number: 5, title: 'Pricing Strategies and Cost Analysis', hours: 8 },
-      { number: 7, title: 'Performance Metrics and KPIs', hours: 10 },
       { number: 8, title: 'Financial Analysis and Risk Management', hours: 9 },
       { number: 9, title: 'Legal Structures and Contracts', hours: 8 },
       { number: 10, title: 'Scaling and Growth Finance', hours: 7 },
