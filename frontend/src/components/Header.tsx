@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useAuthStore } from '@/stores/authStore'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { GraduationCap, User, LogOut } from 'lucide-react'
+import { GraduationCap, User, LogOut, Calculator } from 'lucide-react'
 
 export function Header() {
   const { user, logout } = useAuthStore()
@@ -21,6 +21,12 @@ export function Header() {
             <Link href="/courses" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
               Courses
             </Link>
+            {user && (
+              <Link href="/calculators" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                <Calculator className="w-4 h-4" />
+                <span>Calculators</span>
+              </Link>
+            )}
             {user ? (
               <>
                 <Link href="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
