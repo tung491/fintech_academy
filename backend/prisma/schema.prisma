@@ -1,0 +1,154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../finacademy.db"
+}
+
+model User {
+  id           String           @id @default(cuid())
+  email        String           @unique
+  passwordHash String           @map("password_hash")
+  firstName    String           @map("first_name")
+  lastName     String           @map("last_name")
+  role         String           @default("student")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  quizAttempts QuizAttempt[]
+  enrollments  UserEnrollment[]
+  progress     UserProgress[]
+
+  @@map("users")
+}
+
+model Course {
+  id          String           @id @default(cuid())
+  title       String
+  slug        String           @unique
+  description String?
+  orderIndex  Int              @map("order_index")
+  isPublished Boolean          @default(false) @map("is_published")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  enrollments UserEnrollment[]
+  weeks       Week[]
+
+  @@map("courses")
+}
+
+model Week {
+  id                 String   @id @default(cuid())
+  courseId           String   @map("course_id")
+  weekNumber         Int      @map("week_number")
+  title              String
+  overview           String?
+  learningObjectives String?  @map("learning_objectives")
+  estimatedHours     Float?   @map("estimated_hours")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+  lessons            Lesson[]
+  quizzes            Quiz[]
+  course             Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, weekNumber])
+  @@map("weeks")
+}
+
+model Lesson {
+  id              String         @id @default(cuid())
+  weekId          String         @map("week_id")
+  title           String
+  slug            String
+  content         String
+  orderIndex      Int            @map("order_index")
+  lessonType      String         @default("lecture") @map("lesson_type")
+  durationMinutes Int?           @map("duration_minutes")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+  week            Week           @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  progress        UserProgress[]
+
+  @@unique([weekId, slug])
+  @@map("lessons")
+}
+
+model Quiz {
+  id               String        @id @default(cuid())
+  weekId           String        @map("week_id")
+  title            String
+  description      String?
+  passingScore     Int           @default(70) @map("passing_score")
+  maxAttempts      Int           @default(3) @map("max_attempts")
+  timeLimitMinutes Int?          @map("time_limit_minutes")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+  questions        Question[]
+  attempts         QuizAttempt[]
+  week             Week          @relation(fields: [weekId], references: [id], onDelete: Cascade)
+
+  @@map("quizzes")
+}
+
+model Question {
+  id            String   @id @default(cuid())
+  quizId        String   @map("quiz_id")
+  questionText  String   @map("question_text")
+  questionType  String   @map("question_type")
+  options       String?
+  correctAnswer String   @map("correct_answer")
+  explanation   String?
+  points        Int      @default(1)
+  orderIndex    Int      @map("order_index")
+  createdAt     DateTime @default(now()) @map("created_at")
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  @@map("questions")
+}
+
+model UserProgress {
+  id               String    @id @default(cuid())
+  userId           String    @map("user_id")
+  lessonId         String    @map("lesson_id")
+  completed        Boolean   @default(false)
+  completedAt      DateTime? @map("completed_at")
+  timeSpentMinutes Int       @default(0) @map("time_spent_minutes")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  lesson           Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@map("user_progress")
+}
+
+model QuizAttempt {
+  id               String    @id @default(cuid())
+  userId           String    @map("user_id")
+  quizId           String    @map("quiz_id")
+  score            Float?
+  passed           Boolean   @default(false)
+  answers          String?
+  startedAt        DateTime  @default(now()) @map("started_at")
+  completedAt      DateTime? @map("completed_at")
+  timeTakenMinutes Int?      @map("time_taken_minutes")
+  quiz             Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_attempts")
+}
+
+model UserEnrollment {
+  id                 String    @id @default(cuid())
+  userId             String    @map("user_id")
+  courseId           String    @map("course_id")
+  enrolledAt         DateTime  @default(now()) @map("enrolled_at")
+  completedAt        DateTime? @map("completed_at")
+  progressPercentage Float     @default(0) @map("progress_percentage")
+  course             Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("user_enrollments")
+}
