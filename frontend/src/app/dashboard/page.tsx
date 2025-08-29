@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
-import { BookOpen, Clock, Trophy, TrendingUp } from 'lucide-react'
+import { BookOpen, Clock, Trophy, TrendingUp, BarChart3, ArrowRight } from 'lucide-react'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -154,6 +154,54 @@ export default function DashboardPage() {
               <p className="text-gray-600">No recent activity</p>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Quick Analytics Preview */}
+      <div className="mt-8">
+        <div className="card bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 border-primary-200 dark:border-primary-800">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <BarChart3 className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Detailed Analytics Available
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Track your learning patterns, streaks, and skill development progress
+                </p>
+              </div>
+            </div>
+            <Link 
+              href="/analytics" 
+              className="btn-primary flex items-center gap-2 hover:bg-primary-700 dark:hover:bg-primary-600"
+            >
+              View Analytics
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          
+          {/* Quick stats preview */}
+          <div className="grid md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-primary-200 dark:border-primary-800">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+                {Math.round((stats.total_time_spent || 0) / 60)} hrs
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Total Study Time</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                {stats.current_streak || 0}
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Current Streak</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                {Math.round(((stats.completed_lessons || 0) / Math.max(stats.total_lessons || 1, 1)) * 100)}%
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Overall Progress</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

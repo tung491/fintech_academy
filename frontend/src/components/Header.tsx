@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useAuthStore } from '@/stores/authStore'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { GraduationCap, User, LogOut, Calculator } from 'lucide-react'
+import { GraduationCap, User, LogOut, Calculator, BarChart3 } from 'lucide-react'
 
 export function Header() {
   const { user, logout } = useAuthStore()
@@ -31,6 +31,10 @@ export function Header() {
               <>
                 <Link href="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   Dashboard
+                </Link>
+                <Link href="/analytics" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                  <BarChart3 className="w-4 h-4" />
+                  <span>Analytics</span>
                 </Link>
                 <div className="flex items-center space-x-4">
                   <ThemeToggle />

@@ -7,6 +7,7 @@ import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
+import LessonContent from '@/components/LessonContent'
 import { 
   BookOpen, 
   Clock, 
@@ -252,9 +253,11 @@ export default function WeekPage() {
                     
                     {activeLesson === lesson.id && lesson.content && (
                       <div className="mt-4 p-6 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                        <div className="prose prose-gray dark:prose-invert max-w-none prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-strong:text-gray-900 dark:prose-strong:text-white prose-ul:text-gray-700 dark:prose-ul:text-gray-300">
-                          <ReactMarkdown>{lesson.content}</ReactMarkdown>
-                        </div>
+                        <LessonContent 
+                          content={lesson.content}
+                          title={lesson.title}
+                          lessonType={lesson.lesson_type}
+                        />
                       </div>
                     )}
                     
