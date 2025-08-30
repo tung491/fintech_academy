@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -36,8 +36,14 @@ export default function RootLayout({
                   } else {
                     root.classList.add(state.theme);
                   }
+                } else {
+                  // Default to light theme if no preference stored
+                  document.documentElement.classList.add('light');
                 }
-              } catch (e) {}
+              } catch (e) {
+                // Fallback to light theme on any error
+                document.documentElement.classList.add('light');
+              }
             `,
           }}
         />

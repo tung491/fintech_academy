@@ -9,12 +9,16 @@ interface HydrationProviderProps {
 
 export default function HydrationProvider({ children }: HydrationProviderProps) {
   const [isHydrated, setIsHydrated] = useState(false)
-  const { setHasHydrated } = useAuthStore()
+  const setHasHydrated = useAuthStore(state => state.setHasHydrated)
 
   useEffect(() => {
-    // Simple hydration - just mark as hydrated and let the store handle async token validation
-    setHasHydrated(true)
-    setIsHydrated(true)
+    // Give a brief moment for proper hydration then mark as complete
+    const timer = setTimeout(() => {
+      setHasHydrated(true)
+      setIsHydrated(true)
+    }, 100) // Very short delay to allow proper hydration
+
+    return () => clearTimeout(timer)
   }, [setHasHydrated])
 
   // Only show loading for a very brief moment during initial hydration
