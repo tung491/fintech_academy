@@ -65,34 +65,13 @@ export const useAuthStore = create<AuthStore>()(
         if (state && state.setHasHydrated) {
           state.setHasHydrated(true)
           
-          // Check if token exists in localStorage but not in store
+          // Simple token sync without blocking API calls
           if (typeof window !== 'undefined') {
             const localToken = localStorage.getItem('token')
             
             if (localToken && !state.token) {
-              // Token exists in localStorage but not in store - need to restore user data
-              fetch('http://localhost:5000/api/auth/me', {
-                method: 'GET',
-                headers: {
-                  'Authorization': `Bearer ${localToken}`,
-                  'Content-Type': 'application/json'
-                }
-              })
-              .then(response => {
-                if (response.ok) {
-                  return response.json()
-                }
-                throw new Error('Token validation failed')
-              })
-              .then(data => {
-                // Restore user and token to store
-                state.setAuth(data.user, localToken)
-              })
-              .catch(error => {
-                console.error('Failed to restore user session:', error)
-                // Token is invalid, remove it
-                localStorage.removeItem('token')
-              })
+              // Just store the token, validate it later asynchronously
+              console.log('Found token in localStorage, will validate asynchronously')
             } else if (state.token && !localToken) {
               // Token exists in store but not localStorage - sync it
               localStorage.setItem('token', state.token)
