@@ -21,14 +21,14 @@ export const authenticate = async (
       throw new Error();
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
     req.user = {
       id: decoded.id,
       email: decoded.email,
       role: decoded.role
     };
     
-    next();
+    return next();
   } catch (error) {
     return res.status(401).json({ error: 'Please authenticate' });
   }
@@ -39,6 +39,6 @@ export const authorize = (...roles: string[]) => {
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ error: 'Access denied' });
     }
-    next();
+    return next();
   };
 };

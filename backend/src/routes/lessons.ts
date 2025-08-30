@@ -83,7 +83,7 @@ router.get('/search/:query', authenticate, async (req: AuthRequest, res) => {
       lesson_url: `/lessons/${row.id}`
     }));
 
-    res.json({
+    return res.json({
       query: query,
       results: results,
       total_results: results.length
@@ -118,7 +118,7 @@ router.get('/:lessonId', authenticate, async (req: AuthRequest, res) => {
       [userId, lessonId]
     );
 
-    res.json({
+    return res.json({
       ...lessonResult.rows[0],
       progress: progressResult.rows[0] || null
     });
@@ -145,10 +145,9 @@ router.post('/:lessonId/access', authenticate, async (req: AuthRequest, res) => 
       }
     });
 
-    let result;
     if (existingProgress) {
       // Update existing - just update the access time and add time spent
-      result = await prisma.userProgress.update({
+      await prisma.userProgress.update({
         where: {
           userId_lessonId: {
             userId: userId,
@@ -164,7 +163,7 @@ router.post('/:lessonId/access', authenticate, async (req: AuthRequest, res) => 
       });
     } else {
       // Insert new progress record (not completed yet) using Prisma
-      result = await prisma.userProgress.create({
+      await prisma.userProgress.create({
         data: {
           userId: userId,
           lessonId: lessonId,
@@ -174,7 +173,7 @@ router.post('/:lessonId/access', authenticate, async (req: AuthRequest, res) => 
       });
     }
 
-    res.json({
+    return res.json({
       user_id: userId,
       lesson_id: lessonId,
       accessed: true,
@@ -198,10 +197,9 @@ router.post('/:lessonId/complete', authenticate, async (req: AuthRequest, res) =
       [userId, lessonId]
     );
 
-    let result;
     if (existingProgress.rows.length > 0) {
       // Update existing
-      result = await pool.query(
+      await pool.query(
         `UPDATE user_progress SET 
            completed = 1, 
            completed_at = datetime('now'),
@@ -213,7 +211,7 @@ router.post('/:lessonId/complete', authenticate, async (req: AuthRequest, res) =
     } else {
       // Insert new
       const progressId = Math.random().toString(36).substr(2, 9);
-      result = await pool.query(
+      await pool.query(
         `INSERT INTO user_progress (id, user_id, lesson_id, completed, completed_at, time_spent_minutes, created_at, updated_at)
          VALUES (?, ?, ?, 1, datetime('now'), ?, datetime('now'), datetime('now'))`,
         [progressId, userId, lessonId, timeSpent || 0]
@@ -222,7 +220,7 @@ router.post('/:lessonId/complete', authenticate, async (req: AuthRequest, res) =
 
     await updateCourseProgress(userId, lessonId);
 
-    res.json({
+    return res.json({
       user_id: userId,
       lesson_id: lessonId,
       completed: true,

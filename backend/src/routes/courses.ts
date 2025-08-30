@@ -28,7 +28,7 @@ router.get('/', async (_req, res) => {
       weeks: undefined
     }));
 
-    res.json(coursesWithWeekCount);
+    return res.json(coursesWithWeekCount);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Failed to fetch courses' });
@@ -70,7 +70,7 @@ router.get('/:courseId', async (req, res) => {
       lessons: undefined
     }));
 
-    res.json({
+    return res.json({
       ...course,
       weeks: weeksWithLessonCount
     });
@@ -106,7 +106,7 @@ router.post('/:courseId/enroll', authenticate, async (req: AuthRequest, res) => 
       }
     });
 
-    res.status(201).json(enrollment);
+    return res.status(201).json(enrollment);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Failed to enroll in course' });
@@ -164,9 +164,7 @@ router.get('/:courseId/week/:weekNumber', authenticate, async (req: AuthRequest,
         completed: lesson.progress[0].completed,
         completedAt: lesson.progress[0].completedAt,
         timeSpentMinutes: lesson.progress[0].timeSpentMinutes
-      } : null,
-      // Remove the progress array from the response
-      progress: lesson.progress[0] ? lesson.progress[0] : null
+      } : null
     }));
 
     const quiz = week.quizzes[0] ? {
@@ -175,7 +173,7 @@ router.get('/:courseId/week/:weekNumber', authenticate, async (req: AuthRequest,
       questions: undefined
     } : null;
 
-    res.json({
+    return res.json({
       ...week,
       lessons,
       quiz,
@@ -276,7 +274,7 @@ router.get('/:courseId/progress', authenticate, async (req: AuthRequest, res) =>
       };
     });
 
-    res.json(progressData);
+    return res.json(progressData);
   } catch (error) {
     console.error('Error fetching learning path progress:', error);
     return res.status(500).json({ error: 'Failed to fetch learning path progress' });

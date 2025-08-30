@@ -42,11 +42,11 @@ router.post('/register',
 
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET!,
-        { expiresIn: process.env.JWT_EXPIRE || '7d' }
+        process.env.JWT_SECRET || 'fallback-secret',
+        { expiresIn: process.env.JWT_EXPIRE || '7d' } as any
       );
 
-      res.status(201).json({
+      return res.status(201).json({
         token,
         user: {
           id: user.id,
@@ -91,11 +91,11 @@ router.post('/login',
 
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET!,
-        { expiresIn: process.env.JWT_EXPIRE || '7d' }
+        process.env.JWT_SECRET || 'fallback-secret',
+        { expiresIn: process.env.JWT_EXPIRE || '7d' } as any
       );
 
-      res.json({
+      return res.json({
         token,
         user: {
           id: user.id,
@@ -130,7 +130,7 @@ router.get('/me', authenticate, async (req: AuthRequest, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json({ user });
+    return res.json({ user });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Failed to get user profile' });
