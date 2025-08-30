@@ -106,8 +106,73 @@ As a developer-entrepreneur, focus on:
 - Monthly Recurring Revenue (MRR)
 - Customer Acquisition Cost (CAC)
 - Lifetime Value (LTV)
-- Gross Margin
+- Gross Margin vs Net Margin (detailed below)
 - Burn Rate (if funded) or Profit Margin (if bootstrapped)
+
+### Understanding Gross vs Net Margin
+
+**Gross Margin**
+- Formula: (Revenue - Cost of Goods Sold) / Revenue × 100
+- Only subtracts direct costs to produce/deliver the service
+- For software: hosting, payment processing, direct customer support
+- Example: SaaS with 95% gross margin after hosting and payment fees
+
+**Net Margin** 
+- Formula: (Revenue - All Expenses - Taxes) / Revenue × 100
+- Includes ALL business expenses: salaries, marketing, office, legal, etc.
+- True bottom-line profitability after everything
+- Example: Same SaaS with 25% net margin after all expenses
+
+**Why Both Matter:**
+- Gross margin shows business model efficiency
+- Net margin shows overall profitability and sustainability
+- High gross margin with low net margin indicates high operational costs
+
+### Business Model Comparison: Gross Margins
+
+Different business models have varying gross margin potential:
+
+**1. Digital Products/SaaS (85-95%)**
+- Near-zero marginal distribution costs
+- Highly scalable with low COGS
+- Best gross margins but requires significant upfront investment
+
+**2. Freelancing/Consulting (60-80%)**
+- Time-based service delivery
+- Main costs: your time and tools
+- Limited scalability due to time constraints
+
+**3. Agency/Development Shop (50-70%)**
+- Team-based service delivery
+- Costs: salaries, project management, overhead
+- More scalable than freelancing but with higher costs
+
+**4. Physical Products (20-50%)**
+- Manufacturing, inventory, shipping costs
+- Lowest gross margins but tangible value
+- Complex supply chain management required
+
+### Cash Flow Types
+
+Understanding the three types of cash flow is crucial:
+
+**1. Operating Cash Flow (Most Important)**
+- Cash from core business activities
+- Revenue minus operating expenses
+- Indicates business sustainability without external funding
+- Positive operating cash flow = self-sustaining business
+
+**2. Investing Cash Flow**
+- Cash spent on/received from investments
+- Equipment purchases, property, securities
+- Usually negative for growing businesses
+- Shows investment in future growth
+
+**3. Financing Cash Flow**
+- Cash from/to investors and creditors
+- Loans, equity investments, dividends
+- Can be positive (raising funds) or negative (paying back)
+- Shows external funding activities
 
 ### Setting Financial Goals
 

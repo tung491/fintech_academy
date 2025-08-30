@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
+import { api } from '@/lib/api';
 import { User, Mail, Calendar, BookOpen, Trophy, Settings } from 'lucide-react';
 
 interface UserProfile {
@@ -47,21 +48,14 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      const response = await api.get('/users/profile');
+      const data = response.data;
+      setProfile(data);
+      setFormData({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data);
-        setFormData({
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email
-        });
-      }
     } catch (error) {
       console.error('Error fetching profile:', error);
     } finally {
@@ -71,16 +65,8 @@ export default function ProfilePage() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/stats`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data);
-      }
+      const response = await api.get('/users/stats');
+      setStats(response.data);
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
@@ -88,20 +74,9 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        const updatedProfile = await response.json();
-        setProfile(updatedProfile);
-        setEditing(false);
-      }
+      const response = await api.put('/users/profile', formData);
+      setProfile(response.data);
+      setEditing(false);
     } catch (error) {
       console.error('Error updating profile:', error);
     }

@@ -132,7 +132,7 @@ export default function CourseDetailPage() {
           <div className="space-y-4">
             {course.weeks?.map((week: any, index: number) => (
               <div key={week.id} className="card">
-                <div className="flex items-start gap-4">
+                <div className="flex items-center gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center">
                     <span className="text-primary-600 dark:text-primary-400 font-bold">
                       {week.weekNumber}
@@ -162,7 +162,7 @@ export default function CourseDetailPage() {
                   {user ? (
                     <Link 
                       href={`/courses/${courseId}/week/${week.weekNumber}`}
-                      className="btn-secondary text-sm"
+                      className="btn-secondary text-sm flex-shrink-0 w-24"
                     >
                       Start Week
                     </Link>

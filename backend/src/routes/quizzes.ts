@@ -101,6 +101,7 @@ router.post('/:quizId/submit', authenticate, async (req: AuthRequest, res) => {
 
     let totalScore = 0;
     let maxScore = 0;
+    let correctAnswersCount = 0;
     const feedback = [];
 
     for (const question of quiz.questions) {
@@ -109,6 +110,7 @@ router.post('/:quizId/submit', authenticate, async (req: AuthRequest, res) => {
       
       if (userAnswer && userAnswer === question.correctAnswer) {
         totalScore += question.points;
+        correctAnswersCount++;
         feedback.push({
           questionId: question.id,
           correct: true,
@@ -148,7 +150,7 @@ router.post('/:quizId/submit', authenticate, async (req: AuthRequest, res) => {
       feedback,
       totalScore,
       maxScore,
-      correctAnswers: totalScore,
+      correctAnswers: correctAnswersCount,
       totalQuestions: quiz.questions.length,
       timeSpent: timeTaken ? `${timeTaken} min` : null
     });

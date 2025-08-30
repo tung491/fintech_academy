@@ -17,21 +17,23 @@ import {
 
 interface Question {
   id: string
-  question_text: string
-  question_type: 'multiple_choice' | 'true_false' | 'essay'
+  questionText: string
+  questionType: 'multiple_choice' | 'true_false' | 'essay'
   options: string[] | string
-  correct_answer: string
+  correctAnswer: string
   explanation: string
+  points: number
+  orderIndex: number
 }
 
 interface Quiz {
   id: string
-  week_id: string
+  weekId: string
   title: string
   description: string
-  question_count: number
-  time_limit_minutes: number
-  passing_score: number
+  questionCount: number
+  timeLimitMinutes: number
+  passingScore: number
   questions: Question[]
 }
 
@@ -47,6 +49,7 @@ export default function QuizPage() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [timeLeft, setTimeLeft] = useState<number | null>(null)
+  const [startTime, setStartTime] = useState<Date | null>(null)
   
   // Handle redirect on client side
   useEffect(() => {
@@ -75,9 +78,16 @@ export default function QuizPage() {
     retry: 1,
     staleTime: 5 * 60 * 1000, // 5 minutes
   })
+  
+  // Set start time when quiz loads
+  useEffect(() => {
+    if (quiz && !startTime) {
+      setStartTime(new Date())
+    }
+  }, [quiz, startTime])
 
   const submitQuizMutation = useMutation({
-    mutationFn: (submissionData: { answers: Record<string, string> }) => 
+    mutationFn: (submissionData: { answers: Record<string, string>; timeTaken?: number | null }) => 
       api.post(`/quizzes/${quizId}/submit`, submissionData),
     onSuccess: (response) => {
       console.log('Quiz submission successful:', response.data)
@@ -110,8 +120,16 @@ export default function QuizPage() {
       return
     }
     
-    console.log('Submitting quiz with data:', { answers })
-    submitQuizMutation.mutate({ answers })
+    // Calculate time taken in minutes
+    let timeTaken = null
+    if (startTime) {
+      const endTime = new Date()
+      const timeDiff = (endTime.getTime() - startTime.getTime()) / 1000 / 60 // Convert to minutes
+      timeTaken = Math.round(timeDiff * 100) / 100 // Round to 2 decimal places
+    }
+    
+    console.log('Submitting quiz with data:', { answers, timeTaken })
+    submitQuizMutation.mutate({ answers, timeTaken })
     setIsSubmitted(true)
   }
 
@@ -213,7 +231,7 @@ export default function QuizPage() {
               Quiz {result?.passed ? 'Passed!' : 'Not Passed'}
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-400">
-              You scored {result?.score}% ({result?.correctAnswers}/{result?.totalQuestions})
+              You scored {result?.score?.toFixed(2)}% ({result?.correctAnswers}/{result?.totalQuestions})
             </p>
           </div>
           
@@ -221,14 +239,14 @@ export default function QuizPage() {
             <div className="text-center">
               <BarChart3 className="w-8 h-8 text-primary-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {result?.score}%
+                {result?.score?.toFixed(2)}%
               </div>
               <div className="text-sm text-gray-500">Your Score</div>
             </div>
             <div className="text-center">
               <Award className="w-8 h-8 text-primary-600 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {quiz.passing_score}%
+                {quiz.passingScore}%
               </div>
               <div className="text-sm text-gray-500">Passing Score</div>
             </div>
@@ -283,10 +301,10 @@ export default function QuizPage() {
             {quiz.description}
           </p>
         </div>
-        {quiz.time_limit_minutes && (
+        {quiz.timeLimitMinutes && (
           <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
             <Clock className="w-4 h-4" />
-            <span>{quiz.time_limit_minutes} min</span>
+            <span>{quiz.timeLimitMinutes} min</span>
           </div>
         )}
       </div>
@@ -309,11 +327,11 @@ export default function QuizPage() {
       <div className="card mb-8">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            {currentQuestion.question_text}
+            {currentQuestion.questionText}
           </h2>
           
           <div className="space-y-3">
-            {currentQuestion.question_type === 'multiple_choice' && (
+            {currentQuestion.questionType === 'multiple_choice' && (
               (Array.isArray(currentQuestion.options) ? currentQuestion.options : JSON.parse(currentQuestion.options || '[]')).map((option, index) => (
                 <label key={index} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
                   <input
@@ -329,7 +347,7 @@ export default function QuizPage() {
               ))
             )}
             
-            {currentQuestion.question_type === 'true_false' && (
+            {currentQuestion.questionType === 'true_false' && (
               ['True', 'False'].map((option) => (
                 <label key={option} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
                   <input
@@ -345,7 +363,7 @@ export default function QuizPage() {
               ))
             )}
             
-            {currentQuestion.question_type === 'essay' && (
+            {currentQuestion.questionType === 'essay' && (
               <textarea
                 value={answers[currentQuestion.id] || ''}
                 onChange={(e) => handleAnswerChange(currentQuestion.id, e.target.value)}
