@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bookmark as BookmarkIcon, ExternalLink, Trash2, Calendar, BookOpen } from 'lucide-react';
 import { getBookmarks, deleteBookmark, type Bookmark } from '@/lib/bookmarks';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuth } from '@/stores/authStore';
 import Link from 'next/link';
 
 interface BookmarksListProps {
@@ -14,7 +14,7 @@ export default function BookmarksList({ className = '' }: BookmarksListProps) {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!isAuthenticated) {

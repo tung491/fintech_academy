@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bookmark as BookmarkIcon, BookmarkCheck } from 'lucide-react';
 import { createBookmark, deleteBookmark, getLessonBookmarks, type Bookmark } from '@/lib/bookmarks';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuth } from '@/stores/authStore';
 
 interface BookmarkButtonProps {
   lessonId: string;
@@ -25,7 +25,7 @@ export default function BookmarkButton({
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [bookmarkId, setBookmarkId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!isAuthenticated || !lessonId) return;

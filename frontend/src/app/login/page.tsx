@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { api } from '@/lib/api'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuth } from '@/stores/authStore'
 
 interface LoginForm {
   email: string
@@ -14,7 +14,7 @@ interface LoginForm {
 
 export default function LoginPage() {
   const router = useRouter()
-  const { setAuth } = useAuthStore()
+  const { setAuth } = useAuth()
   const [error, setError] = useState('')
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>()
 

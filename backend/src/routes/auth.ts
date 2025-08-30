@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import prisma from '../db/prisma';
+import { authenticate, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -110,5 +111,30 @@ router.post('/login',
     }
   }
 );
+
+// Get current user profile
+router.get('/me', authenticate, async (req: AuthRequest, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user!.id },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true
+      }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ user });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Failed to get user profile' });
+  }
+});
 
 export default router;
