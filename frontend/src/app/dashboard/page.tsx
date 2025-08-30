@@ -99,50 +99,88 @@ export default function DashboardPage() {
       {/* Continue Learning Section */}
       {lastAccessedData?.lastAccessed && (
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Continue Learning</h2>
-          <div className="card bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-800">
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Continue Learning</h2>
+            <div className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded-full font-medium">
+              {lastAccessedData.lastAccessed.completed ? 'Ready to Review' : 'In Progress'}
+            </div>
+          </div>
+          <div className="relative card bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-900/20 dark:via-indigo-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800 hover:shadow-lg transition-shadow duration-300">
+            {/* Enhanced visual accent */}
+            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-purple-500 rounded-l"></div>
+            
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-4 flex-1">
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 relative">
                   {lastAccessedData.lastAccessed.completed ? (
-                    <CheckCircle className="w-12 h-12 text-green-500" />
+                    <div className="relative">
+                      <CheckCircle className="w-14 h-14 text-green-500 drop-shadow-sm" />
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">✓</span>
+                      </div>
+                    </div>
                   ) : (
-                    <PlayCircle className="w-12 h-12 text-blue-500" />
+                    <div className="relative">
+                      <PlayCircle className="w-14 h-14 text-blue-500 drop-shadow-sm animate-pulse" />
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">▶</span>
+                      </div>
+                    </div>
                   )}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
                     {lastAccessedData.lastAccessed.lesson_title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-2">
+                  <p className="text-gray-600 dark:text-gray-400 mb-3 text-sm">
                     {lastAccessedData.lastAccessed.course_title} • Week {lastAccessedData.lastAccessed.week_number}
                   </p>
                   
-                  {/* Progress indicator */}
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  {/* Enhanced Progress indicator */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-3 shadow-inner">
                       <div 
-                        className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                        className={`h-3 rounded-full transition-all duration-500 shadow-sm ${
+                          lastAccessedData.lastAccessed.completed 
+                            ? 'bg-gradient-to-r from-green-400 to-green-500' 
+                            : 'bg-gradient-to-r from-blue-400 to-purple-500'
+                        }`}
                         style={{ width: `${Math.min(100, lastAccessedData.lastAccessed.progress_percentage)}%` }}
                       />
                     </div>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                      {lastAccessedData.lastAccessed.completed ? 'Completed' : `${Math.round(lastAccessedData.lastAccessed.progress_percentage)}%`}
-                    </span>
+                    <div className={`text-sm font-medium px-2 py-1 rounded ${
+                      lastAccessedData.lastAccessed.completed
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                        : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                    }`}>
+                      {lastAccessedData.lastAccessed.completed ? '100%' : `${Math.round(lastAccessedData.lastAccessed.progress_percentage)}%`}
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{lastAccessedData.lastAccessed.time_spent_minutes} min spent</span>
+                  {/* Enhanced metadata with better visual hierarchy */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                    <div className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 px-3 py-2 rounded-lg">
+                      <Clock className="w-4 h-4 text-blue-500" />
+                      <div>
+                        <span className="text-gray-600 dark:text-gray-400 text-xs block">Time Spent</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">{lastAccessedData.lastAccessed.time_spent_minutes} min</span>
+                      </div>
                     </div>
                     {lastAccessedData.lastAccessed.duration_minutes && (
-                      <div className="flex items-center gap-1">
-                        <span>• {lastAccessedData.lastAccessed.duration_minutes} min total</span>
+                      <div className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 px-3 py-2 rounded-lg">
+                        <span className="w-4 h-4 text-purple-500 text-center">📚</span>
+                        <div>
+                          <span className="text-gray-600 dark:text-gray-400 text-xs block">Total Duration</span>
+                          <span className="font-semibold text-gray-900 dark:text-white">{lastAccessedData.lastAccessed.duration_minutes} min</span>
+                        </div>
                       </div>
                     )}
-                    <div className="flex items-center gap-1">
-                      <span>• Last accessed {new Date(lastAccessedData.lastAccessed.last_accessed_at).toLocaleDateString()}</span>
+                    <div className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 px-3 py-2 rounded-lg">
+                      <span className="w-4 h-4 text-indigo-500 text-center">📅</span>
+                      <div>
+                        <span className="text-gray-600 dark:text-gray-400 text-xs block">Last Accessed</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">{new Date(lastAccessedData.lastAccessed.last_accessed_at).toLocaleDateString()}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -150,10 +188,23 @@ export default function DashboardPage() {
               
               <Link 
                 href={lastAccessedData.lastAccessed.continue_url}
-                className="btn-primary flex items-center gap-2 whitespace-nowrap ml-4"
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 whitespace-nowrap ml-4 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 ${
+                  lastAccessedData.lastAccessed.completed
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'
+                }`}
               >
-                {lastAccessedData.lastAccessed.completed ? 'Review' : 'Continue'}
-                <ArrowRight className="w-4 h-4" />
+                {lastAccessedData.lastAccessed.completed ? (
+                  <>
+                    Review Again
+                    <span className="text-lg">🔄</span>
+                  </>
+                ) : (
+                  <>
+                    Continue Learning
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </Link>
             </div>
           </div>
