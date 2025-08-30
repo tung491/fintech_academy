@@ -1,8 +1,8 @@
 'use client'
 
 import ReactMarkdown from 'react-markdown'
-import { useState } from 'react'
-import { Copy, CheckCircle, ExternalLink, BookOpen, Lightbulb, AlertTriangle, Target } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Copy, CheckCircle, ExternalLink, BookOpen, Lightbulb, AlertTriangle, Target, Clock, BarChart } from 'lucide-react'
 
 interface LessonContentProps {
   content: string
@@ -116,6 +116,68 @@ function CustomBlock({ children, type, title }: CustomBlockProps) {
 }
 
 export default function LessonContent({ content, title, lessonType }: LessonContentProps) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [readingProgress, setReadingProgress] = useState(0)
+  const [estimatedReadTime, setEstimatedReadTime] = useState(0)
+  const [isReading, setIsReading] = useState(false)
+
+  // Calculate estimated reading time (average 200 words per minute)
+  useEffect(() => {
+    const wordCount = content.split(/\s+/).length
+    const readTime = Math.ceil(wordCount / 200)
+    setEstimatedReadTime(readTime)
+  }, [content])
+
+  // Track reading progress with scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!contentRef.current) return
+
+      const element = contentRef.current
+      const rect = element.getBoundingClientRect()
+      const windowHeight = window.innerHeight
+      
+      // Calculate progress based on how much of the content is visible/passed
+      const elementTop = rect.top
+      const elementHeight = rect.height
+      const elementBottom = rect.bottom
+
+      // If element is above viewport, progress is 100%
+      if (elementBottom < 0) {
+        setReadingProgress(100)
+        setIsReading(false)
+        return
+      }
+
+      // If element is below viewport, progress is 0%
+      if (elementTop > windowHeight) {
+        setReadingProgress(0)
+        setIsReading(false)
+        return
+      }
+
+      // Element is in viewport - calculate progress
+      setIsReading(true)
+      const visibleHeight = Math.min(windowHeight, elementBottom) - Math.max(0, elementTop)
+      const scrolledPastTop = Math.max(0, -elementTop)
+      const totalScrollableHeight = elementHeight - windowHeight
+      
+      if (totalScrollableHeight <= 0) {
+        // Content fits in viewport
+        setReadingProgress(100)
+      } else {
+        // Content requires scrolling
+        const progress = Math.min(100, Math.max(0, (scrolledPastTop / totalScrollableHeight) * 100))
+        setReadingProgress(progress)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Initial call
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   // Enhanced content processing to handle custom blocks
   const processContent = (content: string) => {
     // Add support for custom block syntax like [!tip], [!warning], [!info], [!example]
@@ -253,6 +315,38 @@ export default function LessonContent({ content, title, lessonType }: LessonCont
 
   return (
     <div className="max-w-none">
+      {/* Reading Progress Bar */}
+      <div className="sticky top-0 z-10 mb-6">
+        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 pb-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <Clock className="w-4 h-4" />
+                <span>{estimatedReadTime} min read</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <BarChart className="w-4 h-4" />
+                <span>{Math.round(readingProgress)}% completed</span>
+              </div>
+              {isReading && (
+                <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span>Reading...</span>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-primary-500 to-primary-600 h-2 rounded-full transition-all duration-300 ease-out"
+              style={{ width: `${readingProgress}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center">
@@ -265,7 +359,7 @@ export default function LessonContent({ content, title, lessonType }: LessonCont
         </div>
       </div>
       
-      <div className="prose prose-gray dark:prose-invert max-w-none">
+      <div ref={contentRef} className="prose prose-gray dark:prose-invert max-w-none">
         <ReactMarkdown components={components}>
           {content}
         </ReactMarkdown>
