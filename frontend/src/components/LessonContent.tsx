@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import { useState, useEffect, useRef } from 'react'
 import { Copy, CheckCircle, ExternalLink, BookOpen, Lightbulb, AlertTriangle, Target, Clock, BarChart } from 'lucide-react'
 import BookmarkButton from './BookmarkButton'
+import { EmbeddedCalculator } from './EmbeddedCalculator'
 
 interface LessonContentProps {
   content: string
@@ -180,9 +181,10 @@ export default function LessonContent({ content, title, lessonType, lessonId }: 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Enhanced content processing to handle custom blocks
+  // Enhanced content processing to handle custom blocks and calculators
   const processContent = (content: string) => {
     // Add support for custom block syntax like [!tip], [!warning], [!info], [!example]
+    // Add support for calculator syntax like [!calculator:cash-flow], [!calculator:roi], etc.
     let processed = content
     
     // Process tip blocks
@@ -377,14 +379,54 @@ export default function LessonContent({ content, title, lessonType, lessonId }: 
         </ReactMarkdown>
       </div>
       
-      {/* Add some sample custom blocks for demonstration */}
-      <div className="mt-8 space-y-4">
+      {/* Interactive calculators based on lesson content */}
+      <div className="mt-12 space-y-4">
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-8">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            📊 Interactive Tools for This Lesson
+          </h3>
+          
+          {/* Show relevant calculators based on lesson content */}
+          {(content.toLowerCase().includes('cash flow') || content.toLowerCase().includes('forecasting')) && (
+            <EmbeddedCalculator
+              type="cash-flow"
+              title="Cash Flow Forecasting Calculator"
+              description="Practice the concepts from this lesson by building your own 4-week cash flow forecast"
+            />
+          )}
+          
+          {content.toLowerCase().includes('working capital') && (
+            <EmbeddedCalculator
+              type="working-capital"
+              title="Working Capital Calculator"
+              description="Calculate your working capital ratios and understand your business liquidity"
+            />
+          )}
+          
+          {(content.toLowerCase().includes('roi') || content.toLowerCase().includes('return on investment')) && (
+            <EmbeddedCalculator
+              type="roi"
+              title="ROI Calculator"
+              description="Calculate return on investment and annualized returns for your projects"
+            />
+          )}
+          
+          {(content.toLowerCase().includes('break-even') || content.toLowerCase().includes('break even')) && (
+            <EmbeddedCalculator
+              type="break-even"
+              title="Break-Even Analysis Calculator"
+              description="Determine how many units you need to sell to break even"
+            />
+          )}
+        </div>
+        
+        {/* Add some sample custom blocks for demonstration */}
         <CustomBlock type="tip">
           This lesson covers fundamental concepts that will be built upon in future lessons. Take notes on key terms and formulas.
         </CustomBlock>
         
         <CustomBlock type="example">
-          Try applying these concepts to your own business scenario. Consider how the ROI calculation might work for a software project you're planning.
+          Try applying these concepts to your own business scenario. Use the interactive calculators above to practice with real numbers from your business.
         </CustomBlock>
       </div>
     </div>
