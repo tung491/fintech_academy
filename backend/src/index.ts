@@ -10,6 +10,7 @@ import quizRoutes from './routes/quizzes';
 import progressRoutes from './routes/progress';
 import userRoutes from './routes/users';
 import analyticsRoutes from './routes/analytics';
+import bookmarkRoutes from './routes/bookmarks';
 
 dotenv.config();
 
@@ -51,6 +52,7 @@ app.use('/api/quizzes', quizRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/bookmarks', bookmarkRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
