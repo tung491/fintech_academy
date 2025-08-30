@@ -257,6 +257,7 @@ export default function WeekPage() {
                           content={lesson.content}
                           title={lesson.title}
                           lessonType={lesson.lesson_type}
+                          lessonId={lesson.id}
                         />
                       </div>
                     )}

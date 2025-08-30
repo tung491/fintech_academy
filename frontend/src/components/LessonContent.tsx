@@ -3,11 +3,13 @@
 import ReactMarkdown from 'react-markdown'
 import { useState, useEffect, useRef } from 'react'
 import { Copy, CheckCircle, ExternalLink, BookOpen, Lightbulb, AlertTriangle, Target, Clock, BarChart } from 'lucide-react'
+import BookmarkButton from './BookmarkButton'
 
 interface LessonContentProps {
   content: string
   title: string
   lessonType: string
+  lessonId: string
 }
 
 interface CodeBlockProps {
@@ -115,7 +117,7 @@ function CustomBlock({ children, type, title }: CustomBlockProps) {
   )
 }
 
-export default function LessonContent({ content, title, lessonType }: LessonContentProps) {
+export default function LessonContent({ content, title, lessonType, lessonId }: LessonContentProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const [readingProgress, setReadingProgress] = useState(0)
   const [estimatedReadTime, setEstimatedReadTime] = useState(0)
@@ -348,13 +350,23 @@ export default function LessonContent({ content, title, lessonType }: LessonCont
       </div>
 
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/50 rounded-lg flex items-center justify-center">
+              <BookOpen className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
+              <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">{lessonType}</span>
+            </div>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
-            <span className="text-sm text-gray-500 dark:text-gray-400 capitalize">{lessonType}</span>
+          <div className="flex items-center gap-2">
+            <BookmarkButton
+              lessonId={lessonId}
+              title={title}
+              description={`Bookmark for lesson: ${title}`}
+              className="shrink-0"
+            />
           </div>
         </div>
       </div>
