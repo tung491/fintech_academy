@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
 import { BookOpen, Clock, Trophy, TrendingUp, BarChart3, ArrowRight, PlayCircle, CheckCircle } from 'lucide-react'
+import LearningPathProgress from '@/components/LearningPathProgress'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -159,7 +160,15 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 gap-8">
+      {/* Learning Path Progress */}
+      {enrollments?.length > 0 && (
+        <LearningPathProgress 
+          courseId={enrollments[0].course_id} 
+          className="mt-8"
+        />
+      )}
+
+      <div className="grid md:grid-cols-2 gap-8 mt-8">
         <div>
           <h2 className="text-xl font-semibold mb-4">Your Courses</h2>
           {enrollments?.length > 0 ? (

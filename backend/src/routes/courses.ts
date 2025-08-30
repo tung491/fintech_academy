@@ -187,4 +187,100 @@ router.get('/:courseId/week/:weekNumber', authenticate, async (req: AuthRequest,
   }
 });
 
+// Get learning path progress for a course
+router.get('/:courseId/progress', authenticate, async (req: AuthRequest, res) => {
+  try {
+    const { courseId } = req.params;
+    const userId = req.user!.id;
+
+    // Get all weeks for the course with lessons and progress
+    const weeks = await prisma.week.findMany({
+      where: {
+        courseId
+      },
+      include: {
+        lessons: {
+          include: {
+            progress: {
+              where: {
+                userId
+              }
+            }
+          },
+          orderBy: {
+            orderIndex: 'asc'
+          }
+        },
+        quizzes: {
+          include: {
+            attempts: {
+              where: {
+                userId
+              },
+              orderBy: {
+                completedAt: 'desc'
+              },
+              take: 1
+            }
+          }
+        }
+      },
+      orderBy: {
+        weekNumber: 'asc'
+      }
+    });
+
+    const progressData = weeks.map((week, index) => {
+      const completedLessons = week.lessons.filter(lesson => 
+        lesson.progress[0]?.completed
+      ).length;
+
+      const totalLessons = week.lessons.length;
+      
+      // Check if quiz is completed
+      const quizCompleted = week.quizzes.length > 0 && 
+        week.quizzes[0].attempts.length > 0 &&
+        week.quizzes[0].attempts[0].passed;
+      
+      const quizScore = quizCompleted ? 
+        week.quizzes[0].attempts[0].score : undefined;
+
+      // Determine if week is unlocked
+      // Week 1 is always unlocked, subsequent weeks unlock when previous week is completed
+      let isUnlocked = true;
+      if (index > 0) {
+        const previousWeek = weeks[index - 1];
+        const prevCompletedLessons = previousWeek.lessons.filter(lesson => 
+          lesson.progress[0]?.completed
+        ).length;
+        const prevTotalLessons = previousWeek.lessons.length;
+        const prevQuizCompleted = previousWeek.quizzes.length > 0 && 
+          previousWeek.quizzes[0].attempts.length > 0 &&
+          previousWeek.quizzes[0].attempts[0].passed;
+        
+        isUnlocked = prevCompletedLessons === prevTotalLessons && 
+          (previousWeek.quizzes.length === 0 || prevQuizCompleted);
+      }
+
+      return {
+        weekNumber: week.weekNumber,
+        title: week.title,
+        description: week.overview || '',
+        estimatedHours: week.estimatedHours || 0,
+        lessonCount: totalLessons,
+        completedLessons,
+        quizCompleted,
+        quizScore,
+        isUnlocked,
+        courseId: week.courseId
+      };
+    });
+
+    res.json(progressData);
+  } catch (error) {
+    console.error('Error fetching learning path progress:', error);
+    return res.status(500).json({ error: 'Failed to fetch learning path progress' });
+  }
+});
+
 export default router;
