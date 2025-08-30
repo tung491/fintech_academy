@@ -54,7 +54,7 @@ export default function HomePage() {
               <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{course.title}</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">{course.description}</p>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-500 dark:text-gray-500">{course.week_count} weeks</span>
+                <span className="text-sm text-gray-500 dark:text-gray-500">{course.weekCount} weeks</span>
                 <Link href={`/courses/${course.id}`} className="btn-primary">
                   View Course
                 </Link>
