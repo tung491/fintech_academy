@@ -2,17 +2,34 @@
 
 import ReactMarkdown from 'react-markdown'
 import { useState, useEffect, useRef } from 'react'
-import { Copy, CheckCircle, ExternalLink, BookOpen, Lightbulb, AlertTriangle, Target, Clock, BarChart } from 'lucide-react'
+import { Copy, CheckCircle, ExternalLink, BookOpen, Lightbulb, AlertTriangle, Target, Clock, BarChart, ChevronLeft, ChevronRight, Award } from 'lucide-react'
 import BookmarkButton from './BookmarkButton'
 import { EmbeddedCalculator } from './EmbeddedCalculator'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
+import Link from 'next/link'
 
 interface LessonContentProps {
   content: string
   title: string
   lessonType: string
   lessonId: string
+  courseId?: string
+  weekNumber?: number
+  previousLesson?: {
+    id: string
+    title: string
+    weekNumber: number
+  }
+  nextLesson?: {
+    id: string
+    title: string
+    weekNumber: number
+  }
+  lessonProgress?: {
+    completed: boolean
+    timeSpent: number
+  }
 }
 
 interface CodeBlockProps {
@@ -120,7 +137,17 @@ function CustomBlock({ children, type, title }: CustomBlockProps) {
   )
 }
 
-export default function LessonContent({ content, title, lessonType, lessonId }: LessonContentProps) {
+export default function LessonContent({ 
+  content, 
+  title, 
+  lessonType, 
+  lessonId, 
+  courseId,
+  weekNumber,
+  previousLesson,
+  nextLesson,
+  lessonProgress 
+}: LessonContentProps) {
   const contentRef = useRef<HTMLDivElement>(null)
   const [readingProgress, setReadingProgress] = useState(0)
   const [estimatedReadTime, setEstimatedReadTime] = useState(0)
@@ -542,6 +569,131 @@ export default function LessonContent({ content, title, lessonType, lessonId }: 
           Try applying these concepts to your own business scenario. Use the interactive calculators above to practice with real numbers from your business.
         </CustomBlock>
       </div>
+
+      {/* Enhanced Lesson Navigation */}
+      {(previousLesson || nextLesson || courseId) && (
+        <div className="mt-16 pt-8 border-t-2 border-gray-200 dark:border-gray-700">
+          {/* Lesson Completion Status */}
+          {lessonProgress && (
+            <div className="mb-8">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="flex items-center gap-3">
+                  <Award className={`w-6 h-6 ${lessonProgress.completed ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}`} />
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">
+                      {lessonProgress.completed ? 'Lesson Complete!' : 'Keep Learning'}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Time spent: {lessonProgress.timeSpent} minutes
+                      {lessonProgress.completed ? ' • Well done!' : ' • Continue reading to complete'}
+                    </p>
+                  </div>
+                </div>
+                {lessonProgress.completed && (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/50 rounded-full">
+                    <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    <span className="text-sm font-medium text-green-800 dark:text-green-200">Complete</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Navigation Buttons */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Previous Lesson */}
+            <div className="flex justify-start">
+              {previousLesson ? (
+                <Link 
+                  href={`/courses/${courseId}/week/${previousLesson.weekNumber}`}
+                  className="group flex items-center gap-3 p-6 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-lg transition-all duration-200 max-w-sm w-full"
+                >
+                  <div className="flex-shrink-0 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg group-hover:bg-primary-100 dark:group-hover:bg-primary-900/50 transition-colors">
+                    <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                      Previous Lesson
+                    </div>
+                    <div className="font-semibold text-gray-900 dark:text-white text-sm leading-tight line-clamp-2">
+                      {previousLesson.title}
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Week {previousLesson.weekNumber}
+                    </div>
+                  </div>
+                </Link>
+              ) : (
+                <div className="flex items-center gap-3 p-6 bg-gray-50 dark:bg-gray-800/50 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl max-w-sm w-full opacity-50">
+                  <div className="flex-shrink-0 p-2 bg-gray-200 dark:bg-gray-700 rounded-lg">
+                    <ChevronLeft className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">
+                      Previous Lesson
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      This is the first lesson
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Next Lesson */}
+            <div className="flex justify-end">
+              {nextLesson ? (
+                <Link 
+                  href={`/courses/${courseId}/week/${nextLesson.weekNumber}`}
+                  className="group flex items-center gap-3 p-6 bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 border-2 border-primary-200 dark:border-primary-700 rounded-xl hover:border-primary-300 dark:hover:border-primary-600 hover:shadow-lg transition-all duration-200 max-w-sm w-full"
+                >
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wider mb-1">
+                      Next Lesson
+                    </div>
+                    <div className="font-semibold text-gray-900 dark:text-white text-sm leading-tight line-clamp-2">
+                      {nextLesson.title}
+                    </div>
+                    <div className="text-xs text-primary-600 dark:text-primary-400 mt-1">
+                      Week {nextLesson.weekNumber}
+                    </div>
+                  </div>
+                  <div className="flex-shrink-0 p-2 bg-primary-100 dark:bg-primary-900/50 rounded-lg group-hover:bg-primary-200 dark:group-hover:bg-primary-800 transition-colors">
+                    <ChevronRight className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  </div>
+                </Link>
+              ) : (
+                <div className="flex items-center gap-3 p-6 bg-gray-50 dark:bg-gray-800/50 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl max-w-sm w-full opacity-50">
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">
+                      Next Lesson
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      This is the last lesson
+                    </div>
+                  </div>
+                  <div className="flex-shrink-0 p-2 bg-gray-200 dark:bg-gray-700 rounded-lg">
+                    <ChevronRight className="w-5 h-5 text-gray-400" />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Back to Course Overview */}
+          {courseId && (
+            <div className="mt-6 text-center">
+              <Link 
+                href={`/courses/${courseId}`}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg transition-colors font-medium"
+              >
+                <BookOpen className="w-4 h-4" />
+                Back to Course Overview
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
