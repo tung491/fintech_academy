@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useAuthStore } from '@/stores/authStore'
 
 interface HydrationProviderProps {
   children: React.ReactNode
@@ -9,17 +8,11 @@ interface HydrationProviderProps {
 
 export default function HydrationProvider({ children }: HydrationProviderProps) {
   const [isHydrated, setIsHydrated] = useState(false)
-  const setHasHydrated = useAuthStore(state => state.setHasHydrated)
 
   useEffect(() => {
-    // Give a brief moment for proper hydration then mark as complete
-    const timer = setTimeout(() => {
-      setHasHydrated(true)
-      setIsHydrated(true)
-    }, 100) // Very short delay to allow proper hydration
-
-    return () => clearTimeout(timer)
-  }, [setHasHydrated])
+    // Mark as hydrated immediately to avoid loading screen issues
+    setIsHydrated(true)
+  }, [])
 
   // Only show loading for a very brief moment during initial hydration
   if (!isHydrated) {
