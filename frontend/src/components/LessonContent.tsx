@@ -1,6 +1,6 @@
 'use client'
 
-import ReactMarkdown from 'react-markdown'
+import { marked } from 'marked'
 import { useState, useEffect, useRef } from 'react'
 import { Copy, CheckCircle, ExternalLink, BookOpen, Lightbulb, AlertTriangle, Target, Clock, BarChart, ChevronLeft, ChevronRight, Award } from 'lucide-react'
 import BookmarkButton from './BookmarkButton'
@@ -280,178 +280,100 @@ export default function LessonContent({
     }
   }, []) // Empty dependency array - only run on unmount
 
-  // Enhanced content processing to handle custom blocks and calculators
+  // Enhanced content processing to handle custom blocks and convert to HTML
   const processContent = (content: string) => {
-    let processed = content
-    
-    // Process custom blocks with improved regex patterns
-    // The regex now handles multi-line content better and stops at the next [! block or double newline
-    
-    // Process tip blocks
-    processed = processed.replace(
-      /\[!tip\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
-      (match, content) => {
-        const blockContent = content.trim()
-        return `\n<div class="custom-block-tip p-4 rounded-lg border-l-4 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 my-6">
-  <div class="flex items-center gap-2 mb-3">
-    <div class="text-yellow-600 dark:text-yellow-400">💡</div>
-    <h4 class="font-semibold text-yellow-800 dark:text-yellow-200">Tip</h4>
-  </div>
-  <div class="text-gray-700 dark:text-gray-300">${blockContent}</div>
+    try {
+      if (!content) return '<p class="text-gray-700 dark:text-gray-300">No content available</p>'
+      
+      let processed = content
+      
+      // Process custom blocks first by converting them to HTML with placeholders
+      // Process [!tip] blocks
+      processed = processed.replace(
+        /\[!tip\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
+        (match, blockContent) => {
+          const cleanContent = blockContent.trim()
+          const htmlContent = marked.parse(cleanContent) as string
+          return `\n<div class="p-4 rounded-lg border-l-4 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 my-6">
+<div class="flex items-center gap-2 mb-3">
+<div class="text-yellow-600 dark:text-yellow-400">💡</div>
+<h4 class="font-semibold text-yellow-800 dark:text-yellow-200">Tip</h4>
+</div>
+<div class="text-gray-700 dark:text-gray-300">${htmlContent}</div>
 </div>\n`
-      }
-    )
-    
-    // Process warning blocks
-    processed = processed.replace(
-      /\[!warning\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
-      (match, content) => {
-        const blockContent = content.trim()
-        return `\n<div class="custom-block-warning p-4 rounded-lg border-l-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 my-6">
-  <div class="flex items-center gap-2 mb-3">
-    <div class="text-red-600 dark:text-red-400">⚠️</div>
-    <h4 class="font-semibold text-red-800 dark:text-red-200">Warning</h4>
-  </div>
-  <div class="text-gray-700 dark:text-gray-300">${blockContent}</div>
+        }
+      )
+      
+      // Process [!warning] blocks
+      processed = processed.replace(
+        /\[!warning\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
+        (match, blockContent) => {
+          const cleanContent = blockContent.trim()
+          const htmlContent = marked.parse(cleanContent) as string
+          return `\n<div class="p-4 rounded-lg border-l-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 my-6">
+<div class="flex items-center gap-2 mb-3">
+<div class="text-red-600 dark:text-red-400">⚠️</div>
+<h4 class="font-semibold text-red-800 dark:text-red-200">Warning</h4>
+</div>
+<div class="text-gray-700 dark:text-gray-300">${htmlContent}</div>
 </div>\n`
-      }
-    )
-    
-    // Process info blocks
-    processed = processed.replace(
-      /\[!info\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
-      (match, content) => {
-        const blockContent = content.trim()
-        return `\n<div class="custom-block-info p-4 rounded-lg border-l-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 my-6">
-  <div class="flex items-center gap-2 mb-3">
-    <div class="text-blue-600 dark:text-blue-400">ℹ️</div>
-    <h4 class="font-semibold text-blue-800 dark:text-blue-200">Information</h4>
-  </div>
-  <div class="text-gray-700 dark:text-gray-300">${blockContent}</div>
+        }
+      )
+      
+      // Process [!info] blocks  
+      processed = processed.replace(
+        /\[!info\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
+        (match, blockContent) => {
+          const cleanContent = blockContent.trim()
+          const htmlContent = marked.parse(cleanContent) as string
+          return `\n<div class="p-4 rounded-lg border-l-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 my-6">
+<div class="flex items-center gap-2 mb-3">
+<div class="text-blue-600 dark:text-blue-400">ℹ️</div>
+<h4 class="font-semibold text-blue-800 dark:text-blue-200">Information</h4>
+</div>
+<div class="text-gray-700 dark:text-gray-300">${htmlContent}</div>
 </div>\n`
-      }
-    )
-    
-    // Process example blocks
-    processed = processed.replace(
-      /\[!example\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
-      (match, content) => {
-        const blockContent = content.trim()
-        return `\n<div class="custom-block-example p-4 rounded-lg border-l-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 my-6">
-  <div class="flex items-center gap-2 mb-3">
-    <div class="text-green-600 dark:text-green-400">📝</div>
-    <h4 class="font-semibold text-green-800 dark:text-green-200">Example</h4>
-  </div>
-  <div class="text-gray-700 dark:text-gray-300">${blockContent}</div>
+        }
+      )
+      
+      // Process [!example] blocks
+      processed = processed.replace(
+        /\[!example\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
+        (match, blockContent) => {
+          const cleanContent = blockContent.trim()
+          const htmlContent = marked.parse(cleanContent) as string
+          return `\n<div class="p-4 rounded-lg border-l-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 my-6">
+<div class="flex items-center gap-2 mb-3">
+<div class="text-green-600 dark:text-green-400">📝</div>
+<h4 class="font-semibold text-green-800 dark:text-green-200">Example</h4>
+</div>
+<div class="text-gray-700 dark:text-gray-300">${htmlContent}</div>
 </div>\n`
-      }
-    )
-    
-    return processed
+        }
+      )
+      
+      // Convert remaining markdown to HTML
+      let html = marked.parse(processed) as string
+      
+      // Add styling classes to remaining elements
+      html = html
+        .replace(/<h1>/g, '<h1 class="text-3xl font-bold text-gray-900 dark:text-white mt-8 mb-4">')
+        .replace(/<h2>/g, '<h2 class="text-2xl font-bold text-gray-900 dark:text-white mt-6 mb-3">')
+        .replace(/<h3>/g, '<h3 class="text-xl font-semibold text-gray-900 dark:text-white mt-4 mb-2">')
+        .replace(/<p>/g, '<p class="text-gray-700 dark:text-gray-300 mb-4">')
+        .replace(/<ul>/g, '<ul class="list-disc list-inside mb-4 text-gray-700 dark:text-gray-300">')
+        .replace(/<ol>/g, '<ol class="list-decimal list-inside mb-4 text-gray-700 dark:text-gray-300">')
+        .replace(/<li>/g, '<li class="mb-1">')
+        .replace(/<strong>/g, '<strong class="font-semibold text-gray-900 dark:text-white">')
+        .replace(/<code>/g, '<code class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-1 py-0.5 rounded text-sm">')
+      
+      return html
+    } catch (error) {
+      console.error('Error processing content:', error)
+      return `<div class="text-gray-700 dark:text-gray-300">${content.split('\n').map(line => `<p class="mb-2">${line}</p>`).join('')}</div>`
+    }
   }
 
-  const components = {
-    code: ({ node, inline, className, children, ...props }: any) => {
-      const match = /language-(\w+)/.exec(className || '')
-      
-      if (!inline && match) {
-        return <CodeBlock className={className}>{String(children).replace(/\n$/, '')}</CodeBlock>
-      }
-      
-      return (
-        <code 
-          className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-2 py-1 rounded text-sm font-mono"
-          {...props}
-        >
-          {children}
-        </code>
-      )
-    },
-    
-    h1: ({ children }: any) => (
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-8 mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-        {children}
-      </h1>
-    ),
-    
-    h2: ({ children }: any) => (
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-6 mb-3">
-        {children}
-      </h2>
-    ),
-    
-    h3: ({ children }: any) => (
-      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mt-4 mb-2">
-        {children}
-      </h3>
-    ),
-    
-    p: ({ children }: any) => (
-      <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
-        {children}
-      </p>
-    ),
-    
-    ul: ({ children }: any) => (
-      <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700 dark:text-gray-300">
-        {children}
-      </ul>
-    ),
-    
-    ol: ({ children }: any) => (
-      <ol className="list-decimal list-inside mb-4 space-y-2 text-gray-700 dark:text-gray-300">
-        {children}
-      </ol>
-    ),
-    
-    li: ({ children }: any) => (
-      <li className="ml-4">{children}</li>
-    ),
-    
-    blockquote: ({ children }: any) => (
-      <blockquote className="border-l-4 border-primary-500 pl-4 italic text-gray-600 dark:text-gray-400 my-4">
-        {children}
-      </blockquote>
-    ),
-    
-    a: ({ href, children }: any) => (
-      <a 
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200 underline inline-flex items-center gap-1"
-      >
-        {children}
-        <ExternalLink className="w-3 h-3" />
-      </a>
-    ),
-    
-    table: ({ children }: any) => (
-      <div className="overflow-x-auto my-6">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          {children}
-        </table>
-      </div>
-    ),
-    
-    thead: ({ children }: any) => (
-      <thead className="bg-gray-50 dark:bg-gray-800">
-        {children}
-      </thead>
-    ),
-    
-    th: ({ children }: any) => (
-      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-        {children}
-      </th>
-    ),
-    
-    td: ({ children }: any) => (
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-        {children}
-      </td>
-    )
-  }
 
   return (
     <div className="max-w-none">
@@ -510,13 +432,7 @@ export default function LessonContent({
       </div>
       
       <div ref={contentRef} className="prose prose-gray dark:prose-invert max-w-none">
-        <ReactMarkdown 
-          components={components}
-          urlTransform={null}
-          allowedElements={undefined}
-        >
-          {processContent(content)}
-        </ReactMarkdown>
+        <div dangerouslySetInnerHTML={{ __html: processContent(content) }} />
       </div>
       
       {/* Interactive calculators based on lesson content */}

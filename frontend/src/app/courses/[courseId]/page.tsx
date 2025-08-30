@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
-import { BookOpen, Clock, PlayCircle, CheckCircle, Users, Award } from 'lucide-react'
+import { BookOpen, Clock, PlayCircle, CheckCircle, Users, Award, User, Star, Tag, DollarSign } from 'lucide-react'
 
 export default function CourseDetailPage() {
   const params = useParams()
@@ -17,6 +17,11 @@ export default function CourseDetailPage() {
     queryFn: () => api.get(`/courses/${courseId}`).then(res => res.data),
     enabled: !!courseId
   })
+
+  const formatPrice = (priceInCents: number | null) => {
+    if (!priceInCents) return 'Free'
+    return `$${(priceInCents / 100).toFixed(0)}`
+  }
 
   if (isLoading) {
     return (
@@ -53,41 +58,117 @@ export default function CourseDetailPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Course Info */}
           <div className="lg:col-span-2">
+            {/* Course Category and Level */}
+            <div className="flex items-center gap-4 mb-4">
+              {course.category && (
+                <span 
+                  className="px-3 py-1 text-sm font-medium rounded-full text-white"
+                  style={{ backgroundColor: course.category.color }}
+                >
+                  {course.category.icon} {course.category.name}
+                </span>
+              )}
+              <span className="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                <Star className="w-4 h-4 inline mr-1" />
+                {course.level || 'Beginner'}
+              </span>
+            </div>
+            
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
               {course.title}
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
-              {course.description}
+            <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
+              {course.shortDescription || course.description}
             </p>
+            
+            {/* Instructor Info */}
+            {course.instructor && (
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
+                  <User className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900 dark:text-white">
+                    {course.instructor}
+                  </div>
+                  {course.instructorBio && (
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      {course.instructorBio.substring(0, 100)}...
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
             
             <div className="flex flex-wrap gap-6 text-sm text-gray-600 dark:text-gray-400 mb-6">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                <span>{course.weeks?.length || 0} weeks</span>
+                <span>{course.duration || `${course.weeks?.length || 0} weeks`}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4" />
+                <span>{course.totalEstimatedHours || course.estimatedHours || 32}h total</span>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4" />
                 <span>Self-paced</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4" />
+                <CheckCircle className="w-4 h-4" />
                 <span>Certificate included</span>
               </div>
             </div>
+
+            {/* Target Audience */}
+            {course.targetAudience && (
+              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                  Who this course is for:
+                </h3>
+                <p className="text-blue-800 dark:text-blue-200 text-sm">
+                  {course.targetAudience}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Course Action Card */}
           <div className="lg:col-span-1">
             <div className="card sticky top-4">
               <div className="text-center mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 dark:from-primary-600 dark:to-primary-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-10 h-10 text-white" />
+                <div 
+                  className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-2xl"
+                  style={{ backgroundColor: course.category?.color || '#3B82F6' }}
+                >
+                  {course.category?.icon || <BookOpen className="w-10 h-10" />}
                 </div>
-                <div className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">
-                  Free
+                
+                {/* Pricing */}
+                <div className="mb-4">
+                  {course.originalPrice && course.originalPrice !== course.price ? (
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <div className="text-3xl font-bold text-primary-600 dark:text-primary-400">
+                        {formatPrice(course.price)}
+                      </div>
+                      <div className="text-lg text-gray-500 dark:text-gray-400 line-through">
+                        {formatPrice(course.originalPrice)}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+                      {formatPrice(course.price)}
+                    </div>
+                  )}
+                  
+                  {course.originalPrice && course.originalPrice !== course.price && (
+                    <div className="text-sm text-green-600 dark:text-green-400 font-medium">
+                      Save {formatPrice(course.originalPrice - course.price)}
+                    </div>
+                  )}
                 </div>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Full access to all course materials
+                
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  {course.price ? 'One-time purchase' : 'Full access to all course materials'}
                 </p>
               </div>
               
@@ -186,36 +267,43 @@ export default function CourseDetailPage() {
                 What You'll Learn
               </h3>
               <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Master financial fundamentals for tech businesses
-                  </span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Learn to read and analyze financial statements
-                  </span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Understand cash flow and working capital management
-                  </span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Make informed investment and funding decisions
-                  </span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-gray-600 dark:text-gray-400">
-                    Plan for business growth and exit strategies
-                  </span>
-                </div>
+                {course.skillsLearned && course.skillsLearned.length > 0 ? (
+                  course.skillsLearned.map((skill: string, index: number) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {skill}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Master financial fundamentals for tech businesses
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Learn to read and analyze financial statements
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Understand cash flow and working capital management
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-600 dark:text-gray-400">
+                        Make informed investment and funding decisions
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
