@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useAuthStore } from '@/stores/authStore'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { SearchBar } from '@/components/SearchBar'
 import { GraduationCap, User, LogOut, Calculator, BarChart3, Bookmark } from 'lucide-react'
 
 export function Header() {
@@ -40,6 +41,7 @@ export function Header() {
                   <Bookmark className="w-4 h-4" />
                   <span>Bookmarks</span>
                 </Link>
+                <SearchBar />
                 <div className="flex items-center space-x-4">
                   <ThemeToggle />
                   <Link href="/profile" className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
