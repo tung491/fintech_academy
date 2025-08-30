@@ -135,6 +135,7 @@ router.post('/:lessonId/access', authenticate, async (req: AuthRequest, res) => 
     const userId = req.user!.id;
     const { timeSpent } = req.body;
 
+
     // Check if progress already exists using Prisma
     const existingProgress = await prisma.userProgress.findUnique({
       where: {
@@ -157,8 +158,7 @@ router.post('/:lessonId/access', authenticate, async (req: AuthRequest, res) => 
         data: {
           timeSpentMinutes: {
             increment: timeSpent || 0
-          },
-          updatedAt: new Date()
+          }
         }
       });
     } else {
@@ -180,7 +180,7 @@ router.post('/:lessonId/access', authenticate, async (req: AuthRequest, res) => 
       time_spent_minutes: timeSpent || 0
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error tracking lesson access:', error);
     return res.status(500).json({ error: 'Failed to track lesson access' });
   }
 });
@@ -191,31 +191,68 @@ router.post('/:lessonId/complete', authenticate, async (req: AuthRequest, res) =
     const userId = req.user!.id;
     const { timeSpent } = req.body;
 
-    // Check if progress already exists
-    const existingProgress = await pool.query(
-      `SELECT * FROM user_progress WHERE user_id = ? AND lesson_id = ?`,
-      [userId, lessonId]
-    );
+    console.log(`Attempting lesson completion - User: ${userId}, Lesson: ${lessonId}`);
 
-    if (existingProgress.rows.length > 0) {
-      // Update existing
-      await pool.query(
-        `UPDATE user_progress SET 
-           completed = 1, 
-           completed_at = datetime('now'),
-           time_spent_minutes = time_spent_minutes + ?,
-           updated_at = datetime('now')
-         WHERE user_id = ? AND lesson_id = ?`,
-        [timeSpent || 0, userId, lessonId]
-      );
+    // Verify lesson exists
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: lessonId }
+    });
+    
+    if (!lesson) {
+      console.error(`Lesson not found in database: ${lessonId}`);
+      return res.status(404).json({ error: 'Lesson not found' });
+    }
+    
+    // Verify user exists  
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+    
+    if (!user) {
+      console.error(`User not found in database: ${userId}`);
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    console.log(`Found user: ${user.email} and lesson: ${lesson.title}`);
+
+    // Check if progress already exists using Prisma
+    const existingProgress = await prisma.userProgress.findUnique({
+      where: {
+        userId_lessonId: {
+          userId: userId,
+          lessonId: lessonId
+        }
+      }
+    });
+
+    if (existingProgress) {
+      // Update existing - mark as completed
+      await prisma.userProgress.update({
+        where: {
+          userId_lessonId: {
+            userId: userId,
+            lessonId: lessonId
+          }
+        },
+        data: {
+          completed: true,
+          completedAt: new Date(),
+          timeSpentMinutes: {
+            increment: timeSpent || 0
+          }
+        }
+      });
     } else {
-      // Insert new
-      const progressId = Math.random().toString(36).substr(2, 9);
-      await pool.query(
-        `INSERT INTO user_progress (id, user_id, lesson_id, completed, completed_at, time_spent_minutes, created_at, updated_at)
-         VALUES (?, ?, ?, 1, datetime('now'), ?, datetime('now'), datetime('now'))`,
-        [progressId, userId, lessonId, timeSpent || 0]
-      );
+      // Insert new progress record as completed using Prisma
+      await prisma.userProgress.create({
+        data: {
+          userId: userId,
+          lessonId: lessonId,
+          completed: true,
+          completedAt: new Date(),
+          timeSpentMinutes: timeSpent || 0
+        }
+      });
     }
 
     await updateCourseProgress(userId, lessonId);
@@ -228,46 +265,64 @@ router.post('/:lessonId/complete', authenticate, async (req: AuthRequest, res) =
       time_spent_minutes: timeSpent || 0
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error completing lesson:', error);
     return res.status(500).json({ error: 'Failed to update progress' });
   }
 });
 
 async function updateCourseProgress(userId: string, lessonId: string) {
   try {
-    const courseResult = await pool.query(
-      `SELECT c.id FROM courses c
-       JOIN weeks w ON w.course_id = c.id
-       JOIN lessons l ON l.week_id = w.id
-       WHERE l.id = ?`,
-      [lessonId]
-    );
+    // Find the course ID for this lesson using Prisma
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: lessonId },
+      include: {
+        week: {
+          include: {
+            course: true
+          }
+        }
+      }
+    });
 
-    if (courseResult.rows.length === 0) return;
+    if (!lesson) return;
 
-    const courseId = courseResult.rows[0].id;
+    const courseId = lesson.week.course.id;
 
-    const progressResult = await pool.query(
-      `SELECT 
-         COUNT(DISTINCT l.id) as total_lessons,
-         COUNT(DISTINCT CASE WHEN up.completed = 1 THEN up.lesson_id END) as completed_lessons
-       FROM lessons l
-       JOIN weeks w ON w.id = l.week_id
-       LEFT JOIN user_progress up ON up.lesson_id = l.id AND up.user_id = ?
-       WHERE w.course_id = ?`,
-      [userId, courseId]
-    );
+    // Get all lessons in this course
+    const totalLessons = await prisma.lesson.count({
+      where: {
+        week: {
+          courseId: courseId
+        }
+      }
+    });
 
-    const { total_lessons, completed_lessons } = progressResult.rows[0];
-    const progressPercentage = (completed_lessons / total_lessons) * 100;
+    // Get completed lessons for this user in this course
+    const completedLessons = await prisma.userProgress.count({
+      where: {
+        userId: userId,
+        completed: true,
+        lesson: {
+          week: {
+            courseId: courseId
+          }
+        }
+      }
+    });
 
-    await pool.query(
-      `UPDATE user_enrollments 
-       SET progress_percentage = ?,
-           completed_at = CASE WHEN ? = 100 THEN datetime('now') ELSE NULL END
-       WHERE user_id = ? AND course_id = ?`,
-      [progressPercentage, progressPercentage, userId, courseId]
-    );
+    const progressPercentage = (completedLessons / totalLessons) * 100;
+
+    // Update user enrollment progress
+    await prisma.userEnrollment.updateMany({
+      where: {
+        userId: userId,
+        courseId: courseId
+      },
+      data: {
+        progressPercentage: progressPercentage,
+        completedAt: progressPercentage === 100 ? new Date() : null
+      }
+    });
   } catch (error) {
     console.error('Error updating course progress:', error);
   }

@@ -4,6 +4,25 @@ import { authenticate, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
+// Get all course categories
+router.get('/categories', async (_req, res) => {
+  try {
+    const categories = await prisma.courseCategory.findMany({
+      where: {
+        isActive: true
+      },
+      orderBy: {
+        orderIndex: 'asc'
+      }
+    });
+
+    return res.json(categories);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Failed to fetch course categories' });
+  }
+});
+
 router.get('/', async (_req, res) => {
   try {
     const courses = await prisma.course.findMany({
@@ -11,9 +30,19 @@ router.get('/', async (_req, res) => {
         isPublished: true
       },
       include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            color: true,
+            icon: true
+          }
+        },
         weeks: {
           select: {
-            id: true
+            id: true,
+            estimatedHours: true
           }
         }
       },
@@ -22,13 +51,15 @@ router.get('/', async (_req, res) => {
       }
     });
 
-    const coursesWithWeekCount = courses.map(course => ({
+    const coursesWithStats = courses.map(course => ({
       ...course,
       weekCount: course.weeks.length,
+      totalEstimatedHours: course.weeks.reduce((sum, week) => sum + (week.estimatedHours || 0), 0),
+      skillsLearned: course.skillsLearned ? JSON.parse(course.skillsLearned) : [],
       weeks: undefined
     }));
 
-    return res.json(coursesWithWeekCount);
+    return res.json(coursesWithStats);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Failed to fetch courses' });
@@ -45,6 +76,15 @@ router.get('/:courseId', async (req, res) => {
         isPublished: true
       },
       include: {
+        category: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            color: true,
+            icon: true
+          }
+        },
         weeks: {
           include: {
             lessons: {
@@ -72,7 +112,9 @@ router.get('/:courseId', async (req, res) => {
 
     return res.json({
       ...course,
-      weeks: weeksWithLessonCount
+      weeks: weeksWithLessonCount,
+      skillsLearned: course.skillsLearned ? JSON.parse(course.skillsLearned) : [],
+      totalEstimatedHours: course.weeks.reduce((sum, week) => sum + (week.estimatedHours || 0), 0)
     });
   } catch (error) {
     console.error(error);

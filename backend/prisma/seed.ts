@@ -6,6 +6,83 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🌱 Starting database seeding...')
 
+  // Create course categories
+  const foundationCategory = await prisma.courseCategory.upsert({
+    where: { slug: 'foundation' },
+    update: {
+      name: 'Foundation Courses',
+      description: 'Beginner-level courses covering basic financial literacy and business fundamentals for developers',
+      color: '#3B82F6',
+      icon: '🏗️',
+      orderIndex: 1,
+    },
+    create: {
+      name: 'Foundation Courses',
+      slug: 'foundation',
+      description: 'Beginner-level courses covering basic financial literacy and business fundamentals for developers',
+      color: '#3B82F6',
+      icon: '🏗️',
+      orderIndex: 1,
+    },
+  })
+
+  const accountingCategory = await prisma.courseCategory.upsert({
+    where: { slug: 'accounting' },
+    update: {
+      name: 'Accounting & Bookkeeping',
+      description: 'Intermediate-level accounting courses for tech businesses and startups',
+      color: '#10B981',
+      icon: '📊',
+      orderIndex: 2,
+    },
+    create: {
+      name: 'Accounting & Bookkeeping',
+      slug: 'accounting',
+      description: 'Intermediate-level accounting courses for tech businesses and startups',
+      color: '#10B981',
+      icon: '📊',
+      orderIndex: 2,
+    },
+  })
+
+  const taxCategory = await prisma.courseCategory.upsert({
+    where: { slug: 'tax-planning' },
+    update: {
+      name: 'Tax Planning',
+      description: 'Tax strategy and planning courses for freelancers, businesses, and high earners',
+      color: '#F59E0B',
+      icon: '🧾',
+      orderIndex: 3,
+    },
+    create: {
+      name: 'Tax Planning',
+      slug: 'tax-planning',
+      description: 'Tax strategy and planning courses for freelancers, businesses, and high earners',
+      color: '#F59E0B',
+      icon: '🧾',
+      orderIndex: 3,
+    },
+  })
+
+  const investmentCategory = await prisma.courseCategory.upsert({
+    where: { slug: 'investment-finance' },
+    update: {
+      name: 'Investment & Advanced Finance',
+      description: 'Advanced finance courses covering investments, startup finance, and corporate finance',
+      color: '#8B5CF6',
+      icon: '💰',
+      orderIndex: 4,
+    },
+    create: {
+      name: 'Investment & Advanced Finance',
+      slug: 'investment-finance',
+      description: 'Advanced finance courses covering investments, startup finance, and corporate finance',
+      color: '#8B5CF6',
+      icon: '💰',
+      orderIndex: 4,
+    },
+  })
+
   // Create or update admin user
   const adminPassword = await bcrypt.hash('admin123', 10)
   const admin = await prisma.user.upsert({
@@ -40,15 +117,53 @@ async function main() {
     update: {
       title: 'Financial and Accounting Knowledge for Developers',
       description: 'A comprehensive course teaching financial and accounting knowledge specifically for developers to run their own businesses.',
+      shortDescription: 'Learn essential finance concepts to successfully run your developer business.',
+      categoryId: foundationCategory.id,
+      level: 'beginner',
+      duration: '4 weeks',
+      estimatedHours: 32,
+      price: 9700, // $97.00 in cents
+      originalPrice: 12700, // $127.00 in cents
+      instructor: 'Sarah Chen, CPA, MBA',
+      instructorBio: 'Former Silicon Valley CFO with 15+ years helping tech companies scale from startup to IPO. Specialized in developer-friendly financial education.',
+      thumbnailUrl: '/images/courses/financial-literacy-fundamentals.jpg',
+      skillsLearned: JSON.stringify([
+        'Time value of money calculations',
+        'Cash flow forecasting and management',
+        'Business model analysis and optimization',
+        'Financial planning and goal setting',
+        'Risk assessment and mitigation'
+      ]),
+      targetAudience: 'Developers transitioning to entrepreneurship, freelancers, and tech consultants who need foundational business finance knowledge.',
       orderIndex: 1,
       isPublished: true,
+      isFeatured: true,
     },
     create: {
       title: 'Financial and Accounting Knowledge for Developers',
       slug: 'finacademy-for-developers',
       description: 'A comprehensive course teaching financial and accounting knowledge specifically for developers to run their own businesses.',
+      shortDescription: 'Learn essential finance concepts to successfully run your developer business.',
+      categoryId: foundationCategory.id,
+      level: 'beginner',
+      duration: '4 weeks',
+      estimatedHours: 32,
+      price: 9700, // $97.00 in cents
+      originalPrice: 12700, // $127.00 in cents
+      instructor: 'Sarah Chen, CPA, MBA',
+      instructorBio: 'Former Silicon Valley CFO with 15+ years helping tech companies scale from startup to IPO. Specialized in developer-friendly financial education.',
+      thumbnailUrl: '/images/courses/financial-literacy-fundamentals.jpg',
+      skillsLearned: JSON.stringify([
+        'Time value of money calculations',
+        'Cash flow forecasting and management',
+        'Business model analysis and optimization',
+        'Financial planning and goal setting',
+        'Risk assessment and mitigation'
+      ]),
+      targetAudience: 'Developers transitioning to entrepreneurship, freelancers, and tech consultants who need foundational business finance knowledge.',
       orderIndex: 1,
       isPublished: true,
+      isFeatured: true,
     },
   })
 
@@ -917,8 +1032,470 @@ The most successful developer-entrepreneurs are those who master cash flow manag
     ],
   })
 
-  // Create or update additional weeks (2-12) with basic structure
-  for (let weekNum = 2; weekNum <= 12; weekNum++) {
+  // Create Week 2: Business Models & Revenue Streams
+  const week2 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: course.id,
+        weekNumber: 2
+      }
+    },
+    update: {
+      title: 'Business Models & Revenue Stream Optimization',
+      overview: 'Deep dive into different business models for developers, from freelancing to SaaS, and how to optimize revenue streams for sustainable growth.',
+      learningObjectives: JSON.stringify([
+        'Compare different business models and their financial implications',
+        'Design and optimize pricing strategies for development services',
+        'Build recurring revenue streams and subscription models',
+        'Calculate and improve key business metrics (LTV, CAC, MRR)',
+        'Create financial projections and business plans'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: course.id,
+      weekNumber: 2,
+      title: 'Business Models & Revenue Stream Optimization',
+      overview: 'Deep dive into different business models for developers, from freelancing to SaaS, and how to optimize revenue streams for sustainable growth.',
+      learningObjectives: JSON.stringify([
+        'Compare different business models and their financial implications',
+        'Design and optimize pricing strategies for development services',
+        'Build recurring revenue streams and subscription models',
+        'Calculate and improve key business metrics (LTV, CAC, MRR)',
+        'Create financial projections and business plans'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  // Create Week 3: Expense Management & Cost Optimization
+  const week3 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: course.id,
+        weekNumber: 3
+      }
+    },
+    update: {
+      title: 'Expense Management & Cost Optimization',
+      overview: 'Master expense tracking, categorization, and optimization strategies. Learn to separate business and personal expenses while maximizing deductions and minimizing costs.',
+      learningObjectives: JSON.stringify([
+        'Set up proper expense tracking and categorization systems',
+        'Separate business and personal expenses effectively',
+        'Identify and maximize legitimate business deductions',
+        'Optimize recurring costs and subscriptions',
+        'Build emergency funds and cash reserves',
+        'Understand fixed vs variable costs for scaling decisions'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: course.id,
+      weekNumber: 3,
+      title: 'Expense Management & Cost Optimization',
+      overview: 'Master expense tracking, categorization, and optimization strategies. Learn to separate business and personal expenses while maximizing deductions and minimizing costs.',
+      learningObjectives: JSON.stringify([
+        'Set up proper expense tracking and categorization systems',
+        'Separate business and personal expenses effectively',
+        'Identify and maximize legitimate business deductions',
+        'Optimize recurring costs and subscriptions',
+        'Build emergency funds and cash reserves',
+        'Understand fixed vs variable costs for scaling decisions'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  // Create Week 4: Financial Planning & Growth Strategy
+  const week4 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: course.id,
+        weekNumber: 4
+      }
+    },
+    update: {
+      title: 'Financial Planning & Growth Strategy',
+      overview: 'Develop comprehensive financial plans, set growth targets, and create strategies for scaling your developer business sustainably while managing risks.',
+      learningObjectives: JSON.stringify([
+        'Create 12-month financial forecasts and budgets',
+        'Set realistic revenue and growth targets',
+        'Plan for seasonal variations and market changes',
+        'Develop strategies for scaling operations and team growth',
+        'Understand when and how to reinvest profits vs take distributions',
+        'Create contingency plans for market downturns'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: course.id,
+      weekNumber: 4,
+      title: 'Financial Planning & Growth Strategy',
+      overview: 'Develop comprehensive financial plans, set growth targets, and create strategies for scaling your developer business sustainably while managing risks.',
+      learningObjectives: JSON.stringify([
+        'Create 12-month financial forecasts and budgets',
+        'Set realistic revenue and growth targets',
+        'Plan for seasonal variations and market changes',
+        'Develop strategies for scaling operations and team growth',
+        'Understand when and how to reinvest profits vs take distributions',
+        'Create contingency plans for market downturns'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  // Create lessons for Week 2
+  await prisma.lesson.upsert({
+    where: { 
+      weekId_slug: {
+        weekId: week2.id,
+        slug: 'business-models-comparison'
+      }
+    },
+    update: {
+      title: 'Business Models Comparison for Developers',
+      content: `# Business Models Comparison for Developers
+
+## Understanding Different Revenue Models
+
+As a developer-entrepreneur, choosing the right business model is one of your most critical decisions. Each model has different financial characteristics, scaling potential, and risk profiles.
+
+[!info]
+This lesson will help you understand the financial implications of different business models so you can make informed decisions about your career and business direction.
+
+### 1. Freelancing Model
+
+**Financial Characteristics:**
+- **Revenue Pattern**: Project-based, irregular income
+- **Gross Margins**: 70-85% (high, mainly your time)
+- **Scalability**: Low (limited by your available hours)
+- **Cash Flow**: Lumpy, depends on project timing
+- **Capital Requirements**: Very low
+
+[!example]
+**Freelance Developer Financial Profile:**
+- Hourly Rate: $75-150/hour
+- Monthly Capacity: ~120 billable hours
+- Monthly Revenue: $9,000-18,000
+- Gross Margin: 80% (after tools/software)
+- Net Margin: 60-70% (after taxes, insurance)
+
+**Advantages:**
+- Low startup costs
+- High control over work
+- Quick revenue generation
+- Direct client relationships
+
+**Disadvantages:**
+- Income ceiling (hours x rate)
+- No passive income
+- Client dependency risk
+- Difficult to scale
+
+### 2. Consulting/Agency Model
+
+**Financial Characteristics:**
+- **Revenue Pattern**: Project and retainer-based
+- **Gross Margins**: 50-70% (team salaries are COGS)
+- **Scalability**: Medium (can hire team)
+- **Cash Flow**: More predictable with retainers
+- **Capital Requirements**: Medium (team salaries)
+
+[!example]
+**Development Agency Financial Profile:**
+- Project Size: $25,000-100,000
+- Team Size: 3-8 developers
+- Monthly Revenue: $80,000-200,000
+- Gross Margin: 55% (after team salaries)
+- Net Margin: 15-25% (after all expenses)
+
+**Key Metrics to Track:**
+- **Utilization Rate**: % of team time that's billable
+- **Average Project Value**: Larger projects = better margins
+- **Client Retention**: Repeat clients reduce acquisition costs
+
+### 3. SaaS (Software as a Service) Model
+
+**Financial Characteristics:**
+- **Revenue Pattern**: Monthly recurring revenue (MRR)
+- **Gross Margins**: 85-95% (very high after infrastructure)
+- **Scalability**: Very high (digital distribution)
+- **Cash Flow**: Predictable and growing
+- **Capital Requirements**: High upfront, low ongoing
+
+[!example]
+**SaaS Financial Profile:**
+- Monthly Recurring Revenue: $5,000-50,000+
+- Customer Acquisition Cost: $50-500
+- Lifetime Value: $500-5,000
+- Gross Margin: 90% (hosting, payment processing)
+- Net Margin: 20-40% (after marketing, salaries)
+
+**Critical SaaS Metrics:**
+- **Monthly Recurring Revenue (MRR)**: Predictable monthly income
+- **Customer Acquisition Cost (CAC)**: Cost to get each customer
+- **Lifetime Value (LTV)**: Total revenue per customer
+- **Churn Rate**: % customers who cancel monthly
+- **LTV:CAC Ratio**: Should be 3:1 or higher
+
+### 4. Product Sales Model
+
+**Financial Characteristics:**
+- **Revenue Pattern**: One-time sales, potentially recurring
+- **Gross Margins**: 60-90% (digital) vs 20-50% (physical)
+- **Scalability**: High for digital, medium for physical
+- **Cash Flow**: Depends on sales cycles
+- **Capital Requirements**: Medium to high
+
+[!tip]
+Digital products (courses, templates, tools) have similar economics to SaaS but with one-time purchases instead of recurring revenue.
+
+### 5. Hybrid Models
+
+Most successful developer businesses combine multiple revenue streams:
+
+[!example]
+**Hybrid Developer Business:**
+- 40% Recurring SaaS revenue: $8,000/month
+- 35% Consulting projects: $7,000/month
+- 25% Course/product sales: $5,000/month
+- **Total MRR**: $20,000/month
+- **Risk Diversification**: Multiple income sources
+
+### Revenue Stream Optimization
+
+[!warning]
+**Common Pricing Mistakes:**
+1. **Hourly Pricing Trap**: Capping income at hours x rate
+2. **Competitor-Based Pricing**: Ignoring your unique value
+3. **Cost-Plus Pricing**: Not considering market value
+4. **One-Size-Fits-All**: Not segmenting customers
+
+**Value-Based Pricing Strategy:**
+1. **Identify Customer Value**: What's the financial impact?
+2. **Segment Customers**: Different segments, different prices
+3. **Package Solutions**: Bundle services for higher value
+4. **Test and Iterate**: Use A/B testing for pricing
+
+### Building Recurring Revenue
+
+[!info]
+**The Power of Recurring Revenue:**
+- Predictable cash flow
+- Higher business valuation (5-10x revenue vs 1-2x for one-time)
+- Compound growth potential
+- Better customer relationships
+
+**Ways to Add Recurring Revenue:**
+1. **Maintenance Contracts**: Monthly support/updates
+2. **Hosting Services**: Manage client infrastructure  
+3. **Consulting Retainers**: Reserved monthly hours
+4. **SaaS Add-ons**: Additional features or services
+5. **Training Subscriptions**: Ongoing education/support
+
+### Financial Planning by Business Model
+
+[!example]
+**Freelancer Financial Plan:**
+- Emergency Fund: 6+ months (irregular income)
+- Diversification: Multiple client relationships
+- Growth Strategy: Increase rates, not just hours
+- Exit Strategy: Build productized consulting
+
+**SaaS Financial Plan:**
+- Emergency Fund: 12+ months (long sales cycles)
+- Growth Investment: 40-60% of revenue in marketing
+- Metrics Focus: Unit economics and cohort analysis
+- Exit Strategy: Build for acquisition or IPO
+
+### Action Items
+
+1. **Evaluate Your Current Model**: Calculate your true gross and net margins
+2. **Identify Opportunities**: What recurring revenue could you add?
+3. **Test New Pricing**: Experiment with value-based pricing
+4. **Plan Your Evolution**: How will you transition between models?
+
+[!tip]
+Start with what you know (freelancing/consulting) but always be building toward higher-margin, more scalable models. The goal is financial freedom, not just income replacement.`,
+      orderIndex: 1,
+      lessonType: 'lecture',
+      durationMinutes: 45,
+    },
+    create: {
+      weekId: week2.id,
+      title: 'Business Models Comparison for Developers',
+      slug: 'business-models-comparison',
+      content: `# Business Models Comparison for Developers
+
+## Understanding Different Revenue Models
+
+As a developer-entrepreneur, choosing the right business model is one of your most critical decisions. Each model has different financial characteristics, scaling potential, and risk profiles.
+
+[!info]
+This lesson will help you understand the financial implications of different business models so you can make informed decisions about your career and business direction.
+
+### 1. Freelancing Model
+
+**Financial Characteristics:**
+- **Revenue Pattern**: Project-based, irregular income
+- **Gross Margins**: 70-85% (high, mainly your time)
+- **Scalability**: Low (limited by your available hours)
+- **Cash Flow**: Lumpy, depends on project timing
+- **Capital Requirements**: Very low
+
+[!example]
+**Freelance Developer Financial Profile:**
+- Hourly Rate: $75-150/hour
+- Monthly Capacity: ~120 billable hours
+- Monthly Revenue: $9,000-18,000
+- Gross Margin: 80% (after tools/software)
+- Net Margin: 60-70% (after taxes, insurance)
+
+**Advantages:**
+- Low startup costs
+- High control over work
+- Quick revenue generation
+- Direct client relationships
+
+**Disadvantages:**
+- Income ceiling (hours x rate)
+- No passive income
+- Client dependency risk
+- Difficult to scale
+
+### 2. Consulting/Agency Model
+
+**Financial Characteristics:**
+- **Revenue Pattern**: Project and retainer-based
+- **Gross Margins**: 50-70% (team salaries are COGS)
+- **Scalability**: Medium (can hire team)
+- **Cash Flow**: More predictable with retainers
+- **Capital Requirements**: Medium (team salaries)
+
+[!example]
+**Development Agency Financial Profile:**
+- Project Size: $25,000-100,000
+- Team Size: 3-8 developers
+- Monthly Revenue: $80,000-200,000
+- Gross Margin: 55% (after team salaries)
+- Net Margin: 15-25% (after all expenses)
+
+**Key Metrics to Track:**
+- **Utilization Rate**: % of team time that's billable
+- **Average Project Value**: Larger projects = better margins
+- **Client Retention**: Repeat clients reduce acquisition costs
+
+### 3. SaaS (Software as a Service) Model
+
+**Financial Characteristics:**
+- **Revenue Pattern**: Monthly recurring revenue (MRR)
+- **Gross Margins**: 85-95% (very high after infrastructure)
+- **Scalability**: Very high (digital distribution)
+- **Cash Flow**: Predictable and growing
+- **Capital Requirements**: High upfront, low ongoing
+
+[!example]
+**SaaS Financial Profile:**
+- Monthly Recurring Revenue: $5,000-50,000+
+- Customer Acquisition Cost: $50-500
+- Lifetime Value: $500-5,000
+- Gross Margin: 90% (hosting, payment processing)
+- Net Margin: 20-40% (after marketing, salaries)
+
+**Critical SaaS Metrics:**
+- **Monthly Recurring Revenue (MRR)**: Predictable monthly income
+- **Customer Acquisition Cost (CAC)**: Cost to get each customer
+- **Lifetime Value (LTV)**: Total revenue per customer
+- **Churn Rate**: % customers who cancel monthly
+- **LTV:CAC Ratio**: Should be 3:1 or higher
+
+### 4. Product Sales Model
+
+**Financial Characteristics:**
+- **Revenue Pattern**: One-time sales, potentially recurring
+- **Gross Margins**: 60-90% (digital) vs 20-50% (physical)
+- **Scalability**: High for digital, medium for physical
+- **Cash Flow**: Depends on sales cycles
+- **Capital Requirements**: Medium to high
+
+[!tip]
+Digital products (courses, templates, tools) have similar economics to SaaS but with one-time purchases instead of recurring revenue.
+
+### 5. Hybrid Models
+
+Most successful developer businesses combine multiple revenue streams:
+
+[!example]
+**Hybrid Developer Business:**
+- 40% Recurring SaaS revenue: $8,000/month
+- 35% Consulting projects: $7,000/month
+- 25% Course/product sales: $5,000/month
+- **Total MRR**: $20,000/month
+- **Risk Diversification**: Multiple income sources
+
+### Revenue Stream Optimization
+
+[!warning]
+**Common Pricing Mistakes:**
+1. **Hourly Pricing Trap**: Capping income at hours x rate
+2. **Competitor-Based Pricing**: Ignoring your unique value
+3. **Cost-Plus Pricing**: Not considering market value
+4. **One-Size-Fits-All**: Not segmenting customers
+
+**Value-Based Pricing Strategy:**
+1. **Identify Customer Value**: What's the financial impact?
+2. **Segment Customers**: Different segments, different prices
+3. **Package Solutions**: Bundle services for higher value
+4. **Test and Iterate**: Use A/B testing for pricing
+
+### Building Recurring Revenue
+
+[!info]
+**The Power of Recurring Revenue:**
+- Predictable cash flow
+- Higher business valuation (5-10x revenue vs 1-2x for one-time)
+- Compound growth potential
+- Better customer relationships
+
+**Ways to Add Recurring Revenue:**
+1. **Maintenance Contracts**: Monthly support/updates
+2. **Hosting Services**: Manage client infrastructure  
+3. **Consulting Retainers**: Reserved monthly hours
+4. **SaaS Add-ons**: Additional features or services
+5. **Training Subscriptions**: Ongoing education/support
+
+### Financial Planning by Business Model
+
+[!example]
+**Freelancer Financial Plan:**
+- Emergency Fund: 6+ months (irregular income)
+- Diversification: Multiple client relationships
+- Growth Strategy: Increase rates, not just hours
+- Exit Strategy: Build productized consulting
+
+**SaaS Financial Plan:**
+- Emergency Fund: 12+ months (long sales cycles)
+- Growth Investment: 40-60% of revenue in marketing
+- Metrics Focus: Unit economics and cohort analysis
+- Exit Strategy: Build for acquisition or IPO
+
+### Action Items
+
+1. **Evaluate Your Current Model**: Calculate your true gross and net margins
+2. **Identify Opportunities**: What recurring revenue could you add?
+3. **Test New Pricing**: Experiment with value-based pricing
+4. **Plan Your Evolution**: How will you transition between models?
+
+[!tip]
+Start with what you know (freelancing/consulting) but always be building toward higher-margin, more scalable models. The goal is financial freedom, not just income replacement.`,
+      orderIndex: 1,
+      lessonType: 'lecture',
+      durationMinutes: 45,
+    },
+  })
+
+  // Create placeholder weeks for future courses (5-12)
+  for (let weekNum = 5; weekNum <= 12; weekNum++) {
     await prisma.week.upsert({
       where: { 
         courseId_weekNumber: {
@@ -927,24 +1504,24 @@ The most successful developer-entrepreneurs are those who master cash flow manag
         }
       },
       update: {
-        title: `Week ${weekNum}: Advanced Financial Concepts`,
-        overview: `Comprehensive coverage of advanced financial topics for developer-entrepreneurs.`,
+        title: `Week ${weekNum}: Advanced Topics (Coming Soon)`,
+        overview: `Advanced financial topics will be available as part of our expanded course catalog.`,
         learningObjectives: JSON.stringify([
-          `Master Week ${weekNum} concepts`,
-          'Apply knowledge to real business scenarios',
-          'Understand common pitfalls and best practices'
+          'Advanced concepts for experienced developers',
+          'Specialized topics for growing businesses',
+          'Expert-level financial strategies'
         ]),
         estimatedHours: 8,
       },
       create: {
         courseId: course.id,
         weekNumber: weekNum,
-        title: `Week ${weekNum}: Advanced Financial Concepts`,
-        overview: `Comprehensive coverage of advanced financial topics for developer-entrepreneurs.`,
+        title: `Week ${weekNum}: Advanced Topics (Coming Soon)`,
+        overview: `Advanced financial topics will be available as part of our expanded course catalog.`,
         learningObjectives: JSON.stringify([
-          `Master Week ${weekNum} concepts`,
-          'Apply knowledge to real business scenarios',
-          'Understand common pitfalls and best practices'
+          'Advanced concepts for experienced developers',
+          'Specialized topics for growing businesses',
+          'Expert-level financial strategies'
         ]),
         estimatedHours: 8,
       },
