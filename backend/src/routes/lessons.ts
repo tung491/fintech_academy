@@ -1,5 +1,6 @@
 import express from 'express';
 import pool from '../db/pool';
+import prisma from '../db/prisma';
 import { authenticate, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
@@ -134,30 +135,43 @@ router.post('/:lessonId/access', authenticate, async (req: AuthRequest, res) => 
     const userId = req.user!.id;
     const { timeSpent } = req.body;
 
-    // Check if progress already exists
-    const existingProgress = await pool.query(
-      `SELECT * FROM user_progress WHERE user_id = ? AND lesson_id = ?`,
-      [userId, lessonId]
-    );
+    // Check if progress already exists using Prisma
+    const existingProgress = await prisma.userProgress.findUnique({
+      where: {
+        userId_lessonId: {
+          userId: userId,
+          lessonId: lessonId
+        }
+      }
+    });
 
     let result;
-    if (existingProgress.rows.length > 0) {
+    if (existingProgress) {
       // Update existing - just update the access time and add time spent
-      result = await pool.query(
-        `UPDATE user_progress SET 
-           time_spent_minutes = time_spent_minutes + ?,
-           updated_at = datetime('now')
-         WHERE user_id = ? AND lesson_id = ?`,
-        [timeSpent || 0, userId, lessonId]
-      );
+      result = await prisma.userProgress.update({
+        where: {
+          userId_lessonId: {
+            userId: userId,
+            lessonId: lessonId
+          }
+        },
+        data: {
+          timeSpentMinutes: {
+            increment: timeSpent || 0
+          },
+          updatedAt: new Date()
+        }
+      });
     } else {
-      // Insert new progress record (not completed yet)
-      const progressId = Math.random().toString(36).substr(2, 9);
-      result = await pool.query(
-        `INSERT INTO user_progress (id, user_id, lesson_id, completed, time_spent_minutes, created_at, updated_at)
-         VALUES (?, ?, ?, 0, ?, datetime('now'), datetime('now'))`,
-        [progressId, userId, lessonId, timeSpent || 0]
-      );
+      // Insert new progress record (not completed yet) using Prisma
+      result = await prisma.userProgress.create({
+        data: {
+          userId: userId,
+          lessonId: lessonId,
+          completed: false,
+          timeSpentMinutes: timeSpent || 0
+        }
+      });
     }
 
     res.json({
