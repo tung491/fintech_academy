@@ -58,6 +58,71 @@ router.get('/dashboard', authenticate, async (req: AuthRequest, res) => {
   }
 });
 
+// Get last accessed lesson for "Continue Learning" feature
+router.get('/last-accessed', authenticate, async (req: AuthRequest, res) => {
+  try {
+    const userId = req.user!.id;
+
+    const lastAccessedResult = await pool.query(
+      `SELECT 
+         l.id as lesson_id,
+         l.title as lesson_title,
+         l.slug as lesson_slug,
+         l.duration_minutes,
+         w.week_number,
+         w.title as week_title,
+         c.id as course_id,
+         c.title as course_title,
+         c.slug as course_slug,
+         up.completed,
+         up.time_spent_minutes,
+         up.updated_at as last_accessed_at,
+         -- Calculate progress percentage within lesson based on time spent
+         CASE 
+           WHEN l.duration_minutes > 0 THEN 
+             ROUND(MIN(100.0, (up.time_spent_minutes * 100.0) / l.duration_minutes), 1)
+           ELSE 0
+         END as progress_percentage
+       FROM user_progress up
+       JOIN lessons l ON l.id = up.lesson_id
+       JOIN weeks w ON w.id = l.week_id
+       JOIN courses c ON c.id = w.course_id
+       WHERE up.user_id = $1
+       ORDER BY up.updated_at DESC
+       LIMIT 1`,
+      [userId]
+    );
+
+    if (lastAccessedResult.rows.length === 0) {
+      return res.json({ lastAccessed: null });
+    }
+
+    const lastAccessed = lastAccessedResult.rows[0];
+    
+    res.json({
+      lastAccessed: {
+        lesson_id: lastAccessed.lesson_id,
+        lesson_title: lastAccessed.lesson_title,
+        lesson_slug: lastAccessed.lesson_slug,
+        duration_minutes: lastAccessed.duration_minutes,
+        week_number: lastAccessed.week_number,
+        week_title: lastAccessed.week_title,
+        course_id: lastAccessed.course_id,
+        course_title: lastAccessed.course_title,
+        course_slug: lastAccessed.course_slug,
+        completed: lastAccessed.completed === 1,
+        time_spent_minutes: lastAccessed.time_spent_minutes || 0,
+        last_accessed_at: lastAccessed.last_accessed_at,
+        progress_percentage: lastAccessed.progress_percentage || 0,
+        continue_url: `/courses/${lastAccessed.course_id}/week/${lastAccessed.week_number}`
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching last accessed lesson:', error);
+    res.status(500).json({ error: 'Failed to fetch last accessed lesson' });
+  }
+});
+
 router.get('/course/:courseId', authenticate, async (req: AuthRequest, res) => {
   try {
     const { courseId } = req.params;

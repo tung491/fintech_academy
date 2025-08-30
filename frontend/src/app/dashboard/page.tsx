@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import Link from 'next/link'
 import { api } from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
-import { BookOpen, Clock, Trophy, TrendingUp, BarChart3, ArrowRight } from 'lucide-react'
+import { BookOpen, Clock, Trophy, TrendingUp, BarChart3, ArrowRight, PlayCircle, CheckCircle } from 'lucide-react'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -22,6 +22,12 @@ export default function DashboardPage() {
   const { data: dashboardData } = useQuery({
     queryKey: ['dashboard'],
     queryFn: () => api.get('/progress/dashboard').then(res => res.data),
+    enabled: !!user && !!token
+  })
+
+  const { data: lastAccessedData } = useQuery({
+    queryKey: ['last-accessed'],
+    queryFn: () => api.get('/progress/last-accessed').then(res => res.data),
     enabled: !!user && !!token
   })
 
@@ -88,6 +94,70 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Continue Learning Section */}
+      {lastAccessedData?.lastAccessed && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Continue Learning</h2>
+          <div className="card bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-800">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-4 flex-1">
+                <div className="flex-shrink-0">
+                  {lastAccessedData.lastAccessed.completed ? (
+                    <CheckCircle className="w-12 h-12 text-green-500" />
+                  ) : (
+                    <PlayCircle className="w-12 h-12 text-blue-500" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    {lastAccessedData.lastAccessed.lesson_title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-2">
+                    {lastAccessedData.lastAccessed.course_title} • Week {lastAccessedData.lastAccessed.week_number}
+                  </p>
+                  
+                  {/* Progress indicator */}
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div 
+                        className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${Math.min(100, lastAccessedData.lastAccessed.progress_percentage)}%` }}
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {lastAccessedData.lastAccessed.completed ? 'Completed' : `${Math.round(lastAccessedData.lastAccessed.progress_percentage)}%`}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      <span>{lastAccessedData.lastAccessed.time_spent_minutes} min spent</span>
+                    </div>
+                    {lastAccessedData.lastAccessed.duration_minutes && (
+                      <div className="flex items-center gap-1">
+                        <span>• {lastAccessedData.lastAccessed.duration_minutes} min total</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1">
+                      <span>• Last accessed {new Date(lastAccessedData.lastAccessed.last_accessed_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <Link 
+                href={lastAccessedData.lastAccessed.continue_url}
+                className="btn-primary flex items-center gap-2 whitespace-nowrap ml-4"
+              >
+                {lastAccessedData.lastAccessed.completed ? 'Review' : 'Continue'}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 gap-8">
         <div>

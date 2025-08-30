@@ -127,6 +127,51 @@ router.get('/:lessonId', authenticate, async (req: AuthRequest, res) => {
   }
 });
 
+// Track lesson access (when user views a lesson)
+router.post('/:lessonId/access', authenticate, async (req: AuthRequest, res) => {
+  try {
+    const { lessonId } = req.params;
+    const userId = req.user!.id;
+    const { timeSpent } = req.body;
+
+    // Check if progress already exists
+    const existingProgress = await pool.query(
+      `SELECT * FROM user_progress WHERE user_id = ? AND lesson_id = ?`,
+      [userId, lessonId]
+    );
+
+    let result;
+    if (existingProgress.rows.length > 0) {
+      // Update existing - just update the access time and add time spent
+      result = await pool.query(
+        `UPDATE user_progress SET 
+           time_spent_minutes = time_spent_minutes + ?,
+           updated_at = datetime('now')
+         WHERE user_id = ? AND lesson_id = ?`,
+        [timeSpent || 0, userId, lessonId]
+      );
+    } else {
+      // Insert new progress record (not completed yet)
+      const progressId = Math.random().toString(36).substr(2, 9);
+      result = await pool.query(
+        `INSERT INTO user_progress (id, user_id, lesson_id, completed, time_spent_minutes, created_at, updated_at)
+         VALUES (?, ?, ?, 0, ?, datetime('now'), datetime('now'))`,
+        [progressId, userId, lessonId, timeSpent || 0]
+      );
+    }
+
+    res.json({
+      user_id: userId,
+      lesson_id: lessonId,
+      accessed: true,
+      time_spent_minutes: timeSpent || 0
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Failed to track lesson access' });
+  }
+});
+
 router.post('/:lessonId/complete', authenticate, async (req: AuthRequest, res) => {
   try {
     const { lessonId } = req.params;

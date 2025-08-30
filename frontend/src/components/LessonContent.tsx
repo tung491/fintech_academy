@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from 'react'
 import { Copy, CheckCircle, ExternalLink, BookOpen, Lightbulb, AlertTriangle, Target, Clock, BarChart } from 'lucide-react'
 import BookmarkButton from './BookmarkButton'
 import { EmbeddedCalculator } from './EmbeddedCalculator'
+import { api } from '@/lib/api'
+import { useAuthStore } from '@/stores/authStore'
 
 interface LessonContentProps {
   content: string
@@ -123,6 +125,12 @@ export default function LessonContent({ content, title, lessonType, lessonId }: 
   const [readingProgress, setReadingProgress] = useState(0)
   const [estimatedReadTime, setEstimatedReadTime] = useState(0)
   const [isReading, setIsReading] = useState(false)
+  
+  // Lesson access tracking state
+  const { user } = useAuthStore()
+  const [timeSpent, setTimeSpent] = useState(0)
+  const startTimeRef = useRef<number>(Date.now())
+  const timeTrackerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Calculate estimated reading time (average 200 words per minute)
   useEffect(() => {
@@ -180,6 +188,70 @@ export default function LessonContent({ content, title, lessonType, lessonId }: 
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Track lesson access when component mounts
+  useEffect(() => {
+    if (!user || !lessonId) return
+
+    // Send initial access tracking
+    const trackAccess = async () => {
+      try {
+        await api.post(`/lessons/${lessonId}/access`, {
+          timeSpent: 0
+        })
+      } catch (error) {
+        console.error('Failed to track lesson access:', error)
+      }
+    }
+
+    trackAccess()
+    startTimeRef.current = Date.now()
+  }, [user, lessonId])
+
+  // Track time spent with periodic updates
+  useEffect(() => {
+    if (!user || !lessonId) return
+
+    // Update time spent every 30 seconds
+    timeTrackerRef.current = setInterval(() => {
+      const currentTime = Date.now()
+      const newTimeSpent = Math.floor((currentTime - startTimeRef.current) / 1000 / 60) // Convert to minutes
+      
+      if (newTimeSpent > timeSpent) {
+        setTimeSpent(newTimeSpent)
+        
+        // Send update to backend
+        api.post(`/lessons/${lessonId}/access`, {
+          timeSpent: newTimeSpent - timeSpent // Send incremental time
+        }).catch(error => {
+          console.error('Failed to update lesson time:', error)
+        })
+      }
+    }, 30000) // Update every 30 seconds
+
+    return () => {
+      if (timeTrackerRef.current) {
+        clearInterval(timeTrackerRef.current)
+      }
+    }
+  }, [user, lessonId, timeSpent])
+
+  // Send final time update when component unmounts
+  useEffect(() => {
+    return () => {
+      if (!user || !lessonId) return
+      
+      const finalTimeSpent = Math.floor((Date.now() - startTimeRef.current) / 1000 / 60)
+      if (finalTimeSpent > timeSpent) {
+        // Send final time update
+        api.post(`/lessons/${lessonId}/access`, {
+          timeSpent: finalTimeSpent - timeSpent
+        }).catch(error => {
+          console.error('Failed to send final lesson time:', error)
+        })
+      }
+    }
+  }, []) // Empty dependency array - only run on unmount
 
   // Enhanced content processing to handle custom blocks and calculators
   const processContent = (content: string) => {
