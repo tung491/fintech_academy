@@ -255,32 +255,69 @@ export default function LessonContent({ content, title, lessonType, lessonId }: 
 
   // Enhanced content processing to handle custom blocks and calculators
   const processContent = (content: string) => {
-    // Add support for custom block syntax like [!tip], [!warning], [!info], [!example]
-    // Add support for calculator syntax like [!calculator:cash-flow], [!calculator:roi], etc.
     let processed = content
+    
+    // Process custom blocks with improved regex patterns
+    // The regex now handles multi-line content better and stops at the next [! block or double newline
     
     // Process tip blocks
     processed = processed.replace(
-      /\[!tip\]([\s\S]*?)(?=\[!|\n\n|$)/g,
-      (match, content) => `<CustomBlock type="tip">${content.trim()}</CustomBlock>`
+      /\[!tip\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
+      (match, content) => {
+        const blockContent = content.trim()
+        return `\n<div class="custom-block-tip p-4 rounded-lg border-l-4 bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 my-6">
+  <div class="flex items-center gap-2 mb-3">
+    <div class="text-yellow-600 dark:text-yellow-400">💡</div>
+    <h4 class="font-semibold text-yellow-800 dark:text-yellow-200">Tip</h4>
+  </div>
+  <div class="text-gray-700 dark:text-gray-300">${blockContent}</div>
+</div>\n`
+      }
     )
     
     // Process warning blocks
     processed = processed.replace(
-      /\[!warning\]([\s\S]*?)(?=\[!|\n\n|$)/g,
-      (match, content) => `<CustomBlock type="warning">${content.trim()}</CustomBlock>`
+      /\[!warning\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
+      (match, content) => {
+        const blockContent = content.trim()
+        return `\n<div class="custom-block-warning p-4 rounded-lg border-l-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 my-6">
+  <div class="flex items-center gap-2 mb-3">
+    <div class="text-red-600 dark:text-red-400">⚠️</div>
+    <h4 class="font-semibold text-red-800 dark:text-red-200">Warning</h4>
+  </div>
+  <div class="text-gray-700 dark:text-gray-300">${blockContent}</div>
+</div>\n`
+      }
     )
     
     // Process info blocks
     processed = processed.replace(
-      /\[!info\]([\s\S]*?)(?=\[!|\n\n|$)/g,
-      (match, content) => `<CustomBlock type="info">${content.trim()}</CustomBlock>`
+      /\[!info\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
+      (match, content) => {
+        const blockContent = content.trim()
+        return `\n<div class="custom-block-info p-4 rounded-lg border-l-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 my-6">
+  <div class="flex items-center gap-2 mb-3">
+    <div class="text-blue-600 dark:text-blue-400">ℹ️</div>
+    <h4 class="font-semibold text-blue-800 dark:text-blue-200">Information</h4>
+  </div>
+  <div class="text-gray-700 dark:text-gray-300">${blockContent}</div>
+</div>\n`
+      }
     )
     
     // Process example blocks
     processed = processed.replace(
-      /\[!example\]([\s\S]*?)(?=\[!|\n\n|$)/g,
-      (match, content) => `<CustomBlock type="example">${content.trim()}</CustomBlock>`
+      /\[!example\]\s*([\s\S]*?)(?=\n\[!|\n\n\[!|\n\n(?![!])|\n\n$|$)/g,
+      (match, content) => {
+        const blockContent = content.trim()
+        return `\n<div class="custom-block-example p-4 rounded-lg border-l-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 my-6">
+  <div class="flex items-center gap-2 mb-3">
+    <div class="text-green-600 dark:text-green-400">📝</div>
+    <h4 class="font-semibold text-green-800 dark:text-green-200">Example</h4>
+  </div>
+  <div class="text-gray-700 dark:text-gray-300">${blockContent}</div>
+</div>\n`
+      }
     )
     
     return processed
@@ -446,8 +483,12 @@ export default function LessonContent({ content, title, lessonType, lessonId }: 
       </div>
       
       <div ref={contentRef} className="prose prose-gray dark:prose-invert max-w-none">
-        <ReactMarkdown components={components}>
-          {content}
+        <ReactMarkdown 
+          components={components}
+          urlTransform={null}
+          allowedElements={undefined}
+        >
+          {processContent(content)}
         </ReactMarkdown>
       </div>
       
