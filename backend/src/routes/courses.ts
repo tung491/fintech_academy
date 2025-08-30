@@ -51,13 +51,31 @@ router.get('/', async (_req, res) => {
       }
     });
 
-    const coursesWithStats = courses.map(course => ({
-      ...course,
-      weekCount: course.weeks.length,
-      totalEstimatedHours: course.weeks.reduce((sum, week) => sum + (week.estimatedHours || 0), 0),
-      skillsLearned: course.skillsLearned ? JSON.parse(course.skillsLearned) : [],
-      weeks: undefined
-    }));
+    const coursesWithStats = courses.map(course => {
+      // Handle skillsLearned parsing - may be double-stringified
+      let skillsLearned = [];
+      if (course.skillsLearned) {
+        try {
+          let parsed = JSON.parse(course.skillsLearned);
+          // If it's still a string, parse again
+          if (typeof parsed === 'string') {
+            parsed = JSON.parse(parsed);
+          }
+          skillsLearned = Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          console.error('Error parsing skillsLearned:', error);
+          skillsLearned = [];
+        }
+      }
+
+      return {
+        ...course,
+        weekCount: course.weeks.length,
+        totalEstimatedHours: course.weeks.reduce((sum, week) => sum + (week.estimatedHours || 0), 0),
+        skillsLearned,
+        weeks: undefined
+      };
+    });
 
     return res.json(coursesWithStats);
   } catch (error) {
@@ -110,10 +128,26 @@ router.get('/:courseId', async (req, res) => {
       lessons: undefined
     }));
 
+    // Handle skillsLearned parsing - may be double-stringified
+    let skillsLearned = [];
+    if (course.skillsLearned) {
+      try {
+        let parsed = JSON.parse(course.skillsLearned);
+        // If it's still a string, parse again
+        if (typeof parsed === 'string') {
+          parsed = JSON.parse(parsed);
+        }
+        skillsLearned = Array.isArray(parsed) ? parsed : [];
+      } catch (error) {
+        console.error('Error parsing skillsLearned:', error);
+        skillsLearned = [];
+      }
+    }
+
     return res.json({
       ...course,
       weeks: weeksWithLessonCount,
-      skillsLearned: course.skillsLearned ? JSON.parse(course.skillsLearned) : [],
+      skillsLearned,
       totalEstimatedHours: course.weeks.reduce((sum, week) => sum + (week.estimatedHours || 0), 0)
     });
   } catch (error) {
