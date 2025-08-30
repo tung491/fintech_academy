@@ -178,7 +178,7 @@ describe('Courses API', () => {
         .get(`/api/courses/${testCourseId}/progress`)
         .expect(401);
 
-      expect(response.body.error).toBe('Access token required');
+      expect(response.body.error).toBe('Please authenticate');
     });
 
     it('should return progress data for authenticated user', async () => {

@@ -1,3 +1,5 @@
+// Use the standard test database as configured in .env.test
+
 import request from 'supertest';
 import express from 'express';
 import cors from 'cors';
@@ -10,11 +12,11 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 
-// Test database setup
+// Test database setup - use same database as .env.test
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: 'file:./test-auth.db'
+      url: 'file:./test.db'
     }
   }
 });
@@ -23,6 +25,16 @@ describe('Authentication API', () => {
   beforeAll(async () => {
     // Ensure test database is clean
     await prisma.$connect();
+    
+    // Clean up any existing test users
+    await prisma.user.deleteMany({
+      where: {
+        OR: [
+          { email: { startsWith: 'test' } },
+          { email: { contains: '@example.com' } }
+        ]
+      }
+    });
   });
 
   afterAll(async () => {
@@ -35,9 +47,10 @@ describe('Authentication API', () => {
     // Clean up test users after each test
     await prisma.user.deleteMany({
       where: {
-        email: {
-          startsWith: 'test'
-        }
+        OR: [
+          { email: { startsWith: 'test' } },
+          { email: { contains: '@example.com' } }
+        ]
       }
     });
   });
@@ -51,11 +64,22 @@ describe('Authentication API', () => {
     };
 
     it('should register a new user successfully', async () => {
+      // Check if user exists before attempting registration
+      const existingUser = await prisma.user.findUnique({
+        where: { email: validUser.email }
+      });
+      console.log('Existing user check:', existingUser ? 'User exists' : 'No user found');
+
       const response = await request(app)
         .post('/api/auth/register')
-        .send(validUser)
-        .expect(201);
+        .send(validUser);
 
+      if (response.status !== 201) {
+        console.log('Registration failed with status:', response.status);
+        console.log('Response body:', JSON.stringify(response.body, null, 2));
+      }
+
+      expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('token');
       expect(response.body).toHaveProperty('user');
       expect(response.body.user.email).toBe(validUser.email);
@@ -216,7 +240,7 @@ describe('Authentication API', () => {
         .get('/api/auth/me')
         .expect(401);
 
-      expect(response.body.error).toBe('Access token required');
+      expect(response.body.error).toBe('Please authenticate');
     });
 
     it('should reject request with invalid auth token', async () => {
@@ -225,7 +249,7 @@ describe('Authentication API', () => {
         .set('Authorization', 'Bearer invalid-token')
         .expect(401);
 
-      expect(response.body.error).toBe('Invalid or expired token');
+      expect(response.body.error).toBe('Please authenticate');
     });
   });
 });

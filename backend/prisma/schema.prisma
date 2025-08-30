@@ -16,10 +16,10 @@ model User {
   role         String           @default("student")
   createdAt    DateTime         @default(now()) @map("created_at")
   updatedAt    DateTime         @updatedAt @map("updated_at")
+  bookmarks    Bookmark[]
   quizAttempts QuizAttempt[]
   enrollments  UserEnrollment[]
   progress     UserProgress[]
-  bookmarks    Bookmark[]
 
   @@map("users")
 }
@@ -68,9 +68,9 @@ model Lesson {
   durationMinutes Int?           @map("duration_minutes")
   createdAt       DateTime       @default(now()) @map("created_at")
   updatedAt       DateTime       @updatedAt @map("updated_at")
+  bookmarks       Bookmark[]
   week            Week           @relation(fields: [weekId], references: [id], onDelete: Cascade)
   progress        UserProgress[]
-  bookmarks       Bookmark[]
 
   @@unique([weekId, slug])
   @@map("lessons")
@@ -162,11 +162,11 @@ model Bookmark {
   title       String
   description String?
   sectionText String?  @map("section_text")
-  position    Int?     // Optional position in lesson for scroll-to functionality
+  position    Int?
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
-  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lessonId, position])
   @@map("bookmarks")
