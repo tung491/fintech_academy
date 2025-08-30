@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 interface User {
   id: string
@@ -13,8 +13,10 @@ interface AuthStore {
   user: User | null
   token: string | null
   isAuthenticated: boolean
+  hasHydrated: boolean
   setAuth: (user: User, token: string) => void
   logout: () => void
+  setHasHydrated: (state: boolean) => void
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -22,21 +24,35 @@ export const useAuthStore = create<AuthStore>()(
     (set, get) => ({
       user: null,
       token: null,
+      hasHydrated: false,
       get isAuthenticated() {
-        const { user, token } = get()
-        return !!(user && token)
+        const { user, token, hasHydrated } = get()
+        return hasHydrated && !!(user && token)
       },
       setAuth: (user, token) => {
-        localStorage.setItem('token', token)
+        // Store token in localStorage for API calls
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('token', token)
+        }
         set({ user, token })
       },
       logout: () => {
-        localStorage.removeItem('token')
+        // Remove token from localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token')
+        }
         set({ user: null, token: null })
+      },
+      setHasHydrated: (state) => {
+        set({ hasHydrated: state })
       },
     }),
     {
       name: 'auth-storage',
+      storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true)
+      },
     }
   )
 )
