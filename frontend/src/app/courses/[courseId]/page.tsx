@@ -222,7 +222,7 @@ export default function CourseDetailPage() {
                   
                   <div className="flex-grow">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      Week {week.weekNumber}: {week.title}
+                      {week.title.startsWith('Week') ? week.title : `Week ${week.weekNumber}: ${week.title}`}
                     </h3>
                     <p className="text-gray-600 dark:text-gray-400 mb-3">
                       {week.overview}

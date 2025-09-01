@@ -11,6 +11,9 @@ import progressRoutes from './routes/progress';
 import userRoutes from './routes/users';
 import analyticsRoutes from './routes/analytics';
 import bookmarkRoutes from './routes/bookmarks';
+import certificateRoutes from './routes/certificates';
+import prerequisiteRoutes from './routes/prerequisites';
+import enrollmentRoutes from './routes/enrollment';
 
 dotenv.config();
 
@@ -53,6 +56,9 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/api/certificates', certificateRoutes);
+app.use('/api/prerequisites', prerequisiteRoutes);
+app.use('/api/enrollment', enrollmentRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

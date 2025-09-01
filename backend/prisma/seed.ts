@@ -166,6 +166,63 @@ async function main() {
       isFeatured: true,
     },
   })
+  // Create Advanced Accounting for SaaS Businesses Course
+  const saasAccountingCourse = await prisma.course.upsert({
+    where: { slug: 'advanced-saas-accounting' },
+    update: {
+      title: 'Advanced Accounting for SaaS Businesses',
+      description: 'Master the complex accounting challenges unique to SaaS businesses. Learn ASC 606 revenue recognition, subscription metrics, customer lifetime value accounting, and investor-ready financial reporting.',
+      shortDescription: 'Advanced SaaS accounting including revenue recognition, metrics, and compliance.',
+      categoryId: accountingCategory.id,
+      level: 'advanced',
+      duration: '10 weeks',
+      estimatedHours: 80,
+      price: 24700, // $247.00 in cents
+      originalPrice: 34700, // $347.00 in cents  
+      instructor: 'David Kim, CPA, Former SaaS CFO',
+      instructorBio: 'Former CFO at three successful SaaS companies including two unicorns. 12+ years of SaaS accounting expertise, led IPO accounting processes, and specialized in ASC 606 implementation.',
+      thumbnailUrl: '/images/courses/advanced-saas-accounting.jpg',
+      skillsLearned: JSON.stringify([
+        'ASC 606 revenue recognition for SaaS',
+        'Subscription metrics and unit economics',
+        'Customer acquisition cost and lifetime value calculations',
+        'SaaS financial statement preparation and analysis',
+        'Investor reporting and fundraising metrics',
+        'Financial forecasting for subscription businesses'
+      ]),
+      targetAudience: 'SaaS founders, finance professionals, accountants working with software companies, and developers building subscription businesses who need advanced accounting knowledge.',
+      orderIndex: 2,
+      isPublished: true,
+      isFeatured: false,
+    },
+    create: {
+      title: 'Advanced Accounting for SaaS Businesses',
+      slug: 'advanced-saas-accounting',
+      description: 'Master the complex accounting challenges unique to SaaS businesses. Learn ASC 606 revenue recognition, subscription metrics, customer lifetime value accounting, and investor-ready financial reporting.',
+      shortDescription: 'Advanced SaaS accounting including revenue recognition, metrics, and compliance.',
+      categoryId: accountingCategory.id,
+      level: 'advanced',
+      duration: '10 weeks',
+      estimatedHours: 80,
+      price: 24700, // $247.00 in cents
+      originalPrice: 34700, // $347.00 in cents
+      instructor: 'David Kim, CPA, Former SaaS CFO',
+      instructorBio: 'Former CFO at three successful SaaS companies including two unicorns. 12+ years of SaaS accounting expertise, led IPO accounting processes, and specialized in ASC 606 implementation.',
+      thumbnailUrl: '/images/courses/advanced-saas-accounting.jpg',
+      skillsLearned: JSON.stringify([
+        'ASC 606 revenue recognition for SaaS',
+        'Subscription metrics and unit economics',
+        'Customer acquisition cost and lifetime value calculations',
+        'SaaS financial statement preparation and analysis',
+        'Investor reporting and fundraising metrics',
+        'Financial forecasting for subscription businesses'
+      ]),
+      targetAudience: 'SaaS founders, finance professionals, accountants working with software companies, and developers building subscription businesses who need advanced accounting knowledge.',
+      orderIndex: 2,
+      isPublished: true,
+      isFeatured: false,
+    },
+  })
 
   // Create or update Week 1
   const week1 = await prisma.week.upsert({
@@ -1492,6 +1549,607 @@ Start with what you know (freelancing/consulting) but always be building toward 
       lessonType: 'lecture',
       durationMinutes: 45,
     },
+  })
+
+  // Create weeks for Advanced Accounting for SaaS Businesses Course
+  const saasWeek1 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 1
+      }
+    },
+    update: {
+      title: 'SaaS Revenue Recognition & ASC 606',
+      overview: 'Master the complexities of recognizing revenue in subscription businesses. Learn ASC 606 compliance, contract modifications, and multi-element arrangements.',
+      learningObjectives: JSON.stringify([
+        'Understand ASC 606 revenue recognition principles for SaaS',
+        'Handle contract modifications and pricing changes',
+        'Manage multi-element arrangements and bundled services',
+        'Implement proper controls and documentation',
+        'Navigate common SaaS revenue recognition challenges'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 1,
+      title: 'SaaS Revenue Recognition & ASC 606',
+      overview: 'Master the complexities of recognizing revenue in subscription businesses. Learn ASC 606 compliance, contract modifications, and multi-element arrangements.',
+      learningObjectives: JSON.stringify([
+        'Understand ASC 606 revenue recognition principles for SaaS',
+        'Handle contract modifications and pricing changes',
+        'Manage multi-element arrangements and bundled services',
+        'Implement proper controls and documentation',
+        'Navigate common SaaS revenue recognition challenges'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek2 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 2
+      }
+    },
+    update: {
+      title: 'Subscription Metrics & Unit Economics',
+      overview: 'Deep dive into SaaS-specific metrics including MRR, ARR, cohort analysis, and unit economics optimization for sustainable growth.',
+      learningObjectives: JSON.stringify([
+        'Calculate and track Monthly Recurring Revenue (MRR) and Annual Recurring Revenue (ARR)',
+        'Perform cohort analysis and customer segmentation',
+        'Measure expansion revenue and net revenue retention',
+        'Analyze unit economics and contribution margins',
+        'Build automated reporting for subscription metrics'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 2,
+      title: 'Subscription Metrics & Unit Economics',
+      overview: 'Deep dive into SaaS-specific metrics including MRR, ARR, cohort analysis, and unit economics optimization for sustainable growth.',
+      learningObjectives: JSON.stringify([
+        'Calculate and track Monthly Recurring Revenue (MRR) and Annual Recurring Revenue (ARR)',
+        'Perform cohort analysis and customer segmentation',
+        'Measure expansion revenue and net revenue retention',
+        'Analyze unit economics and contribution margins',
+        'Build automated reporting for subscription metrics'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek3 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 3
+      }
+    },
+    update: {
+      title: 'Customer Acquisition Cost (CAC) & Lifetime Value (LTV)',
+      overview: 'Master the calculation and optimization of CAC and LTV - the foundation of SaaS unit economics and growth strategy.',
+      learningObjectives: JSON.stringify([
+        'Calculate true Customer Acquisition Cost across all channels',
+        'Model Customer Lifetime Value with various methodologies',
+        'Analyze CAC payback periods and optimize efficiency',
+        'Build LTV:CAC ratio analysis and benchmarking',
+        'Implement attribution models for multi-touch customer journeys'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 3,
+      title: 'Customer Acquisition Cost (CAC) & Lifetime Value (LTV)',
+      overview: 'Master the calculation and optimization of CAC and LTV - the foundation of SaaS unit economics and growth strategy.',
+      learningObjectives: JSON.stringify([
+        'Calculate true Customer Acquisition Cost across all channels',
+        'Model Customer Lifetime Value with various methodologies',
+        'Analyze CAC payback periods and optimize efficiency',
+        'Build LTV:CAC ratio analysis and benchmarking',
+        'Implement attribution models for multi-touch customer journeys'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek4 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 4
+      }
+    },
+    update: {
+      title: 'Churn Analysis & Financial Impact',
+      overview: 'Understand the financial impact of customer churn and develop strategies to measure, predict, and reduce churn rates.',
+      learningObjectives: JSON.stringify([
+        'Distinguish between revenue churn and customer churn',
+        'Perform cohort-based churn analysis and trend identification',
+        'Calculate net revenue retention and expansion metrics',
+        'Model the financial impact of churn on business valuation',
+        'Develop churn prediction models and mitigation strategies'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 4,
+      title: 'Churn Analysis & Financial Impact',
+      overview: 'Understand the financial impact of customer churn and develop strategies to measure, predict, and reduce churn rates.',
+      learningObjectives: JSON.stringify([
+        'Distinguish between revenue churn and customer churn',
+        'Perform cohort-based churn analysis and trend identification',
+        'Calculate net revenue retention and expansion metrics',
+        'Model the financial impact of churn on business valuation',
+        'Develop churn prediction models and mitigation strategies'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek5 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 5
+      }
+    },
+    update: {
+      title: 'SaaS Financial Statements & KPIs',
+      overview: 'Learn to structure SaaS financial statements and identify the key performance indicators that drive business decisions.',
+      learningObjectives: JSON.stringify([
+        'Structure SaaS-specific Profit & Loss statements',
+        'Handle subscription-based balance sheet items',
+        'Prepare cash flow statements for recurring revenue businesses',
+        'Identify and track key SaaS performance indicators',
+        'Benchmark performance against industry standards'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 5,
+      title: 'SaaS Financial Statements & KPIs',
+      overview: 'Learn to structure SaaS financial statements and identify the key performance indicators that drive business decisions.',
+      learningObjectives: JSON.stringify([
+        'Structure SaaS-specific Profit & Loss statements',
+        'Handle subscription-based balance sheet items',
+        'Prepare cash flow statements for recurring revenue businesses',
+        'Identify and track key SaaS performance indicators',
+        'Benchmark performance against industry standards'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek6 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 6
+      }
+    },
+    update: {
+      title: 'Deferred Revenue & Cash vs Accrual',
+      overview: 'Master the management of deferred revenue liability and understand the timing differences between cash and accrual accounting in SaaS.',
+      learningObjectives: JSON.stringify([
+        'Manage deferred revenue liability and recognition schedules',
+        'Handle annual contracts and cash timing differences',
+        'Optimize working capital management for subscriptions',
+        'Navigate revenue forecasting challenges and seasonality',
+        'Implement automated revenue recognition systems'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 6,
+      title: 'Deferred Revenue & Cash vs Accrual',
+      overview: 'Master the management of deferred revenue liability and understand the timing differences between cash and accrual accounting in SaaS.',
+      learningObjectives: JSON.stringify([
+        'Manage deferred revenue liability and recognition schedules',
+        'Handle annual contracts and cash timing differences',
+        'Optimize working capital management for subscriptions',
+        'Navigate revenue forecasting challenges and seasonality',
+        'Implement automated revenue recognition systems'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek7 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 7
+      }
+    },
+    update: {
+      title: 'SaaS Fundraising & Investor Metrics',
+      overview: 'Prepare investor-ready financial models and learn the key metrics that VCs and investors evaluate when funding SaaS companies.',
+      learningObjectives: JSON.stringify([
+        'Build investor-ready financial models and projections',
+        'Master the Rule of 40 and SaaS Magic Number calculations',
+        'Prepare board reporting packages and investor updates',
+        'Understand due diligence requirements and preparation',
+        'Communicate financial performance to non-financial stakeholders'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 7,
+      title: 'SaaS Fundraising & Investor Metrics',
+      overview: 'Prepare investor-ready financial models and learn the key metrics that VCs and investors evaluate when funding SaaS companies.',
+      learningObjectives: JSON.stringify([
+        'Build investor-ready financial models and projections',
+        'Master the Rule of 40 and SaaS Magic Number calculations',
+        'Prepare board reporting packages and investor updates',
+        'Understand due diligence requirements and preparation',
+        'Communicate financial performance to non-financial stakeholders'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek8 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 8
+      }
+    },
+    update: {
+      title: 'Financial Planning & Forecasting',
+      overview: 'Develop sophisticated forecasting models for SaaS businesses including scenario planning and resource optimization.',
+      learningObjectives: JSON.stringify([
+        'Build bottom-up vs top-down forecasting models',
+        'Implement scenario planning and sensitivity analysis',
+        'Manage resource planning and burn rate optimization',
+        'Balance growth investments vs profitability',
+        'Create rolling forecasts and budget management systems'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 8,
+      title: 'Financial Planning & Forecasting',
+      overview: 'Develop sophisticated forecasting models for SaaS businesses including scenario planning and resource optimization.',
+      learningObjectives: JSON.stringify([
+        'Build bottom-up vs top-down forecasting models',
+        'Implement scenario planning and sensitivity analysis',
+        'Manage resource planning and burn rate optimization',
+        'Balance growth investments vs profitability',
+        'Create rolling forecasts and budget management systems'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek9 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 9
+      }
+    },
+    update: {
+      title: 'Compliance & Advanced Reporting',
+      overview: 'Navigate compliance requirements and implement advanced reporting systems for growing SaaS companies.',
+      learningObjectives: JSON.stringify([
+        'Understand SOX compliance requirements for SaaS companies',
+        'Navigate international accounting standards (IFRS vs GAAP)',
+        'Prepare for revenue audits and implement proper controls',
+        'Design financial systems and automation for scale',
+        'Manage tax implications of subscription revenue models'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 9,
+      title: 'Compliance & Advanced Reporting',
+      overview: 'Navigate compliance requirements and implement advanced reporting systems for growing SaaS companies.',
+      learningObjectives: JSON.stringify([
+        'Understand SOX compliance requirements for SaaS companies',
+        'Navigate international accounting standards (IFRS vs GAAP)',
+        'Prepare for revenue audits and implement proper controls',
+        'Design financial systems and automation for scale',
+        'Manage tax implications of subscription revenue models'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  const saasWeek10 = await prisma.week.upsert({
+    where: { 
+      courseId_weekNumber: {
+        courseId: saasAccountingCourse.id,
+        weekNumber: 10
+      }
+    },
+    update: {
+      title: 'Case Studies & Practical Applications',
+      overview: 'Apply advanced SaaS accounting concepts through real-world case studies and build practical financial tools and dashboards.',
+      learningObjectives: JSON.stringify([
+        'Analyze real SaaS company financial statements and metrics',
+        'Solve common accounting challenges through case studies',
+        'Build comprehensive financial dashboards and reporting tools',
+        'Master advanced Excel and financial modeling techniques',
+        'Develop implementation roadmaps for accounting improvements'
+      ]),
+      estimatedHours: 8,
+    },
+    create: {
+      courseId: saasAccountingCourse.id,
+      weekNumber: 10,
+      title: 'Case Studies & Practical Applications',
+      overview: 'Apply advanced SaaS accounting concepts through real-world case studies and build practical financial tools and dashboards.',
+      learningObjectives: JSON.stringify([
+        'Analyze real SaaS company financial statements and metrics',
+        'Solve common accounting challenges through case studies',
+        'Build comprehensive financial dashboards and reporting tools',
+        'Master advanced Excel and financial modeling techniques',
+        'Develop implementation roadmaps for accounting improvements'
+      ]),
+      estimatedHours: 8,
+    },
+  })
+
+  // Create sample lesson for SaaS Week 1
+  const saasLesson1 = await prisma.lesson.upsert({
+    where: { 
+      weekId_slug: {
+        weekId: saasWeek1.id,
+        slug: 'asc-606-fundamentals'
+      }
+    },
+    update: {
+      title: 'ASC 606 Fundamentals for SaaS Revenue Recognition',
+      content: `# ASC 606 Fundamentals for SaaS Revenue Recognition
+
+## Introduction to ASC 606
+
+ASC 606 (Revenue from Contracts with Customers) fundamentally changed how SaaS companies recognize revenue. Understanding its principles is critical for compliance and accurate financial reporting.
+
+[!info]
+This lesson covers the five-step model of ASC 606 and its specific implications for subscription-based software businesses.
+
+### The Five-Step Model
+
+**Step 1: Identify the Contract**
+- Written, verbal, or implied agreement
+- Commercial substance and enforceability
+- SaaS considerations: auto-renewal clauses, cancellation rights
+
+**Step 2: Identify Performance Obligations**
+- Distinct goods or services promised to customer
+- SaaS considerations: software access, support, professional services
+- Bundled vs. separate performance obligations
+
+**Step 3: Determine Transaction Price**
+- Amount of consideration expected to receive
+- SaaS considerations: variable pricing, usage-based fees, discounts
+
+**Step 4: Allocate Transaction Price**
+- Allocate price to each performance obligation
+- Standalone selling price determination
+- SaaS considerations: bundled packages, freemium models
+
+**Step 5: Recognize Revenue**
+- When performance obligations are satisfied
+- Over time vs. point in time recognition
+- SaaS considerations: continuous access model
+
+### SaaS-Specific Applications
+
+[!example]
+**Example: Standard SaaS Subscription**
+- Customer signs $12,000 annual contract for software access
+- Single performance obligation: software access over 12 months
+- Revenue recognition: $1,000 per month over contract term
+
+**Complex Example: SaaS + Services Bundle**
+- $15,000 contract includes:
+  - Software access: $10,000 (standalone value)
+  - Implementation services: $5,000 (standalone value)
+- Allocation based on standalone selling prices
+- Software: recognized over subscription term
+- Services: recognized as services are delivered
+
+### Common SaaS Revenue Recognition Challenges
+
+**1. Contract Modifications**
+- Subscription upgrades/downgrades
+- Additional users or features
+- Early renewals with pricing changes
+
+**2. Variable Consideration**
+- Usage-based pricing components
+- Performance bonuses or penalties
+- Refund provisions and estimates
+
+**3. Multi-Element Arrangements**
+- Software + professional services
+- Multiple software products
+- Hardware + software combinations
+
+[!warning]
+**Key Compliance Considerations:**
+- Maintain detailed contract analysis documentation
+- Implement robust revenue recognition systems
+- Regular review of revenue recognition policies
+- Coordination between sales, legal, and accounting teams
+
+### Action Items
+
+1. Review current contracts for ASC 606 compliance
+2. Document performance obligations identification process
+3. Establish standalone selling price documentation
+4. Implement systematic revenue recognition procedures
+
+[!tip]
+ASC 606 compliance is not just about accounting rules - it directly impacts how you structure contracts, price products, and recognize business performance.`,
+      orderIndex: 1,
+      lessonType: 'lecture',
+      durationMinutes: 60,
+    },
+    create: {
+      weekId: saasWeek1.id,
+      title: 'ASC 606 Fundamentals for SaaS Revenue Recognition',
+      slug: 'asc-606-fundamentals',
+      content: `# ASC 606 Fundamentals for SaaS Revenue Recognition
+
+## Introduction to ASC 606
+
+ASC 606 (Revenue from Contracts with Customers) fundamentally changed how SaaS companies recognize revenue. Understanding its principles is critical for compliance and accurate financial reporting.
+
+[!info]
+This lesson covers the five-step model of ASC 606 and its specific implications for subscription-based software businesses.
+
+### The Five-Step Model
+
+**Step 1: Identify the Contract**
+- Written, verbal, or implied agreement
+- Commercial substance and enforceability
+- SaaS considerations: auto-renewal clauses, cancellation rights
+
+**Step 2: Identify Performance Obligations**
+- Distinct goods or services promised to customer
+- SaaS considerations: software access, support, professional services
+- Bundled vs. separate performance obligations
+
+**Step 3: Determine Transaction Price**
+- Amount of consideration expected to receive
+- SaaS considerations: variable pricing, usage-based fees, discounts
+
+**Step 4: Allocate Transaction Price**
+- Allocate price to each performance obligation
+- Standalone selling price determination
+- SaaS considerations: bundled packages, freemium models
+
+**Step 5: Recognize Revenue**
+- When performance obligations are satisfied
+- Over time vs. point in time recognition
+- SaaS considerations: continuous access model
+
+### SaaS-Specific Applications
+
+[!example]
+**Example: Standard SaaS Subscription**
+- Customer signs $12,000 annual contract for software access
+- Single performance obligation: software access over 12 months
+- Revenue recognition: $1,000 per month over contract term
+
+**Complex Example: SaaS + Services Bundle**
+- $15,000 contract includes:
+  - Software access: $10,000 (standalone value)
+  - Implementation services: $5,000 (standalone value)
+- Allocation based on standalone selling prices
+- Software: recognized over subscription term
+- Services: recognized as services are delivered
+
+### Common SaaS Revenue Recognition Challenges
+
+**1. Contract Modifications**
+- Subscription upgrades/downgrades
+- Additional users or features
+- Early renewals with pricing changes
+
+**2. Variable Consideration**
+- Usage-based pricing components
+- Performance bonuses or penalties
+- Refund provisions and estimates
+
+**3. Multi-Element Arrangements**
+- Software + professional services
+- Multiple software products
+- Hardware + software combinations
+
+[!warning]
+**Key Compliance Considerations:**
+- Maintain detailed contract analysis documentation
+- Implement robust revenue recognition systems
+- Regular review of revenue recognition policies
+- Coordination between sales, legal, and accounting teams
+
+### Action Items
+
+1. Review current contracts for ASC 606 compliance
+2. Document performance obligations identification process
+3. Establish standalone selling price documentation
+4. Implement systematic revenue recognition procedures
+
+[!tip]
+ASC 606 compliance is not just about accounting rules - it directly impacts how you structure contracts, price products, and recognize business performance.`,
+      orderIndex: 1,
+      lessonType: 'lecture',
+      durationMinutes: 60,
+    },
+  })
+
+  // Create quiz for SaaS Week 1
+  const saasQuiz1 = await prisma.quiz.create({
+    data: {
+      weekId: saasWeek1.id,
+      title: 'Week 1: ASC 606 and SaaS Revenue Recognition',
+      description: 'Test your understanding of ASC 606 principles and their application to SaaS businesses',
+      passingScore: 80,
+      maxAttempts: 3,
+      timeLimitMinutes: 45,
+    },
+  })
+
+  // Create questions for the SaaS quiz
+  await prisma.question.createMany({
+    data: [
+      {
+        quizId: saasQuiz1.id,
+        questionText: 'According to ASC 606, when should revenue be recognized for a standard SaaS subscription?',
+        questionType: 'multiple_choice',
+        options: JSON.stringify(['When the contract is signed', 'When payment is received', 'Over the subscription term as service is provided', 'At the end of the contract term']),
+        correctAnswer: 'Over the subscription term as service is provided',
+        explanation: 'SaaS subscriptions typically represent a single performance obligation satisfied over time as the customer receives and consumes the benefits of the software access.',
+        points: 3,
+        orderIndex: 1,
+      },
+      {
+        quizId: saasQuiz1.id,
+        questionText: 'A SaaS company sells a $15,000 package including $10,000 worth of software and $5,000 worth of implementation services. How should the transaction price be allocated?',
+        questionType: 'multiple_choice',
+        options: JSON.stringify(['Allocate based on estimated costs', 'Recognize all as software revenue', 'Allocate $10,000 to software and $5,000 to services based on standalone selling prices', 'Recognize evenly over the contract term']),
+        correctAnswer: 'Allocate $10,000 to software and $5,000 to services based on standalone selling prices',
+        explanation: 'ASC 606 Step 4 requires allocating transaction price to performance obligations based on their standalone selling prices, which were given as $10,000 and $5,000 respectively.',
+        points: 4,
+        orderIndex: 2,
+      },
+      {
+        quizId: saasQuiz1.id,
+        questionText: 'Which of the following is NOT typically a separate performance obligation for SaaS companies?',
+        questionType: 'multiple_choice',
+        options: JSON.stringify(['Software access/license', 'Customer support services', 'Professional services/implementation', 'Payment processing fees']),
+        correctAnswer: 'Payment processing fees',
+        explanation: 'Payment processing fees are typically considered costs of the transaction, not separate performance obligations. They are usually netted against revenue or treated as selling expenses.',
+        points: 2,
+        orderIndex: 3,
+      },
+      {
+        quizId: saasQuiz1.id,
+        questionText: 'When a customer upgrades their subscription mid-contract, this is considered:',
+        questionType: 'multiple_choice',
+        options: JSON.stringify(['A new contract', 'A contract modification', 'A separate transaction', 'An accounting error correction']),
+        correctAnswer: 'A contract modification',
+        explanation: 'Subscription changes during the contract term are typically treated as contract modifications under ASC 606, requiring analysis of whether to account for them prospectively or as a separate contract.',
+        points: 3,
+        orderIndex: 4,
+      },
+    ],
   })
 
   // Create placeholder weeks for future courses (5-12)

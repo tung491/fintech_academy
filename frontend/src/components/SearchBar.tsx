@@ -71,7 +71,7 @@ export function SearchBar() {
     
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch(`http://localhost:5000/api/lessons/search/${encodeURIComponent(searchQuery)}`, {
+      const response = await fetch(`http://localhost:3001/api/lessons/search/${encodeURIComponent(searchQuery)}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

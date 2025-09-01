@@ -56,15 +56,28 @@ router.get('/', async (_req, res) => {
       let skillsLearned = [];
       if (course.skillsLearned) {
         try {
-          let parsed = JSON.parse(course.skillsLearned);
-          // If it's still a string, parse again
-          if (typeof parsed === 'string') {
-            parsed = JSON.parse(parsed);
+          // Check if the string looks like JSON (starts with [ or {)
+          const trimmed = course.skillsLearned.toString().trim();
+          if (trimmed.startsWith('[') || trimmed.startsWith('{') || trimmed.startsWith('"')) {
+            let parsed = JSON.parse(course.skillsLearned);
+            // If it's still a string, parse again
+            if (typeof parsed === 'string') {
+              parsed = JSON.parse(parsed);
+            }
+            skillsLearned = Array.isArray(parsed) ? parsed : [];
+          } else {
+            // If it doesn't look like JSON, treat as comma-separated string
+            skillsLearned = course.skillsLearned.split(',').map((skill: string) => skill.trim()).filter((skill: string) => skill.length > 0);
           }
-          skillsLearned = Array.isArray(parsed) ? parsed : [];
         } catch (error) {
-          console.error('Error parsing skillsLearned:', error);
-          skillsLearned = [];
+          console.error('Error parsing skillsLearned for course', course.id, ':', error);
+          console.error('Raw skillsLearned value:', course.skillsLearned);
+          // Fallback: try to split by comma if it's a plain string
+          try {
+            skillsLearned = course.skillsLearned.split(',').map((skill: string) => skill.trim()).filter((skill: string) => skill.length > 0);
+          } catch {
+            skillsLearned = [];
+          }
         }
       }
 
@@ -132,15 +145,28 @@ router.get('/:courseId', async (req, res) => {
     let skillsLearned = [];
     if (course.skillsLearned) {
       try {
-        let parsed = JSON.parse(course.skillsLearned);
-        // If it's still a string, parse again
-        if (typeof parsed === 'string') {
-          parsed = JSON.parse(parsed);
+        // Check if the string looks like JSON (starts with [ or {)
+        const trimmed = course.skillsLearned.toString().trim();
+        if (trimmed.startsWith('[') || trimmed.startsWith('{') || trimmed.startsWith('"')) {
+          let parsed = JSON.parse(course.skillsLearned);
+          // If it's still a string, parse again
+          if (typeof parsed === 'string') {
+            parsed = JSON.parse(parsed);
+          }
+          skillsLearned = Array.isArray(parsed) ? parsed : [];
+        } else {
+          // If it doesn't look like JSON, treat as comma-separated string
+          skillsLearned = course.skillsLearned.split(',').map((skill: string) => skill.trim()).filter((skill: string) => skill.length > 0);
         }
-        skillsLearned = Array.isArray(parsed) ? parsed : [];
       } catch (error) {
-        console.error('Error parsing skillsLearned:', error);
-        skillsLearned = [];
+        console.error('Error parsing skillsLearned for course', course.id, ':', error);
+        console.error('Raw skillsLearned value:', course.skillsLearned);
+        // Fallback: try to split by comma if it's a plain string
+        try {
+          skillsLearned = course.skillsLearned.split(',').map((skill: string) => skill.trim()).filter((skill: string) => skill.length > 0);
+        } catch {
+          skillsLearned = [];
+        }
       }
     }
 

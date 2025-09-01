@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useAuthStore } from '@/stores/authStore'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { SearchBar } from '@/components/SearchBar'
-import { GraduationCap, User, LogOut, Calculator, BarChart3, Bookmark } from 'lucide-react'
+import { GraduationCap, User, LogOut, Calculator, BarChart3, Bookmark, Award, Map } from 'lucide-react'
 
 export function Header() {
   const { user, logout } = useAuthStore()
@@ -21,6 +21,10 @@ export function Header() {
           <nav className="flex items-center space-x-6">
             <Link href="/courses" className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
               Courses
+            </Link>
+            <Link href="/learning-paths" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+              <Map className="w-4 h-4" />
+              <span>Learning Paths</span>
             </Link>
             {user && (
               <Link href="/calculators" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
@@ -40,6 +44,10 @@ export function Header() {
                 <Link href="/bookmarks" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                   <Bookmark className="w-4 h-4" />
                   <span>Bookmarks</span>
+                </Link>
+                <Link href="/certificates" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                  <Award className="w-4 h-4" />
+                  <span>Certificates</span>
                 </Link>
                 <SearchBar />
                 <div className="flex items-center space-x-4">

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { api } from '@/lib/api'
@@ -14,6 +14,7 @@ interface LoginForm {
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { setAuth } = useAuth()
   const [error, setError] = useState('')
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>()
@@ -23,7 +24,10 @@ export default function LoginPage() {
       setError('')
       const response = await api.post('/auth/login', data)
       setAuth(response.data.user, response.data.token)
-      router.push('/dashboard')
+      
+      // Redirect to original page if specified, otherwise go to dashboard
+      const redirectTo = searchParams.get('redirect') || '/dashboard'
+      router.push(redirectTo)
     } catch (err: any) {
       setError(err.response?.data?.error || 'Login failed')
     }
@@ -77,7 +81,10 @@ export default function LoginPage() {
         <div className="mt-6 text-center">
           <p className="text-gray-600 dark:text-gray-400">
             Don't have an account?{' '}
-            <Link href="/register" className="text-primary-600 dark:text-primary-400 hover:underline">
+            <Link 
+              href={`/register${searchParams.get('redirect') ? `?redirect=${encodeURIComponent(searchParams.get('redirect')!)}` : ''}`} 
+              className="text-primary-600 dark:text-primary-400 hover:underline"
+            >
               Sign up
             </Link>
           </p>
